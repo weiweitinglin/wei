@@ -1,5 +1,7 @@
 測試
+git init 初始化
+git remote add origin <GitHub網址>
 git status 查看git狀態
-git add . 加入git
-git commit -m "修改地方名稱" 新增快照
-git push 上傳
+git add . 添加檔案到暫存區
+git commit -m "修改地方名稱" 提交變更
+git push 推送到 GitHub
