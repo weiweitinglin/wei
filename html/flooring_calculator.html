@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>木地板拼接計算器</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#page-top">地板拼接計算器</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#calculator">計算小工具</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">回首頁</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="masthead text-center text-white" style="background-color: #343a40; padding: 100px 0;">
+        <div class="container">
+            <h1 class="text-uppercase"></h1>
+        </div>
+    </header>           
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center text-uppercase">計算工具</h2>
+            <p class="text-center text-muted">輸入相關數據，快速獲得結果。</p>
+            <form id="flooringForm" class="row g-3 justify-content-center">
+                <div class="col-md-6">
+                    <label for="roomWidth" class="form-label">房間寬度（公分）:</label>
+                    <input type="number" class="form-control" id="roomWidth" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="floorWidth" class="form-label">地板寬度（公分）:</label>
+                    <input type="number" class="form-control" id="floorWidth" required>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="button" class="btn btn-primary mt-3" onclick="calculateFlooring()">計算</button>
+                </div>
+            </form>
+            <div class="mt-4">
+                <h3 class="text-center">計算結果:</h3>
+                <pre id="result" class="bg-white p-4 border rounded">結果將顯示在此處。</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 text-center text-white" style="background-color: #343a40;">
+        <div class="container">
+            <h2 class="text-uppercase">關於我們</h2>
+            <p class="text-white-50">威製作小工具</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-light text-center py-4">
+        <div class="container">
+            <p class="text-muted small mb-0">&copy; 威製作小工具. 版權所有.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function calculateFlooring() {
+            const roomWidth = parseFloat(document.getElementById("roomWidth").value);
+            const floorWidth = parseFloat(document.getElementById("floorWidth").value);
+
+            if (isNaN(roomWidth) || isNaN(floorWidth) || roomWidth <= 0 || floorWidth <= 0) {
+                document.getElementById("result").textContent = "請輸入有效的數值！";
+                return;
+            }
+
+            let results = [];
+            const withoutAdjustment = roomWidth % floorWidth;
+            const totalPiecesNoAdjust = Math.floor(roomWidth / floorWidth);
+            results.push("不調整的情況:");
+            results.push(`  總地板片數: ${totalPiecesNoAdjust + 1}`);
+            results.push(`  最後一片地板寬度: ${withoutAdjustment} 公分`);
+            results.push("");
+
+            const adjustedFirstPiece = floorWidth - 10;
+            const totalPiecesAdjusted = Math.floor((roomWidth - adjustedFirstPiece) / floorWidth) + 1;
+            const lastPieceAdjusted = (roomWidth - adjustedFirstPiece) % floorWidth;
+            results.push("減去 10 公分的情況:");
+            results.push(`  總地板片數: ${totalPiecesAdjusted}`);
+            results.push(`  最後一片地板寬度: ${lastPieceAdjusted} 公分`);
+            results.push("");
+
+            let rangeStart = null;
+            let rangeEnd = null;
+            for (let adjustment = 1; adjustment <= Math.floor(floorWidth * 0.8); adjustment++) {
+                const firstPiece = floorWidth - adjustment;
+                const lastPiece = (roomWidth - firstPiece) % floorWidth;
+                if (floorWidth * 0.2 <= lastPiece && lastPiece <= floorWidth * 0.8) {
+                    if (rangeStart === null) rangeStart = adjustment;
+                    rangeEnd = adjustment;
+                }
+            }
+            results.push("調整範圍使最後一片寬度介於 0.8 至 0.2 倍地板寬度:");
+            results.push(`  調整範圍起點 (公分): ${rangeStart !== null ? rangeStart : "無"}`);
+            results.push(`  調整範圍終點 (公分): ${rangeEnd !== null ? rangeEnd : "無"}`);
+            results.push(`  最佳第一片地板寬度: ${rangeStart !== null ? floorWidth - rangeStart : "無"} 公分`);
+
+            document.getElementById("result").textContent = results.join("\n");
+        }
+    </script>
+</body>
+</html>
