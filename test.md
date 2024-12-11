@@ -7,4 +7,4 @@ git commit -m "修改地方名稱" 提交變更
 git push 推送到 GitHub
 
 
-jupyter notebook 打開notebook
+jupyter notebook 打開notebo
