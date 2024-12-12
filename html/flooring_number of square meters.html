@@ -18,7 +18,24 @@
     <py-config>
         packages = ["matplotlib"]
     </py-config>
-
+<!-- 導航欄 -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container px-4 px-lg-5">
+        <!-- 導航品牌 -->
+        <a class="navbar-brand" href="#page-top">坪數計算器</a>
+        <!-- 漢堡選單按鈕 -->
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- 導航選項 -->
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#calculator">計算小工具</a></li>
+                <li class="nav-item"><a class="nav-link" href="/wei/index.html">回首頁</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
     <!-- 頁面標頭區域 -->
     <header class="masthead">
         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
@@ -57,7 +74,7 @@
             <!-- 畫圖區域 -->
             <div class="text-center mt-4">
                 <h3>尺寸圖形:</h3>
-                <canvas id="canvas" width="400" height="400" style="border:1px solid #000;"></canvas>
+                <canvas id="canvas" width="1250" height="1250" style="border:1px solid #000;"></canvas>
             </div>
         </div>
     </section>
@@ -78,21 +95,28 @@
             return area_ping
 
         # 畫圖函數
+        # 使用 Canvas 繪製長方形
         def draw_rectangle(length_cm, width_cm):
-            fig = Figure()
-            ax = fig.add_subplot(111)
-            ax.set_aspect('equal')
-            ax.add_patch(plt.Rectangle((0, 0), width_cm, length_cm, fill=None, edgecolor="blue", linewidth=2))
-            ax.set_xlim(0, max(width_cm, length_cm) * 1.2)
-            ax.set_ylim(0, max(width_cm, length_cm) * 1.2)
-            ax.set_title("房間長寬示意圖")
-            
-            # 轉換圖形為 Base64
-            buf = io.BytesIO()
-            fig.savefig(buf, format="png")
-            buf.seek(0)
-            img_str = "data:image/png;base64," + b64encode(buf.read()).decode("utf-8")
-            return img_str
+            canvas = document.querySelector("#canvas")
+            context = canvas.getContext("2d")
+
+            # 清空畫布
+            context.clearRect(0, 0, canvas.width, canvas.height)
+
+            # 設定繪圖比例
+            scale = 2  # 縮放比例
+            length_scaled = length_cm / scale
+            width_scaled = width_cm / scale
+
+            # 設定顏色並繪製矩形
+            context.strokeStyle = "blue"
+            context.lineWidth = 3
+            start_x = (canvas.width - width_scaled) / 2
+            start_y = (canvas.height - length_scaled) / 2
+
+            context.beginPath()
+            context.rect(start_x, start_y, width_scaled, length_scaled)
+            context.stroke()
 
         # 主函數
         def main(event=None):
@@ -108,13 +132,8 @@
                 area_ping = calculate_ping(length_cm, width_cm)
                 document.querySelector("#result").innerText = f"該面積為: {area_ping:.2f} 坪"
 
-                # 畫圖
-                img_str = draw_rectangle(length_cm, width_cm)
-                canvas = document.querySelector("#canvas")
-                context = canvas.getContext("2d")
-                img = document.createElement("img")
-                img.src = img_str
-                img.onload = lambda event: context.drawImage(img, 0, 0, 400, 400)
+                # 繪製圖形
+                draw_rectangle(length_cm, width_cm)
 
 
             except ValueError:
