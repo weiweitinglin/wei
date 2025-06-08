@@ -34,7 +34,7 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #64a19d;
+  --bs-primary: #42F5E6;
   --bs-secondary: #7464a1;
   --bs-success: #67c29c;
   --bs-info: #1cabc4;
@@ -65,8 +65,8 @@
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
-  --bs-body-color: #212529;
-  --bs-body-bg: #fff;
+  --bs-body-color: #D1D6E0;
+  --bs-body-bg: #1F2F57;
   --bs-border-width: 1px;
   --bs-border-style: solid;
   --bs-border-color: #dee2e6;
@@ -81,6 +81,12 @@
   --bs-link-hover-color: #50817e;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #faf4e0;
+
+  --deep-blue: #1F2F57;
+  --silver-gray: #D1D6E0;
+  --neon-cyan: #42F5E6;
+  --space-purple: #3E2C78;
+  --tech-green: #48D1CC;
 }
 
 *,
@@ -96,16 +102,9 @@
 }
 
 body {
-  margin: 0;
-  font-family: var(--bs-body-font-family);
-  font-size: var(--bs-body-font-size);
-  font-weight: var(--bs-body-font-weight);
-  line-height: var(--bs-body-line-height);
-  color: var(--bs-body-color);
-  text-align: var(--bs-body-text-align);
-  background-color: var(--bs-body-bg);
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  background: linear-gradient(135deg, var(--deep-blue) 0%, var(--space-purple) 100%);
+  font-family: 'Noto Sans TC', sans-serif;
+  color: var(--silver-gray);
 }
 
 hr {
