@@ -46,11 +46,12 @@ button {
 /* ------------------------------------------------ */
 
 .slider {
-	width: calc(3 * var(--slide-width));
+    width: 100%; /* 修改為 100% 寬度 */
+    max-width: calc(3 * var(--slide-width));
 	height: calc(2 * var(--slide-height));
 	display: flex;
 	align-items: center;
-	margin-top: 80px; /* 增加上方間距，遠離導航欄 */
+	margin-top: 60px; /* 減小頂部間距，在手機上更合理 */
 	position: relative;
 }
 
@@ -188,11 +189,12 @@ button {
 
 .slide--image {
 	width: 100%;
-	height: 100%;
+	height: auto;
+	object-fit: cover;
+	max-height: 70vh; /* 限制最大高度 */
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	object-fit: cover;
 	transform: translate(-50%, -50%) scale(1.25)
 		translate3d(var(--bgPosX), var(--bgPosY), 0);
 	transition: filter var(--slide-transition-duration)
@@ -201,11 +203,11 @@ button {
 
 /* 修改背景區塊容器 */
 .slide__backgrounds {
-    position: fixed;
+    position: fixed; /* 改為 fixed 確保背景覆蓋全屏 */
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     z-index: -2;
     overflow: hidden;
     padding-top: 60px; /* 讓背景從導航欄下方開始 */
@@ -385,31 +387,42 @@ button {
 	}
 }
 
-/* 頁腳樣式調整 */
-footer, .footer {
-    position: relative;
-    width: 100%;
-    margin-top: 60px; /* 增加底部間距 */
-    padding: 20px 0;
-    text-align: center;
-    color: white;
-    z-index: 10;
-}
-
-/* 版權資訊樣式調整 */
-.copyright {
-    position: relative;
-    bottom: -20px; /* 調整位置，使其更接近頁面底部 */
-    width: 100%;
-    text-align: center;
-    padding: 10px 0;
-    color: white;
-    font-size: 0.9rem;
-    z-index: 10;
+/* 確保電腦版輪播尺寸正確 */
+@media (min-width: 769px) {
+    .slider {
+        width: 100%;
+        max-width: calc(3 * var(--slide-width));
+        height: calc(2 * var(--slide-height));
+    }
+    
+    .slide {
+        --slide-width: min(25vw, 300px);
+        height: auto;
+        aspect-ratio: var(--slide-aspect);
+    }
+    
+    .slide[data-current] {
+        --slide-scale: 1.2;
+        --slide-tz: 0px;
+        --slide-tx: 0px;
+        --slide-rotY: 0;
+    }
+    
+    /* 修正電腦版的輪播圖片比例 */
+    .slide--image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
 }
 
 /* 回應式設計調整 */
 @media (max-width: 768px) {
+    :root {
+        --slide-width: min(90vw, 300px); /* 調整小屏幕上的寬度 */
+        --slide-aspect: 1 / 1.5; /* 在手機上稍微調整比例 */
+    }
+    
     .slider {
         margin-top: 60px; /* 較小螢幕上減少頂部間距 */
     }

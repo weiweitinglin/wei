@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- 修改 viewport meta 標籤 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>廷造星球</title>
@@ -16,6 +17,7 @@
     <!-- Custom CSS -->
     <link href="css/imagesloaded.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/fix-sizes.css" rel="stylesheet" /> <!-- 新增的修復文件 -->
 </head>
 <body id="page-top">
     <!-- Navigation -->
@@ -39,8 +41,11 @@
                     <li class="nav-item"><a class="nav-link" href="#projects">地表資源</a></li>
                     <li class="nav-item"><a class="nav-link" href="#signup">星際風景</a></li>
                     <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- 修改下拉選單部分 -->
+                    <li class="nav-item dropdown mobile-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" 
+                           aria-haspopup="true">
                             小工具衛星
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
@@ -172,6 +177,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dropdown-fix.js"></script> <!-- 新增的修復檔案 -->
     <script type="module" src="js/imagesloaded.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/startrail.js"></script>
@@ -189,6 +195,61 @@
                 document.getElementById('mainNav').style.visibility = 'visible';
                 document.getElementById('mainNav').style.transition = 'opacity 0.8s ease, visibility 0.8s ease';
             }, 2000); // 3秒後顯示，可以根據需要調整
+        });
+
+        // 立即執行的下拉選單修復
+        document.addEventListener('DOMContentLoaded', function() {
+            // 檢測是否為移動設備
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                setTimeout(function() {
+                    // 獲取下拉選單元素
+                    const dropdownToggle = document.querySelector('#toolsDropdown');
+                    const dropdownMenu = document.querySelector('.dropdown-menu');
+                    
+                    if (dropdownToggle && dropdownMenu) {
+                        // 移除 Bootstrap 原生事件處理
+                        dropdownToggle.removeAttribute('data-bs-toggle');
+                        
+                        // 清除原有的點擊事件處理器
+                        const newDropdownToggle = dropdownToggle.cloneNode(true);
+                        dropdownToggle.parentNode.replaceChild(newDropdownToggle, dropdownToggle);
+                        
+                        // 添加新的點擊事件處理器
+                        newDropdownToggle.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // 切換下拉選單顯示/隱藏
+                            dropdownMenu.style.display = 
+                                dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                        });
+                        
+                        // 添加樣式確保正確顯示
+                        dropdownMenu.style.position = 'static';
+                        dropdownMenu.style.width = '100%';
+                        dropdownMenu.style.display = 'none';
+                        
+                        // 防止點擊選單項目時關閉選單
+                        const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                        dropdownItems.forEach(function(item) {
+                            item.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                            });
+                        });
+                        
+                        // 點擊頁面其他區域時關閉選單
+                        document.addEventListener('click', function(e) {
+                            if (!e.target.closest('.dropdown')) {
+                                dropdownMenu.style.display = 'none';
+                            }
+                        });
+                        
+                        console.log('手機版下拉選單修復已套用');
+                    }
+                }, 500); // 延遲確保DOM已經完全載入
+            }
         });
     </script>
 </body>

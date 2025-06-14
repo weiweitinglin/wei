@@ -1,0 +1,27 @@
+/* 修正電腦版輪播尺寸 */
+@media (min-width: 769px) {
+    :root {
+        --slide-width: min(25vw, 300px) !important;
+        --slide-aspect: 2 / 3 !important;
+    }
+    
+    .slide {
+        width: var(--slide-width) !important;
+        height: auto !important;
+        aspect-ratio: var(--slide-aspect) !important;
+        max-width: none !important;
+    }
+    
+    .slides__wrapper {
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .slide[data-current] {
+        --slide-scale: 1.2 !important;
+    }
+    
+    .slide:not([data-current]) {
+        --slide-scale: 1 !important;
+    }
+}
