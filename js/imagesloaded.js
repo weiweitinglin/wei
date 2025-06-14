@@ -133,6 +133,32 @@ export function tilt(node, options) {
 	const init = () => {
 		addListeners();
 		raf.add(ticker);
+
+		// 確保背景元素正確設置
+		const slideBgs = document.querySelectorAll('.slide__bg');
+		const slideImages = document.querySelectorAll('.slide--image');
+		
+		// 從幻燈片圖片中獲取實際路徑
+		let imagePaths = [];
+		slideImages.forEach(img => {
+			imagePaths.push(img.getAttribute('src'));
+		});
+		
+		// 設置背景圖片
+		slideBgs.forEach((bg, index) => {
+			if (index < imagePaths.length) {
+				bg.style.backgroundImage = `url('${imagePaths[index]}')`;
+			}
+			
+			// 初始狀態屬性設置
+			if (index === 0) {
+				bg.setAttribute('data-current', '');
+			} else if (index === 1) {
+				bg.setAttribute('data-next', '');
+			} else if (index === 2) {
+				bg.setAttribute('data-next2', ''); 
+			}
+		});
 	};
 
 	const destroy = () => {
@@ -163,27 +189,29 @@ const raf = new Raf();
 
 function init() {
 	const loader = document.querySelector(".loader");
-
 	const slides = [...document.querySelectorAll(".slide")];
 	const slidesInfo = [...document.querySelectorAll(".slide-info")];
-
+	
 	const buttons = {
 		prev: document.querySelector(".slider--btn__prev"),
 		next: document.querySelector(".slider--btn__next")
 	};
-
+	
 	loader.style.opacity = 0;
 	loader.style.pointerEvents = "none";
-
+	
 	slides.forEach((slide, i) => {
 		const slideInner = slide.querySelector(".slide__inner");
 		const slideInfoInner = slidesInfo[i].querySelector(".slide-info__inner");
-
+		
 		tilt(slide, { target: [slideInner, slideInfoInner] });
 	});
-
+	
 	buttons.prev.addEventListener("click", change(-1));
 	buttons.next.addEventListener("click", change(1));
+	
+	// 確保背景圖片初始化
+	setupBackgroundImages();
 }
 
 function setup() {
@@ -224,53 +252,122 @@ function setup() {
 	});
 }
 
+// 修正 change 函數的邏輯，使右箭頭正確指向下一張幻燈片
+
 function change(direction) {
-	return () => {
-		let current = {
-			slide: document.querySelector(".slide[data-current]"),
-			slideInfo: document.querySelector(".slide-info[data-current]"),
-			slideBg: document.querySelector(".slide__bg[data-current]")
-		};
-		let previous = {
-			slide: document.querySelector(".slide[data-previous]"),
-			slideInfo: document.querySelector(".slide-info[data-previous]"),
-			slideBg: document.querySelector(".slide__bg[data-previous]")
-		};
-		let next = {
-			slide: document.querySelector(".slide[data-next]"),
-			slideInfo: document.querySelector(".slide-info[data-next]"),
-			slideBg: document.querySelector(".slide__bg[data-next]")
-		};
-
-		Object.values(current).map((el) => el.removeAttribute("data-current"));
-		Object.values(previous).map((el) => el.removeAttribute("data-previous"));
-		Object.values(next).map((el) => el.removeAttribute("data-next"));
-
-		if (direction === 1) {
-			let temp = current;
-			current = next;
-			next = previous;
-			previous = temp;
-
-			current.slide.style.zIndex = "20";
-			previous.slide.style.zIndex = "30";
-			next.slide.style.zIndex = "10";
-		} else if (direction === -1) {
-			let temp = current;
-			current = previous;
-			previous = next;
-			next = temp;
-
-			current.slide.style.zIndex = "20";
-			previous.slide.style.zIndex = "10";
-			next.slide.style.zIndex = "30";
-		}
-
-		Object.values(current).map((el) => el.setAttribute("data-current", ""));
-		Object.values(previous).map((el) => el.setAttribute("data-previous", ""));
-		Object.values(next).map((el) => el.setAttribute("data-next", ""));
-	};
+    return () => {
+        // 獲取所有輪播元素
+        const slides = [...document.querySelectorAll(".slide")];
+        const slidesInfo = [...document.querySelectorAll(".slide-info")];
+        const slidesBg = [...document.querySelectorAll(".slide__bg")];
+        
+        // 找出當前顯示的幻燈片索引
+        let currentIndex = -1;
+        for (let i = 0; i < slides.length; i++) {
+            if (slides[i].hasAttribute("data-current")) {
+                currentIndex = i;
+                break;
+            }
+        }
+        
+        // 如果沒找到當前幻燈片，則默認為第一張
+        if (currentIndex === -1) {
+            currentIndex = 0;
+        }
+        
+        // 根據方向計算下一張或上一張的索引
+        // 修改方向邏輯，使其符合標準輪播行為
+        // direction: 1 表示下一張（右箭頭），-1 表示上一張（左箭頭）
+        let newIndex;
+        if (direction === 1) {
+            // 向右：顯示下一張
+            newIndex = (currentIndex + 1) % slides.length;
+        } else {
+            // 向左：顯示上一張
+            newIndex = (currentIndex - 1 + slides.length) % slides.length;
+        }
+        
+        // 計算新的下一張索引
+        let nextIndex = (newIndex + 1) % slides.length;
+        
+        // 計算新的上一張索引
+        let prevIndex = (newIndex - 1 + slides.length) % slides.length;
+        
+        // 清除所有幻燈片的狀態
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].removeAttribute("data-current");
+            slides[i].removeAttribute("data-next");
+            slides[i].removeAttribute("data-previous");
+            slides[i].removeAttribute("data-next2");
+            
+            slidesInfo[i].removeAttribute("data-current");
+            slidesInfo[i].removeAttribute("data-next");
+            slidesInfo[i].removeAttribute("data-previous");
+            slidesInfo[i].removeAttribute("data-next2");
+            
+            if (i < slidesBg.length) {
+                slidesBg[i].removeAttribute("data-current");
+                slidesBg[i].removeAttribute("data-next");
+                slidesBg[i].removeAttribute("data-previous");
+                slidesBg[i].removeAttribute("data-next2");
+            }
+        }
+        
+        // 設置新的當前幻燈片
+        slides[newIndex].setAttribute("data-current", "");
+        slidesInfo[newIndex].setAttribute("data-current", "");
+        if (newIndex < slidesBg.length) {
+            slidesBg[newIndex].setAttribute("data-current", "");
+        }
+        
+        // 設置下一張幻燈片
+        slides[nextIndex].setAttribute("data-next", "");
+        slidesInfo[nextIndex].setAttribute("data-next", "");
+        if (nextIndex < slidesBg.length) {
+            slidesBg[nextIndex].setAttribute("data-next", "");
+        }
+        
+        // 設置上一張幻燈片
+        slides[prevIndex].setAttribute("data-previous", "");
+        slidesInfo[prevIndex].setAttribute("data-previous", "");
+        if (prevIndex < slidesBg.length) {
+            slidesBg[prevIndex].setAttribute("data-previous", "");
+        }
+    };
 }
+
+// 新增一個函數來設置背景圖片
+function setupBackgroundImages() {
+    const slides = document.querySelectorAll(".slide");
+    const bgElements = document.querySelectorAll(".slide__bg");
+    
+    // 從幻燈片圖片獲取圖片路徑並設置到背景元素
+    slides.forEach((slide, index) => {
+        if (index < bgElements.length) {
+            const img = slide.querySelector('.slide--image');
+            if (img) {
+                const imgSrc = img.getAttribute('src');
+                bgElements[index].style.backgroundImage = `url('${imgSrc}')`;
+                
+                // 保持與幻燈片相同的 data 屬性
+                if (slide.hasAttribute("data-current")) {
+                    bgElements[index].setAttribute("data-current", "");
+                } else if (slide.hasAttribute("data-next")) {
+                    bgElements[index].setAttribute("data-next", "");
+                } else if (slide.hasAttribute("data-previous")) {
+                    bgElements[index].setAttribute("data-previous", "");
+                } else if (slide.hasAttribute("data-next2")) {
+                    bgElements[index].setAttribute("data-next2", "");
+                }
+            }
+        }
+    });
+}
+
+// 確保在初始化時調用
+document.addEventListener("DOMContentLoaded", function() {
+    setupBackgroundImages();
+});
 
 // Start
 setup();
