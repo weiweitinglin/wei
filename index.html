@@ -21,20 +21,27 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="#page-top">TING造星球</a>
+            <!-- 替換原有的 navbar-brand -->
+            <a class="navbar-brand" href="#page-top">
+                <span class="brand-icon">
+                    <div class="planet-ring"></div>
+                    <div class="planet"></div>
+                </span>
+                TING造星球
+            </a>
             <!-- 確保漢堡選單按鈕屬性完整 -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#about">關於</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#projects">地板系列</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#signup">窗簾系列</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">QR code產生器</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">星球簡介</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">地表資源</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#signup">星際風景</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            計算小工具
+                            小工具衛星
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
                             <li><a class="dropdown-item" href="/wei/html/flooring_calculator.html">地板拼接計算器</a></li>
@@ -167,5 +174,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/imagesloaded.js"></script>
     <script src="js/scripts.js"></script>
+    <script src="js/startrail.js"></script>
+    <!-- 在頁面底部，其他腳本之後添加 -->
+    <script>
+        // 在頁面加載完成後等待一段時間再顯示導航欄
+        document.addEventListener('DOMContentLoaded', function() {
+            // 先確保導航欄在 CSS 中被隱藏
+            document.getElementById('mainNav').style.opacity = '0';
+            document.getElementById('mainNav').style.visibility = 'hidden';
+            
+            // 等待一段時間後顯示導航欄
+            setTimeout(function() {
+                document.getElementById('mainNav').style.opacity = '1';
+                document.getElementById('mainNav').style.visibility = 'visible';
+                document.getElementById('mainNav').style.transition = 'opacity 0.8s ease, visibility 0.8s ease';
+            }, 2000); // 3秒後顯示，可以根據需要調整
+        });
+    </script>
 </body>
 </html>
