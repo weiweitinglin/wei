@@ -77,6 +77,176 @@ p {
   padding: 0.5rem 1rem;
 }
 
+/* 導航欄銀河主題樣式 */
+#mainNav {
+    background: linear-gradient(to right, rgba(5, 5, 20, 0.7), rgba(17, 24, 63, 0.7), rgba(31, 18, 77, 0.7));
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 81, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#mainNav.scrolled {
+    background: linear-gradient(to right, rgba(5, 5, 20, 0.9), rgba(17, 24, 63, 0.9), rgba(31, 18, 77, 0.9));
+    box-shadow: 0 4px 30px rgba(0, 81, 255, 0.25);
+}
+
+/* 導航欄星星效果 */
+#mainNav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+        radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 100px 100px;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+/* 導航文字樣式 */
+.navbar-brand {
+    font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(111, 155, 255, 0.8);
+    font-size: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #a0c9ff;
+    text-shadow: 0 0 15px rgba(111, 155, 255, 1), 0 0 20px rgba(111, 155, 255, 0.5);
+}
+
+.nav-link {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-shadow: 0 0 5px rgba(111, 155, 255, 0.5);
+    position: relative;
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+}
+
+/* 導航連結懸停與活躍狀態 */
+.nav-link:hover, .nav-link:focus, .nav-link.active {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(120, 181, 255, 0.8), 0 0 20px rgba(120, 181, 255, 0.5);
+}
+
+/* 導航連結下劃線動畫效果 */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(to right, transparent, rgba(111, 155, 255, 0.8), transparent);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(111, 155, 255, 0.5);
+}
+
+.nav-link:hover::after, .nav-link:focus::after, .nav-link.active::after {
+    width: 80%;
+}
+
+/* 下拉菜單樣式 */
+.dropdown-menu {
+    background: linear-gradient(to bottom, rgba(10, 15, 50, 0.95), rgba(20, 25, 70, 0.95));
+    border: 1px solid rgba(111, 127, 255, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 81, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+}
+
+.dropdown-item:hover {
+    background: rgba(111, 127, 255, 0.2);
+    color: #ffffff;
+    transform: translateX(5px);
+}
+
+/* 導航欄LOGO星球效果 */
+.brand-icon {
+    display: inline-block;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.planet {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle at 30% 30%, #6e8fff, #3a3ddf);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(111, 155, 255, 0.8);
+}
+
+.planet-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 28px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    transform: translate(-50%, -50%) rotateX(75deg);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(111, 155, 255, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(111, 155, 255, 0.9); }
+}
+
+.planet {
+    animation: glow 3s infinite;
+}
+
+/* 漢堡選單樣式 */
+.navbar-toggler {
+    border: 1px solid rgba(111, 155, 255, 0.3);
+    background: rgba(20, 30, 80, 0.5);
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(111, 155, 255, 0.25);
+}
+
+.navbar-toggler:hover {
+    background: rgba(50, 70, 150, 0.5);
+}
+
+.navbar-toggler .fas {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(111, 155, 255, 0.5);
+}
+
 /* 響應式設計 */
 @media (min-width: 576px) {
   .container {
@@ -108,3 +278,14 @@ p {
 .text-center { text-align: center !important; }
 .m-0 { margin: 0 !important; }
 .p-0 { padding: 0 !important; }
+
+/* 星軌效果 */
+.nav-startrail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
