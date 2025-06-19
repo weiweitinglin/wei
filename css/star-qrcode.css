@@ -1,0 +1,235 @@
+/* 星碼工廠 - 星際主題樣式 */
+
+/* 星空背景 */
+body {
+  background-color: #0a0e17;
+  color: #ffffff;
+  padding-top: 72px; /* 為固定navbar預留空間 */
+}
+
+/* 導航欄樣式修復 - 與銀河工時計量器保持一致 */
+#mainNav {
+  background-color: rgba(10, 14, 23, 0.95);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(87, 160, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 81, 255, 0.2);
+  height: auto;
+}
+
+.navbar-brand {
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 1.35rem; /* 調整為與銀河工時計量器一致 */
+  font-weight: 600;
+  color: #ffffff !important;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(111, 155, 255, 0.5);
+}
+
+.brand-icon {
+  position: relative;
+  display: inline-block;
+  width: 32px; /* 調整大小與銀河工時計量器一致 */
+  height: 32px; /* 調整大小與銀河工時計量器一致 */
+  margin-right: 12px;
+}
+
+.planet {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, #3481ff, #81d4fa);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(52, 129, 255, 0.6);
+}
+
+.planet-ring {
+  position: absolute;
+  top: 12px;
+  left: 3px;
+  width: 26px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid rgba(87, 160, 255, 0.8);
+  transform: rotate(-30deg);
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem; /* 調整大小與銀河工時計量器一致 */
+  padding: 0.6rem 1.1rem; /* 調整內間距與銀河工時計量器一致 */
+  transition: color 0.3s, transform 0.2s;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-nav .nav-link:hover {
+  color: rgba(87, 160, 255, 1);
+  transform: translateY(-1px);
+}
+
+/* 下拉菜單樣式 */
+.dropdown-menu {
+  background: rgba(20, 30, 50, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(87, 160, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem;
+}
+
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(87, 160, 255, 0.2);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+/* 漢堡菜單按鈕 */
+.navbar-toggler {
+  border: 1px solid rgba(87, 160, 255, 0.5);
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(87, 160, 255, 0.25);
+}
+
+/* 進一步縮小頂部標題區域 */
+.masthead {
+  min-height: 20vh; /* 更小的高度 */
+  background: linear-gradient(to bottom, rgba(10, 14, 23, 0.7) 0%, rgba(10, 14, 23, 0.9) 75%, #0a0e17 100%), url('/wei/assets/img/stars-bg.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+  padding: 30px 0; /* 更小的內間距 */
+  margin-top: 0; /* 調整與navbar的間距 */
+}
+
+/* 保留其餘樣式不變 */
+.masthead h1 {
+  color: #ffffff;
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  font-size: 2rem; /* 更小的字體 */
+  letter-spacing: 0.5rem; 
+  background: linear-gradient(rgba(255, 255, 255, 1), rgba(128, 203, 255, 0.7));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.5rem; /* 減少下方間距 */
+  margin-top: 0; /* 減少上方間距 */
+}
+
+.masthead p {
+  margin-bottom: 0.25rem !important; /* 進一步縮小下間距 */
+  font-size: 0.9rem; /* 縮小副標題字體 */
+}
+
+.masthead .container {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* 主內容區域緊湊化 */
+#generator {
+  padding-top: 0; /* 移除頂部間距 */
+  margin-top: -1rem; /* 調整負邊距 */
+  position: relative; /* 確保 z-index 生效 */
+  z-index: 1; /* 確保內容在上層 */
+}
+
+/* QR生成區域 */
+.bg-space {
+  background-color: rgba(20, 30, 50, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
+  padding: 1.5rem !important; /* 減少內部間距 */
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* 標題與表單間距調整 */
+.bg-space h2 {
+  font-size: 1.5rem; /* 縮小標題 */
+  margin-bottom: 0.5rem; /* 減少下方間距 */
+}
+
+.bg-space p.text-muted {
+  margin-bottom: 1rem !important; /* 縮小描述下方間距 */
+  font-size: 0.9rem;
+}
+
+/* 表單元素間距緊湊化 */
+.bg-space .form-label {
+  margin-bottom: 0.25rem;
+}
+
+.bg-space .row.g-3 {
+  row-gap: 0.75rem !important; /* 減少表單元素間隔 */
+}
+
+/* 生成按鈕上方間距減少 */
+.bg-space .btn-primary {
+  margin-top: 0.5rem !important;
+  padding: 0.4rem 1.5rem;
+}
+
+/* QR結果顯示區域緊湊化 */
+.bg-space .mt-5 {
+  margin-top: 1.5rem !important; /* 縮小結果區上方間距 */
+}
+
+.bg-space h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-control, .btn {
+  border-radius: 0.5rem;
+  background-color: rgba(30, 40, 70, 0.7);
+  border: 1px solid rgba(87, 160, 255, 0.5);
+  color: #fff;
+}
+
+.form-control:focus {
+  background-color: rgba(40, 50, 80, 0.9);
+  border-color: rgba(87, 160, 255, 0.8);
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(87, 160, 255, 0.25);
+}
+
+.form-label, .form-check-label {
+  color: #81baff;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #2453bd, #3481ff);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #3481ff, #2453bd);
+  box-shadow: 0 0 10px rgba(52, 129, 255, 0.5);
+}
+
+/* QR結果顯示 */
+#qrcodeResult {
+  background-color: white;
+  padding: 0.75rem !important; /* 減少內部間距 */
+  box-shadow: 0 0 20px rgba(87, 160, 255, 0.5);
+  margin: 0 auto;
+  max-width: 200px; /* 調整為更緊湊的大小 */
+}

@@ -1,0 +1,535 @@
+/* 星際浮水印工具樣式 */
+
+/* 整體頁面樣式 */
+body {
+    background-color: #030721;
+    color: #fff;
+    min-height: 100vh;
+    font-family: 'Noto Sans TC', 'Space Grotesk', sans-serif;
+}
+
+/* 宇宙背景效果 */
+.cosmic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.stars, .stars2, .stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: url('../assets/img/stars.png') repeat top center;
+    z-index: -1;
+}
+
+.stars {
+    animation: stars-animation 200s linear infinite;
+}
+
+.stars2 {
+    background-image: url('../assets/img/stars2.png');
+    animation: stars-animation 300s linear infinite;
+}
+
+.stars3 {
+    background-image: url('../assets/img/stars3.png');
+    animation: stars-animation 400s linear infinite;
+}
+
+@keyframes stars-animation {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-1000px);
+    }
+}
+
+/* 標題區域樣式 */
+.masthead {
+    position: relative;
+    width: 100%;
+    height: 35vh;
+    min-height: 220px;
+    background: linear-gradient(to bottom, 
+        rgba(10, 14, 23, 0.7) 0%, 
+        rgba(10, 14, 23, 0.9) 75%, 
+        #0a0e17 100%);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+    padding-top: 72px;
+}
+
+.masthead h1 {
+    color: #ffffff;
+    font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.3rem;
+    background: linear-gradient(rgba(255, 255, 255, 1), rgba(128, 203, 255, 0.7));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(111, 155, 255, 0.8);
+}
+
+.masthead p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+}
+
+/* 面板樣式 */
+.cosmic-panel {
+    background: linear-gradient(145deg, rgba(30, 35, 60, 0.6), rgba(40, 50, 80, 0.6));
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(111, 127, 255, 0.2);
+    margin-bottom: 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.panel-header {
+    background: linear-gradient(to right, rgba(30, 40, 70, 0.8), rgba(50, 60, 100, 0.8));
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(111, 127, 255, 0.2);
+}
+
+.panel-header h2 {
+    margin: 0;
+    color: #a0c9ff;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+/* 控制面板樣式 */
+.cosmic-control-panel {
+    background: linear-gradient(145deg, rgba(25, 30, 55, 0.8), rgba(35, 40, 65, 0.8));
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(111, 127, 255, 0.2);
+    height: 100%;
+}
+
+.cosmic-control-panel h3 {
+    color: #a0c9ff;
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* 上傳區域樣式 */
+.upload-area {
+    border: 2px dashed rgba(111, 127, 255, 0.4);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: rgba(30, 35, 60, 0.3);
+}
+
+.upload-area:hover {
+    border-color: rgba(111, 155, 255, 0.7);
+    background-color: rgba(30, 40, 80, 0.5);
+    transform: translateY(-2px);
+}
+
+.upload-area label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #a0c9ff;
+}
+
+.upload-area input[type="file"] {
+    display: none;
+}
+
+.preview {
+    margin-top: 20px;
+    max-width: 100%;
+}
+
+.preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(111, 127, 255, 0.3);
+}
+
+.preview-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.preview-gallery img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.preview-gallery img:hover {
+    transform: scale(1.05);
+}
+
+/* 位置選擇器樣式 */
+.position-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+.position-btn {
+    padding: 10px;
+    background-color: rgba(30, 35, 60, 0.8);
+    color: #a0c9ff;
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.position-btn:hover {
+    background-color: rgba(40, 45, 80, 0.8);
+    border-color: rgba(111, 155, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.position-btn.active {
+    background: linear-gradient(45deg, #3a3ddf, #8351d4);
+    color: white;
+    border-color: rgba(111, 155, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(58, 61, 223, 0.4);
+}
+
+/* 輸入框樣式 */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #a0c9ff;
+}
+
+.cosmic-input {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(30, 35, 60, 0.8);
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    border-radius: 6px;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.cosmic-input:focus {
+    border-color: rgba(111, 155, 255, 0.7);
+    box-shadow: 0 0 8px rgba(111, 155, 255, 0.4);
+    outline: none;
+}
+
+/* 下拉選單樣式 */
+.cosmic-select {
+    width: auto;
+    padding: 10px;
+    background-color: rgba(30, 35, 60, 0.8);
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    border-radius: 6px;
+    color: #fff;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a0c9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 30px;
+}
+
+.cosmic-select:focus {
+    border-color: rgba(111, 155, 255, 0.7);
+    box-shadow: 0 0 8px rgba(111, 155, 255, 0.4);
+    outline: none;
+}
+
+/* 複選框樣式 */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.cosmic-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    accent-color: #4a90e2;
+}
+
+/* 滑塊樣式 */
+.opacity-slider,
+.quality-slider {
+    margin-top: 10px;
+}
+
+.opacity-slider label,
+.quality-slider label {
+    display: block;
+    margin-bottom: 10px;
+    color: #a0c9ff;
+}
+
+.cosmic-range {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, rgba(58, 61, 223, 0.3), rgba(111, 155, 255, 0.7));
+    border-radius: 3px;
+    -webkit-appearance: none;
+}
+
+.cosmic-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #4a90e2;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.cosmic-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #4a90e2;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    border: none;
+}
+
+/* 預覽區域樣式 */
+.preview-canvas {
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    border-radius: 8px;
+    min-height: 300px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(20, 25, 45, 0.5);
+    overflow: hidden;
+}
+
+.preview-canvas p {
+    color: #8aa7ff;
+}
+
+/* 按鈕樣式 */
+.btn-cosmic {
+    background: linear-gradient(45deg, #3a3ddf, #8351d4);
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(58, 61, 223, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.btn-cosmic:hover {
+    background: linear-gradient(45deg, #4a4def, #9361e4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(58, 61, 223, 0.4);
+    color: #fff;
+}
+
+.btn-cosmic:active {
+    transform: translateY(1px);
+}
+
+.btn-cosmic:disabled {
+    background: linear-gradient(45deg, #3a3ddf80, #8351d480);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-cosmic-secondary {
+    background: transparent;
+    border: 1px solid rgba(111, 155, 255, 0.5);
+    color: #a0c9ff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.btn-cosmic-secondary:hover {
+    background: rgba(111, 155, 255, 0.1);
+    border-color: rgba(111, 155, 255, 0.7);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-cosmic-secondary:active {
+    transform: translateY(1px);
+}
+
+.btn-cosmic-secondary:disabled {
+    border-color: rgba(111, 155, 255, 0.2);
+    color: rgba(160, 201, 255, 0.5);
+    cursor: not-allowed;
+}
+
+/* 主要按鈕樣式 */
+.primary-btn {
+    background: linear-gradient(45deg, #3d8adf, #5174d4);
+}
+
+.primary-btn:hover {
+    background: linear-gradient(45deg, #4d9aef, #6184e4);
+}
+
+/* 結果畫廊 */
+.result-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.result-item {
+    border: 1px solid rgba(111, 127, 255, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(30, 35, 60, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.result-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.result-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.result-item .item-actions {
+    display: flex;
+    padding: 10px;
+    background-color: rgba(30, 40, 70, 0.8);
+}
+
+.result-item .download-btn {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    background: linear-gradient(45deg, #3a3ddf, #8351d4);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.result-item .download-btn:hover {
+    background: linear-gradient(45deg, #4a4def, #9361e4);
+    transform: scale(1.03);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px 0;
+    color: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(111, 127, 255, 0.2);
+    font-size: 0.9rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 992px) {
+    .settings-container {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .masthead h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .upload-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .masthead h1 {
+        font-size: 1.8rem;
+        letter-spacing: 0.2rem;
+    }
+    
+    .result-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .btn-cosmic, .btn-cosmic-secondary {
+        padding: 10px 16px;
+        min-width: 120px;
+        font-size: 0.9rem;
+    }
+    
+    .control-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .panel-body {
+        padding: 15px;
+    }
+    
+    .panel-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .cosmic-control-panel h3 {
+        font-size: 1.1rem;
+    }
+}

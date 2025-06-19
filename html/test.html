@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR code產生器</title>
+  <!-- 頁面圖標 -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <!-- 引入 Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- 你可自行放置的 CSS 檔案 -->
+  <link href="css/styles.css" rel="stylesheet" />
+  <!-- 引入最新 PyScript -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+</head>
+
+<body>
+  <!-- PyScript 配置: 安裝 segno 與 Pillow -->
+  <py-config>
+    packages = [
+        "segno",
+        "Pillow"
+    ]
+  </py-config>
+
+  <!-- 導航欄 -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container px-4 px-lg-5">
+      <!-- 導航品牌 -->
+      <a class="navbar-brand" href="#page-top">QR code產生器</a>
+      <!-- 漢堡選單按鈕 -->
+      <button
+        class="navbar-toggler navbar-toggler-right"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <!-- 導航選項 -->
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#generator">產生QR code</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/wei/index.html">回首頁</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 頁面標頭區域 -->
+  <header class="masthead">
+    <div
+      class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center"
+    >
+      <div class="text-center">
+        <h1 class="mx-auto my-0 text-uppercase">QR code產生器</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- 產生QR code區域 -->
+  <section id="generator" class="bg-light py-5">
+    <div class="container">
+      <h2 class="text-center text-uppercase">QR code產生器</h2>
+      <p class="text-center text-muted">請輸入網址，並選擇是否上傳 Logo</p>
+
+      <!-- 輸入與選項 -->
+      <form class="row g-3 justify-content-center">
+        <!-- 輸入網址 -->
+        <div class="col-md-6">
+          <label for="urlInput" class="form-label">網址:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="urlInput"
+            placeholder="https://example.com"
+            required
+          />
+        </div>
+
+        <!-- 是否加入Logo -->
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="includeLogo"
+            />
+            <label class="form-check-label" for="includeLogo">
+              是否在QR code中加入Logo
+            </label>
+          </div>
+        </div>
+
+        <!-- 上傳Logo檔案 -->
+        <div class="col-md-6">
+          <label for="logoFile" class="form-label">上傳Logo圖片(選填):</label>
+          <input
+            class="form-control"
+            type="file"
+            id="logoFile"
+            accept="image/*"
+            disabled
+          />
+        </div>
+
+        <!-- 產生按鈕 -->
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary mt-3" id="generateBtn">
+            產生QR code
+          </button>
+        </div>
+      </form>
+
+      <!-- 結果顯示 -->
+      <div class="mt-4 text-center">
+        <h3 class="text-center">結果:</h3>
+        <!-- 顯示產生的QR code  -->
+        <img
+          id="qrcodeResult"
+          class="border p-2 mt-3"
+          alt="這裡會顯示產生的QR code"
+          style="max-width: 300px; display: none;"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- PyScript 邏輯 -->
+  <py-script>
+    import segno
+    from PIL import Image
+    import io
+    import base64
+
+    from js import document, FileReader
+    from pyodide.ffi import to_js, create_proxy
+
+    # ----------------------------------------------------------
+    # 當「是否加入 Logo」的 checkbox 狀態變更時，決定是否啟用檔案上傳
+    # ----------------------------------------------------------
+    def on_include_logo_change(event=None):
+      checkbox = document.getElementById("includeLogo")
+      file_input = document.getElementById("logoFile")
+      file_input.disabled = not checkbox.checked
+
+    # ----------------------------------------------------------
+    # 主函式：產生 QR code
+    # ----------------------------------------------------------
+    def generate_qrcode(event=None):
+      # 1. 取得使用者輸入的 URL
+      url = document.getElementById("urlInput").value.strip()
+      if not url:
+        alert("請輸入網址！")
+        return
+
+      # 2. 取得是否加入 Logo
+      include_logo = document.getElementById("includeLogo").checked
+
+      # 3. 產生 QR code (先不含 Logo)
+      qrcode = segno.make(url, error="h")  # 可自行調整 error 容錯率
+      # 先把不含Logo的QR code繪製到一個 BytesIO
+      buffer_no_logo = io.BytesIO()
+      qrcode.save(buffer_no_logo, kind='png', scale=5, dark='black', light='white')
+      buffer_no_logo.seek(0)
+
+      # 4. 若不用 Logo，直接顯示 QR code
+      if not include_logo:
+        display_qrcode(buffer_no_logo)
+        return
+
+      # 5. 若使用 Logo，則需要讀取檔案
+      file_input = document.getElementById("logoFile")
+      if file_input.files.length == 0:
+        alert("請上傳Logo圖片或取消勾選「是否在QR code中加入Logo」。")
+        return
+
+      # --------------------------------------------------------
+      #   以下示範如何在 PyScript / Python 中讀取使用者上傳的檔案
+      #   透過 JS FileReader 先讀成 base64，再傳給 Python。
+      # --------------------------------------------------------
+      js_file = file_input.files.item(0)
+      reader = FileReader.new()
+
+      def on_file_load(e):
+        # e.target.result 會是一個 base64 的 dataURL，例如：
+        # data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...
+        data_url = e.target.result
+        # 去掉 data:image/png;base64, 頭部資訊，取出真正的 base64 資料
+        comma_index = data_url.find(",")
+        if comma_index == -1:
+          alert("讀取檔案時發生錯誤。")
+          return
+
+        base64_str = data_url[comma_index+1:]
+
+        # 將 base64 轉成 BytesIO，再用 Pillow 開啟
+        logo_bytes = io.BytesIO(base64.b64decode(base64_str))
+        logo_img = Image.open(logo_bytes).convert("RGBA")
+
+        # --------------------------------------------------------
+        # 產生QR code並把Logo貼上去的示例演算法（最小可行示範）
+        # 步驟：
+        #   1. 先把 QR code BytesIO -> PIL Image
+        #   2. 把 Logo 貼到 QR code 的中央 (可自行決定大小與位置)
+        #   3. 合成完成後，再轉回 BytesIO
+        # --------------------------------------------------------
+        qr_img = Image.open(buffer_no_logo).convert("RGBA")
+        qr_w, qr_h = qr_img.size
+
+        # 決定 Logo 在 QR code 中的顯示大小（自行調整縮放比例）
+        scale_factor = 4
+        logo_w = qr_w // scale_factor
+        logo_h = qr_h // scale_factor
+        logo_img = logo_img.resize((logo_w, logo_h), Image.Resampling.LANCZOS)
+
+        # 貼上位置：置中
+        pos_x = (qr_w - logo_w) // 2
+        pos_y = (qr_h - logo_h) // 2
+        qr_img.paste(logo_img, (pos_x, pos_y), logo_img)
+
+        # 合成後存到新的 buffer
+        final_buffer = io.BytesIO()
+        qr_img.save(final_buffer, format="PNG")
+        final_buffer.seek(0)
+
+        # 最後顯示到頁面上
+        display_qrcode(final_buffer)
+
+      # FileReader 的 onload callback
+      reader.onload = create_proxy(on_file_load)
+      # 讀取檔案
+      reader.readAsDataURL(js_file)
+
+    # ----------------------------------------------------------
+    # 顯示 QR code 到網頁 <img> 標籤
+    # ----------------------------------------------------------
+    def display_qrcode(buffer):
+      # 把 BytesIO 轉成 base64，並設到 <img> src
+      raw_data = buffer.getvalue()
+      base64_data = base64.b64encode(raw_data).decode("utf-8")
+      img_tag = document.getElementById("qrcodeResult")
+      img_tag.src = f"data:image/png;base64,{base64_data}"
+      img_tag.style.display = "block"  # 顯示圖片
+
+    # ----------------------------------------------------------
+    # 警告提示函數 (呼叫瀏覽器內建 alert)
+    # ----------------------------------------------------------
+    def alert(msg):
+      from js import alert
+      alert(msg)
+
+    # ----------------------------------------------------------
+    # 綁定事件
+    # ----------------------------------------------------------
+    include_logo_checkbox = document.getElementById("includeLogo")
+    include_logo_checkbox.addEventListener("change", create_proxy(on_include_logo_change))
+
+    generate_btn = document.getElementById("generateBtn")
+    generate_btn.addEventListener("click", create_proxy(generate_qrcode))
+  </py-script>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>

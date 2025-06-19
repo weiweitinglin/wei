@@ -1,0 +1,442 @@
+@import url("https://api.fontshare.com/v2/css?f[]=archivo@100,200,300,400,500,600,700,800,900&f[]=clash-display@200,300,400,500,600,700&display=swap");
+
+:root {
+	--slide-width: min(25vw, 300px);
+	--slide-aspect: 2 / 3;
+
+	--slide-transition-duration: 800ms;
+	--slide-transition-easing: ease;
+
+	--font-archivo: "Archivo", sans-serif;
+	--font-clash-display: "Clash Display", sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+
+	background: rgba(0, 0, 0, 0.787);
+}
+
+button {
+	border: none;
+	background: none;
+	cursor: pointer;
+	&:focus {
+		outline: none;
+		border: none;
+	}
+}
+
+/* ------------------------------------------------ */
+/* -------------------- SLIDER -------------------- */
+/* ------------------------------------------------ */
+
+.slider {
+    width: 100%; /* 修改為 100% 寬度 */
+    max-width: calc(3 * var(--slide-width));
+	height: calc(2 * var(--slide-height));
+	display: flex;
+	align-items: center;
+	margin-top: 60px; /* 減小頂部間距，在手機上更合理 */
+	position: relative;
+}
+
+.slider--btn {
+	--size: 40px;
+
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 0.7;
+	transition: opacity 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+	z-index: 999;
+
+	& svg {
+		width: var(--size);
+		height: var(--size);
+		stroke: white;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.slides__wrapper {
+	width: 100%;
+	height: 100%;
+
+	display: grid;
+	place-items: center;
+
+	& > * {
+		grid-area: 1 / -1;
+	}
+}
+
+.slides,
+.slides--infos {
+	width: 100%;
+	height: 100%;
+
+	pointer-events: none;
+
+	display: grid;
+	place-items: center;
+	& > * {
+		grid-area: 1 / -1;
+	}
+}
+
+/* ------------------------------------------------ */
+/* -------------------- SLIDE --------------------- */
+/* ------------------------------------------------ */
+
+.slide {
+	--slide-tx: 0px;
+	--slide-ty: 0vh;
+	--padding: 0px;
+	--offset: 0;
+
+	width: var(--slide-width);
+	height: auto;
+	aspect-ratio: var(--slide-aspect);
+	user-select: none;
+	perspective: 800px;
+
+	transform: perspective(1000px)
+		translate3d(var(--slide-tx), var(--slide-ty), var(--slide-tz, 0))
+		rotateY(var(--slide-rotY)) scale(var(--slide-scale));
+	transition: transform var(--slide-transition-duration)
+		var(--slide-transition-easing);
+}
+
+.slide[data-current] {
+	--slide-scale: 1.2;
+	--slide-tz: 0px;
+	--slide-tx: 0px;
+	--slide-rotY: 0;
+
+	pointer-events: auto;
+}
+
+.slide[data-next] {
+	--slide-tx: calc(1 * var(--slide-width) * 1.07);
+	--slide-rotY: -45deg;
+}
+
+.slide[data-previous] {
+	--slide-tx: calc(-1 * var(--slide-width) * 1.07);
+	--slide-rotY: 45deg;
+}
+
+.slide:not([data-current]) {
+	--slide-scale: 1;
+	--slide-tz: 0;
+	/* --slide-tx: calc(var(--offset) * var(--slide-width) * 1.05); */
+	/* --slide-rotY: calc(var(--dir) * -45deg); */
+
+	pointer-events: none;
+}
+
+.slide[data-current] {
+	& .slide--image {
+		filter: brightness(0.8);
+	}
+}
+
+.slide:not([data-current]) {
+	& .slide--image {
+		filter: brightness(0.5);
+	}
+}
+
+.slide__inner {
+	--rotX: 0;
+	--rotY: 0;
+	--bgPosX: 0%;
+	--bgPosY: 0%;
+
+	position: relative;
+	left: calc(var(--padding) / 2);
+	top: calc(var(--padding) / 2);
+	width: calc(100% - var(--padding));
+	height: calc(100% - var(--padding));
+	transform-style: preserve-3d;
+	transform: rotateX(var(--rotX)) rotateY(var(--rotY));
+}
+
+.slide--image__wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.slide--image {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	max-height: 70vh; /* 限制最大高度 */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(1.25)
+		translate3d(var(--bgPosX), var(--bgPosY), 0);
+	transition: filter var(--slide-transition-duration)
+		var(--slide-transition-easing);
+}
+
+/* 修改背景區塊容器 */
+.slide__backgrounds {
+    position: fixed; /* 改為 fixed 確保背景覆蓋全屏 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -2;
+    overflow: hidden;
+    padding-top: 60px; /* 讓背景從導航欄下方開始 */
+}
+
+/* 修改背景圖片樣式，加入對第三張幻燈片的支援 */
+.slide__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+    
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    transition: opacity var(--slide-transition-duration) ease,
+                transform var(--slide-transition-duration) ease;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    &[data-current] {
+        opacity: 1;
+        transform: scale(1.05);
+        z-index: -1;
+    }
+
+    &[data-previous] {
+        transform: translateX(-10%) scale(1.05);
+        opacity: 0;
+        z-index: -2;
+    }
+
+    &[data-next], &[data-next2] {
+        transform: translateX(10%) scale(1.05);
+        opacity: 0;
+        z-index: -2;
+    }
+}
+
+/* ------------ SLIDE INFO ---------------- */
+
+.slide-info {
+	--padding: 0px;
+
+	position: relative;
+	width: var(--slide-width);
+	height: 100%;
+	aspect-ratio: var(--slide-aspect);
+	user-select: none;
+	perspective: 800px;
+	z-index: 100;
+}
+
+.slide-info[data-current] {
+	& .slide-info--text span {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+		transition-delay: 250ms;
+	}
+}
+
+.slide-info:not([data-current]) {
+	& .slide-info--text span {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+		transition-delay: 0ms;
+	}
+}
+
+.slide-info__inner {
+	position: relative;
+	left: calc(var(--padding) / 2);
+	top: calc(var(--padding) / 2);
+	width: calc(100% - var(--padding));
+	height: calc(100% - var(--padding));
+	transform-style: preserve-3d;
+	transform: rotateX(var(--rotX)) rotateY(var(--rotY));
+}
+
+.slide-info--text__wrapper {
+	--z-offset: 45px;
+
+	position: absolute;
+	height: fit-content;
+	left: -15%;
+	bottom: 15%;
+	transform: translateZ(var(--z-offset));
+	z-index: 2;
+	pointer-events: none;
+}
+
+.slide-info--text {
+	font-family: var(--font-clash-display);
+	color: #fff;
+	overflow: hidden;
+
+	& span {
+		display: block;
+		white-space: nowrap;
+		transition: var(--slide-transition-duration) var(--slide-transition-easing);
+		transition-property: opacity, transform;
+	}
+
+	&[data-title],
+	&[data-subtitle] {
+		font-size: min(3cqw, 2.4rem);
+		font-weight: 800;
+		letter-spacing: 0.2cqw;
+		white-space: nowrap;
+		text-transform: uppercase;
+	}
+
+	&[data-subtitle] {
+		margin-left: 2cqw;
+		font-size: min(2.2cqw, 1.8rem);
+		font-weight: 600;
+	}
+
+	&[data-description] {
+		margin-left: 1cqw;
+		font-size: min(1.5cqw, 0.95rem);
+		font-family: var(--font-archivo);
+		font-weight: 300;
+	}
+}
+
+/* ------------------------------------------------ */
+/* -------------------- LOADER --------------------- */
+/* ------------------------------------------------ */
+
+.loader {
+	position: fixed;
+	inset: 0;
+
+	display: grid;
+	place-items: center;
+
+	background: #000;
+	z-index: 1000;
+
+	opacity: 1;
+	transition: opacity 0.5s ease-out;
+
+	.loader__text {
+		font-family: var(--font-clash-display);
+		font-size: clamp(2rem, 2vw, 5rem);
+		font-weight: 800;
+		color: #fff;
+	}
+}
+
+/* ------------------------------------------- */
+
+.support {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	padding: 10px;
+	display: flex;
+	a {
+		margin: 0 10px;
+		color: #fff;
+		font-size: 1.8rem;
+		backface-visibility: hidden;
+		transition: all 150ms ease;
+		&:hover {
+			transform: scale(1.1);
+		}
+	}
+}
+
+/* 確保電腦版輪播尺寸正確 */
+@media (min-width: 769px) {
+    .slider {
+        width: 100%;
+        max-width: calc(3 * var(--slide-width));
+        height: calc(2 * var(--slide-height));
+    }
+    
+    .slide {
+        --slide-width: min(25vw, 300px);
+        height: auto;
+        aspect-ratio: var(--slide-aspect);
+    }
+    
+    .slide[data-current] {
+        --slide-scale: 1.2;
+        --slide-tz: 0px;
+        --slide-tx: 0px;
+        --slide-rotY: 0;
+    }
+    
+    /* 修正電腦版的輪播圖片比例 */
+    .slide--image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+}
+
+/* 回應式設計調整 */
+@media (max-width: 768px) {
+    :root {
+        --slide-width: min(90vw, 300px); /* 調整小屏幕上的寬度 */
+        --slide-aspect: 1 / 1.5; /* 在手機上稍微調整比例 */
+    }
+    
+    .slider {
+        margin-top: 60px; /* 較小螢幕上減少頂部間距 */
+    }
+    
+    .slide-info--text__wrapper {
+        left: -5%; /* 在小螢幕上減少左側偏移 */
+    }
+    
+    .slide-info--text[data-title],
+    .slide-info--text[data-subtitle] {
+        font-size: min(4cqw, 2rem); /* 調整文字大小 */
+    }
+    
+    footer, .footer {
+        margin-top: 40px; /* 小螢幕上減少底部間距 */
+    }
+}
