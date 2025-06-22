@@ -21,7 +21,6 @@
     <!-- Custom CSS -->
     <link href="../css/styles.css" rel="stylesheet" />
     <link href="../css/overtime-calculator.css" rel="stylesheet" />
-    <link href="path-to-your-css/custom-calendar.css" rel="stylesheet">
     <style id="fix-header-white-edges">
         /* 這些樣式會覆蓋所有其他樣式 */
         .fc-theme-standard .fc-scrollgrid,
@@ -35,6 +34,19 @@
             border-width: 0 !important;
         }
     </style>
+    <!-- XLSX 函式庫用於 Excel 匯出 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- jsPDF 函式庫用於 PDF 匯出 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- 添加中文字體支援 -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- 添加 html2canvas 支援 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body id="page-top" class="overtime-calculator">
     <!-- Navigation -->
@@ -216,8 +228,10 @@
                                         <button class="btn btn-cosmic-danger reset-btn" id="resetBtn">
                                             <i class="fas fa-redo-alt me-2"></i>重置資料
                                         </button>
-                                        <button class="btn btn-cosmic calculate-btn" id="calculateBtn">
-                                            <i class="fas fa-star-half-alt me-2"></i>計算加班費
+                                        <!-- 將原本的計算加班費按鈕替換為匯出按鈕 -->
+                                        <button id="exportDataBtn" class="cosmic-btn export-btn">
+                                            <span class="btn-icon">📊</span>
+                                            匯出資料
                                         </button>
                                     </div>
                                     <!-- 修改計算說明 -->

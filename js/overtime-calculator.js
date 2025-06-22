@@ -7,11 +7,11 @@ let holidays = [];
 // 添加全局渲染鎖定機制
 let calendarRenderingLock = false;
 
-// 主程式入口
+// 主程式入口 - 確保只有一個版本
 document.addEventListener('DOMContentLoaded', function() {
     console.log('初始化加班計算器');
     
-    // 定義 2025 年台灣國定假日
+    // 定義假日資料 - 使用字串陣列格式
     holidays = [
         '2025-01-01', // 元旦
         '2025-02-08', // 農曆除夕
@@ -278,21 +278,55 @@ function bindEventHandlers() {
         saveBtn.addEventListener('click', saveOvertimeRecord);
     }
     
-    // 計算按鈕
-    const calcBtn = document.getElementById('calculateBtn');
-    if (calcBtn) {
-        calcBtn.addEventListener('click', function() {
-            calculateTotals();
-            showToast('加班費採四捨五入計算', 'info');
-        });
+    // 移除原本的計算按鈕綁定，添加匯出按鈕綁定
+    bindExportButton();
+    
+    // 重置按鈕 - 檢查多個可能的ID
+    const resetBtnIds = ['resetDataBtn', 'resetAllDataBtn', 'resetBtn'];
+    let resetBtn = null;
+    
+    for (const id of resetBtnIds) {
+        resetBtn = document.getElementById(id);
+        if (resetBtn) {
+            console.log(`找到重置按鈕，ID: ${id}`);
+            break;
+        }
     }
     
-    // 重置按鈕
-    const resetBtn = document.getElementById('resetBtn');
     if (resetBtn) {
-        resetBtn.addEventListener('click', resetAllData);
+        // 移除舊的事件監聽器
+        resetBtn.removeEventListener('click', resetAllData);
+        // 重新綁定
+        resetBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('重置按鈕被點擊');
+            resetAllData();
+        });
+        console.log('重置按鈕綁定完成');
+    } else {
+        console.error('找不到重置按鈕元素，請檢查HTML中的按鈕ID');
+        
+        // 嘗試通過類名或其他屬性找到按鈕
+        const resetBtnByClass = document.querySelector('.cosmic-btn[onclick*="reset"], button[onclick*="reset"]');
+        if (resetBtnByClass) {
+            console.log('通過類名找到重置按鈕');
+            resetBtnByClass.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                resetAllData();
+            });
+        }
     }
-    
+
+    // 其他事件綁定...
+    ['monthlySalary', 'workingDays', 'workingHours'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', calculateTotals);
+        }
+    });
+
     // 薪資區域輸入變更事件
     ['monthlySalary', 'workingDays', 'workingHours'].forEach(id => {
         const el = document.getElementById(id);
@@ -339,6 +373,573 @@ function bindEventHandlers() {
     setupMutationObserver();
 }
 
+// 顯示匯出選擇對話框
+function showExportDialog() {
+    // 檢查是否有資料可匯出
+    if (overtimeRecords.length === 0) {
+        showToast('沒有可匯出的資料！', 'warning');
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'export-modal';
+    modal.innerHTML = `
+        <div class="export-dialog">
+            <h3>📊 選擇匯出格式</h3>
+            <div class="export-options">
+                <button class="export-option-btn" onclick="exportToExcel()">
+                    <span class="option-icon">📗</span>
+                    <div class="option-content">
+                        <div class="option-title">Excel 檔案</div>
+                        <div class="option-desc">完整的試算表格式，支援公式計算</div>
+                    </div>
+                </button>
+                <button class="export-option-btn" onclick="exportToCSV()">
+                    <span class="option-icon">📄</span>
+                    <div class="option-content">
+                        <div class="option-title">CSV 檔案</div>
+                        <div class="option-desc">通用格式，可在各種程式中開啟</div>
+                    </div>
+                </button>
+                <button class="export-option-btn" onclick="exportToPDF()">
+                    <span class="option-icon">📋</span>
+                    <div class="option-content">
+                        <div class="option-title">PDF 報表</div>
+                        <div class="option-desc">專業格式的加班費報表</div>
+                    </div>
+                </button>
+            </div>
+            <div class="export-dialog-buttons">
+                <button class="export-cancel-btn" onclick="closeExportDialog()">取消</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    
+    // 添加點擊背景關閉功能
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeExportDialog();
+        }
+    });
+
+    // 顯示動畫
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    
+    // 創建星星背景效果
+    createStarsEffect(modal.querySelector('.export-dialog'), 20);
+}
+
+// 關閉匯出對話框
+function closeExportDialog() {
+    const modal = document.querySelector('.export-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+// 簡化 Excel 匯出函數
+function exportToExcel() {
+    try {
+        if (typeof XLSX === 'undefined') {
+            showToast('Excel 匯出功能需要 XLSX 函式庫', 'error');
+            return;
+        }
+        
+        if (overtimeRecords.length === 0) {
+            showToast('沒有可匯出的資料！', 'warning');
+            closeExportDialog();
+            return;
+        }
+        
+        const data = prepareExportDataWithSummary();
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "加班記錄");
+        
+        const fileName = `加班記錄_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        
+        showToast('Excel 檔案匯出成功！', 'success');
+        closeExportDialog();
+    } catch (error) {
+        console.error('Excel 匯出失敗:', error);
+        showToast('Excel 匯出失敗: ' + error.message, 'error');
+    }
+}
+
+// 簡化 CSV 匯出函數
+function exportToCSV() {
+    try {
+        if (overtimeRecords.length === 0) {
+            showToast('沒有可匯出的資料！', 'warning');
+            closeExportDialog();
+            return;
+        }
+        
+        const data = prepareExportDataWithSummary();
+        const headers = ['日期', '星期', '日期類型', '開始時間', '結束時間', '加班時數', '費率說明', '加班費'];
+        
+        let csvContent = '\uFEFF' + headers.join(',') + '\n';
+        
+        data.forEach(row => {
+            const values = Object.values(row).map(val => `"${val}"`);
+            csvContent += values.join(',') + '\n';
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const fileName = `加班記錄_${new Date().toISOString().slice(0, 10)}.csv`;
+        downloadFile(blob, fileName);
+        
+        showToast('CSV 檔案匯出成功！', 'success');
+        closeExportDialog();
+    } catch (error) {
+        console.error('CSV 匯出失敗:', error);
+        showToast('CSV 匯出失敗: ' + error.message, 'error');
+    }
+}
+
+// 修復 PDF 匯出函數 - 使用英文避免亂碼
+function exportToPDF() {
+    try {
+        if (typeof window.jspdf === 'undefined') {
+            showToast('PDF 匯出功能需要 jsPDF 函式庫', 'error');
+            return;
+        }
+        
+        if (overtimeRecords.length === 0) {
+            showToast('沒有可匯出的資料！', 'warning');
+            closeExportDialog();
+            return;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const data = prepareExportData();
+        const totals = calculateTotals();
+        
+        // 設定字體（使用內建的字體處理中文）
+        doc.setFont('helvetica');
+        
+        // 標題 - 使用英文避免亂碼
+        doc.setFontSize(18);
+        doc.text('Galaxy Working Hour Calculator', 105, 20, { align: 'center' });
+        doc.setFontSize(14);
+        doc.text('Overtime Report', 105, 30, { align: 'center' });
+        
+        // 統計資訊 - 使用英文
+        doc.setFontSize(12);
+        const reportDate = new Date().toLocaleDateString('en-US');
+        doc.text(`Report Date: ${reportDate}`, 20, 45);
+        doc.text(`Total Hours: ${totals.totalHours} hours`, 20, 55);
+        doc.text(`Total Amount: $${totals.totalAmount} TWD`, 20, 65);
+        
+        // 時薪信息
+        const hourlyRate = calculateHourlyRate();
+        doc.text(`Hourly Rate: $${hourlyRate} TWD/hour`, 20, 75);
+        
+        // 準備表格資料 - 轉換為英文
+        const tableRows = data.map(row => [
+            row.日期,                                    // Date
+            translateWeekday(row.星期),                   // Day
+            translateDayType(row.日期類型),               // Type  
+            row.開始時間,                                 // Start
+            row.結束時間,                                 // End
+            formatHours(row.加班時數),                    // Hours
+            '$' + row.加班費                             // Amount
+        ]);
+        
+        // 添加總計行
+        tableRows.push([
+            '', '', '', '', 'Total:', 
+            totals.totalHours + 'h', 
+            '$' + totals.totalAmount
+        ]);
+        
+        if (typeof doc.autoTable === 'function') {
+            doc.autoTable({
+                head: [['Date', 'Day', 'Type', 'Start', 'End', 'Hours', 'Amount']],
+                body: tableRows,
+                startY: 85,
+                styles: { 
+                    fontSize: 9,
+                    cellPadding: 3,
+                    halign: 'center'
+                },
+                headStyles: { 
+                    fillColor: [70, 90, 150],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Date
+                    1: { cellWidth: 15 }, // Day  
+                    2: { cellWidth: 20 }, // Type
+                    3: { cellWidth: 18 }, // Start
+                    4: { cellWidth: 18 }, // End
+                    5: { cellWidth: 20 }, // Hours
+                    6: { cellWidth: 25 }  // Amount
+                },
+                // 設定最後一行（總計行）的樣式
+                didParseCell: function(data) {
+                    if (data.row.index === tableRows.length - 1) {
+                        data.cell.styles.fillColor = [200, 200, 200];
+                        data.cell.styles.textColor = [0, 0, 0];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            });
+        } else {
+            // 如果 autoTable 不可用，使用簡單的文字輸出
+            let yPosition = 90;
+            doc.setFontSize(10);
+            
+            // 表頭
+            doc.text('Date      Day  Type      Start   End     Hours   Amount', 20, yPosition);
+            yPosition += 10;
+            
+            // 畫線
+            doc.line(20, yPosition - 5, 190, yPosition - 5);
+            
+            // 資料行
+            tableRows.forEach(row => {
+                const rowText = row.map(cell => String(cell).padEnd(8)).join(' ');
+                doc.text(rowText, 20, yPosition);
+                yPosition += 8;
+                
+                // 避免超出頁面
+                if (yPosition > 280) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+            });
+        }
+        
+        // 添加頁腳
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.text('Generated by Galaxy Working Hour Calculator', 105, 290, { align: 'center' });
+        }
+        
+        const fileName = `Overtime_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+        doc.save(fileName);
+        
+        showToast('PDF 報表匯出成功！', 'success');
+        closeExportDialog();
+    } catch (error) {
+        console.error('PDF 匯出失敗:', error);
+        showToast('PDF 匯出失敗: ' + error.message, 'error');
+    }
+}
+
+// 輔助函數：翻譯星期
+function translateWeekday(chineseDay) {
+    const dayMap = {
+        '日': 'Sun',
+        '一': 'Mon', 
+        '二': 'Tue',
+        '三': 'Wed',
+        '四': 'Thu',
+        '五': 'Fri',
+        '六': 'Sat'
+    };
+    return dayMap[chineseDay] || chineseDay;
+}
+
+// 輔助函數：翻譯日期類型
+function translateDayType(chineseType) {
+    const typeMap = {
+        '工作日': 'Workday',
+        '休息日': 'Weekend', 
+        '國定假日': 'Holiday'
+    };
+    return typeMap[chineseType] || 'Workday';
+}
+
+// 輔助函數：格式化時數顯示
+function formatHours(chineseHours) {
+    // 如果包含中文字符，提取數字部分
+    if (typeof chineseHours === 'string' && chineseHours.includes('小時')) {
+        const match = chineseHours.match(/(\d+)小時(\d+)?分?/);
+        if (match) {
+            const hours = parseInt(match[1]) || 0;
+            const minutes = parseInt(match[2]) || 0;
+            if (minutes > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}`;
+            } else {
+                return `${hours}h`;
+            }
+        }
+    }
+    return chineseHours;
+}
+
+// 支援中文的 PDF 匯出函數 - 使用圖片方式
+function exportToPDFWithChinese() {
+    try {
+        if (typeof window.jspdf === 'undefined') {
+            showToast('PDF 匯出功能需要 jsPDF 函式庫', 'error');
+            return;
+        }
+        
+        if (overtimeRecords.length === 0) {
+            showToast('沒有可匯出的資料！', 'warning');
+            closeExportDialog();
+            return;
+        }
+        
+        // 創建一個臨時的 HTML 表格
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.background = 'white';
+        tempDiv.style.padding = '20px';
+        tempDiv.style.fontFamily = 'Arial, sans-serif';
+        
+        const data = prepareExportData();
+        const totals = calculateTotals();
+        
+        tempDiv.innerHTML = `
+            <h2 style="text-align: center; color: #333;">銀河工時計量器 - 加班費報表</h2>
+            <p><strong>報表日期:</strong> ${new Date().toLocaleDateString('zh-TW')}</p>
+            <p><strong>總加班時數:</strong> ${totals.totalHours} 小時</p>
+            <p><strong>總加班費:</strong> $${totals.totalAmount} 元</p>
+            <table border="1" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                <thead>
+                    <tr style="background-color: #4e5aa3; color: white;">
+                        <th style="padding: 8px;">日期</th>
+                        <th style="padding: 8px;">星期</th>
+                        <th style="padding: 8px;">類型</th>
+                        <th style="padding: 8px;">時數</th>
+                        <th style="padding: 8px;">加班費</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(row => `
+                        <tr>
+                            <td style="padding: 6px; text-align: center;">${row.日期}</td>
+                            <td style="padding: 6px; text-align: center;">${row.星期}</td>
+                            <td style="padding: 6px; text-align: center;">${row.日期類型}</td>
+                            <td style="padding: 6px; text-align: center;">${row.加班時數}</td>
+                            <td style="padding: 6px; text-align: right;">$${row.加班費}</td>
+                        </tr>
+                    `).join('')}
+                    <tr style="background-color: #f0f0f0; font-weight: bold;">
+                        <td colspan="3" style="padding: 8px; text-align: right;">總計:</td>
+                        <td style="padding: 8px; text-align: center;">${totals.totalHours}小時</td>
+                        <td style="padding: 8px; text-align: right;">$${totals.totalAmount}元</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+        
+        document.body.appendChild(tempDiv);
+        
+        // 使用 html2canvas 轉換為圖片，然後加入 PDF
+        if (typeof html2canvas !== 'undefined') {
+            html2canvas(tempDiv).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const imgData = canvas.toDataURL('image/png');
+                
+                doc.addImage(imgData, 'PNG', 10, 10, 190, 0);
+                
+                const fileName = `加班費報表_${new Date().toISOString().slice(0, 10)}.pdf`;
+                doc.save(fileName);
+                
+                document.body.removeChild(tempDiv);
+                showToast('PDF 報表匯出成功！', 'success');
+                closeExportDialog();
+            });
+        } else {
+            document.body.removeChild(tempDiv);
+            // 降級到英文版本
+            exportToPDF();
+        }
+        
+    } catch (error) {
+        console.error('PDF 匯出失敗:', error);
+        showToast('PDF 匯出失敗: ' + error.message, 'error');
+    }
+}
+
+// 修復準備匯出資料函數 - 使用實際選擇的日期類型
+function prepareExportData() {
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    
+    return overtimeRecords.map(record => {
+        const date = new Date(record.date);
+        const dayOfWeek = weekdays[date.getDay()];
+        const hourlyRate = calculateHourlyRate();
+        
+        // 使用記錄中實際保存的日期類型，而不是自動判斷
+        let dayTypeDisplay;
+        switch(record.dayType) {
+            case 'workday': dayTypeDisplay = '工作日'; break;
+            case 'restday': dayTypeDisplay = '休息日'; break;
+            case 'holiday': dayTypeDisplay = '國定假日'; break;
+            default: dayTypeDisplay = '工作日';
+        }
+        
+        // 計算實際加班時數
+        const hours = parseFloat(record.hours) || 0;
+        const minutes = parseFloat(record.minutes) || 0;
+        const totalTime = hours + (minutes / 60);
+        
+        // 安全地計算費率和金額 - 使用記錄中的實際日期類型
+        let rates = '';
+        let amount = 0;
+        
+        try {
+            rates = calculateRates(record.dayType, totalTime);  // 使用 record.dayType
+            amount = calculateAmount(record.dayType, totalTime, hourlyRate);  // 使用 record.dayType
+        } catch (error) {
+            console.error('計算費率時發生錯誤:', error);
+            rates = '計算錯誤';
+            amount = 0;
+        }
+        
+        return {
+            '日期': record.date || '',
+            '星期': dayOfWeek || '',
+            '日期類型': dayTypeDisplay,  // 使用實際選擇的類型
+            '開始時間': record.startTime || '',
+            '結束時間': record.endTime || '',
+            '加班時數': record.hours + (record.minutes ? '小時' + record.minutes + '分' : '小時'),
+            '費率說明': rates,
+            '加班費': amount
+        };
+    });
+}
+
+// 渲染加班記錄表格 - 確保顯示一致
+function renderOvertimeRecords() {
+    const tbody = document.getElementById('overtimeRecords');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (overtimeRecords.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="6" class="text-center">尚無加班記錄</td>`;
+        tbody.appendChild(tr);
+        return;
+    }
+
+    // 按日期排序
+    overtimeRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    overtimeRecords.forEach(record => {
+        const tr = document.createElement('tr');
+        
+        // 計算加班費率
+        const rates = calculateRates(record.dayType, record.totalHours);
+        const hourlyRate = calculateHourlyRate();
+        const amount = calculateAmount(record.dayType, record.totalHours, hourlyRate);
+        
+        // 格式化為顯示用的日期
+        const displayDate = new Date(record.date).toLocaleDateString('zh-TW');
+        
+        // 使用記錄中實際選擇的日期類型，而不是自動判斷
+        let dayTypeText;
+        switch(record.dayType) {
+            case 'workday': dayTypeText = '工作日'; break;
+            case 'restday': dayTypeText = '休息日'; break;
+            case 'holiday': dayTypeText = '國定假日'; break;
+            default: dayTypeText = '工作日';
+        }
+        
+        // 格式化時間顯示
+        const timeDisplay = record.minutes > 0 ? 
+            `${record.hours}小時${record.minutes}分` : 
+            `${record.hours}小時`;
+        
+        // 工作時間顯示
+        const workTimeDisplay = record.startTime && record.endTime ? 
+            `${record.startTime}～${record.endTime}` : '未設定';
+        
+        tr.innerHTML = `
+            <td>${displayDate}</td>
+            <td>${dayTypeText}</td>
+            <td title="工作時間: ${workTimeDisplay}">${timeDisplay}</td>
+            <td>${rates}</td>
+            <td data-bs-toggle="tooltip" title="四捨五入計算">${amount.toLocaleString()} 元</td>
+            <td>
+                <button class="delete-btn" data-id="${record.id}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        `;
+        
+        tbody.appendChild(tr);
+    });
+    
+    // 在表格渲染完成後，立即明確調用
+    setTimeout(() => {
+        bindDeleteButtons();
+        initializeTooltips();
+        console.log('表格渲染完成並綁定了刪除按鈕');
+    }, 0);
+}
+// 新增函數：準備包含總計的匯出資料
+function prepareExportDataWithSummary() {
+    const detailData = prepareExportData();
+    const totals = calculateTotals(); // 確保調用正確的函數
+    
+    // 添加空行
+    detailData.push({
+        '日期': '',
+        '星期': '',
+        '日期類型': '',
+        '開始時間': '',
+        '結束時間': '',
+        '加班時數': '',
+        '費率說明': '',
+        '加班費': ''
+    });
+    
+    // 添加總計行
+    detailData.push({
+        '日期': '',
+        '星期': '',
+        '日期類型': '',
+        '開始時間': '',
+        '結束時間': '總計',
+        '加班時數': totals.totalHours + '小時',
+        '費率說明': '',
+        '加班費': '$' + totals.totalAmount + '元'
+    });
+    
+    return detailData;
+}
+
+// 檔案下載輔助函數
+function downloadFile(blob, fileName) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+// 綁定匯出按鈕事件
+function bindExportButton() {
+    const exportBtn = document.getElementById('exportDataBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', showExportDialog);
+    }
+}
+
 // 點擊日期處理函數
 function handleDateClick(info) {
     console.log('日期點擊:', info.dateStr);
@@ -377,8 +978,8 @@ function handleDateClick(info) {
             startTimeInput.value = existingRecord.startTime;
             endTimeInput.value = existingRecord.endTime;
         } else {
-            startTimeInput.value = '09:00';
-            endTimeInput.value = '18:00';
+            startTimeInput.value = '08:00';
+            endTimeInput.value = '17:00';
         }
         
         // 計算加班時間
@@ -1008,38 +1609,48 @@ function deleteOvertimeRecord(id) {
     });
 }
 
-// 重置所有數據
+// 修復重置所有數據函數
 function resetAllData() {
-    // 使用自定義確認框，不使用原生 confirm
-    cosmicConfirm('確定要重置所有資料嗎？這將清除所有加班記錄和設定。', function() {
-        // 保存當前加班記錄的日期以便清除標記
-        const datesToUpdate = overtimeRecords.map(record => record.date);
-        console.log('需要清除標記的日期:', datesToUpdate);
-        
-        // 重置加班記錄
-        overtimeRecords = [];
-        
-        // 重置薪資設定為預設值
-        const monthlySalary = document.getElementById('monthlySalary');
-        const workingDays = document.getElementById('workingDays');
-        const workingHours = document.getElementById('workingHours');
-        
-        if (monthlySalary) monthlySalary.value = '40000';
-        if (workingDays) workingDays.value = '30';
-        if (workingHours) workingHours.value = '8';
-        
-        // 更新 UI
-        renderOvertimeRecords();
-        calculateTotals();
-        
-        // 清除所有日期上的加班標記
-        datesToUpdate.forEach(dateStr => {
-            renderOvertimeEventOnDate(dateStr, null);
-        });
-        
-        // 顯示重置成功訊息
-        showToast('資料已重置', 'success');
-    });
+    console.log('嘗試重置所有數據');
+    
+    cosmicConfirm(
+        '確定要重置所有資料嗎？<br><br>這將清除：<br>• 所有加班記錄<br>• 薪資設定將還原為預設值', 
+        function() {
+            console.log('用戶確認重置數據');
+            
+            // 保存需要清除標記的日期
+            const datesToClear = overtimeRecords.map(record => record.date);
+            
+            // 重置加班記錄
+            overtimeRecords = [];
+            
+            // 重置薪資設定為預設值
+            const monthlySalary = document.getElementById('monthlySalary');
+            const workingDays = document.getElementById('workingDays');
+            const workingHours = document.getElementById('workingHours');
+            
+            if (monthlySalary) monthlySalary.value = '40000';
+            if (workingDays) workingDays.value = '30';
+            if (workingHours) workingHours.value = '8';
+            
+            // 更新 UI
+            renderOvertimeRecords();
+            calculateTotals();
+            
+            // 清除所有日期上的加班標記
+            datesToClear.forEach(dateStr => {
+                renderOvertimeEventOnDate(dateStr, null);
+            });
+            
+            // 顯示成功訊息
+            showToast('所有資料已重置', 'success');
+            
+            console.log('數據重置完成');
+        },
+        function() {
+            console.log('用戶取消重置');
+        }
+    );
 }
 
 // 添加新函數來清除所有日曆事件點
@@ -1111,7 +1722,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 800);
 });
 
-// 移除所有底線和邊框
+// 秋除所有底線和邊框
 function removeAllBorders() {
     const elements = document.querySelectorAll('.fc table, .fc td, .fc th, .fc-theme-standard td, .fc-theme-standard th, .fc-scrollgrid, .fc-scrollgrid-section, .fc-scrollgrid-section > *');
     
@@ -1156,7 +1767,7 @@ function forceRemoveAllBorders() {
     // 確保星期標題有正確的顏色
     const headerCells = document.querySelectorAll('.fc-col-header-cell');
     headerCells.forEach(cell => {
-        cell.style.background = 'linear-gradient(145deg, rgba(70, 80, 120, 0.8), rgba(50, 60, 100, 0.8))';
+        cell.style.background = 'linear-gradient(145deg, rgba(70, 80, 120, 0.8), rgba(50, 60,  100, 0.8))';
     });
     
     console.log('白邊和邊框移除完成');
@@ -1187,125 +1798,174 @@ function updateDateCells() {
     });
 }
 
-// 計算加班費率文字
+// 計算費率說明
 function calculateRates(dayType, hours) {
-    switch(dayType) {
-        case 'workday':
-            return hours <= 2 ? '1.33倍' : '前2小時1.33倍，後續1.67倍';
-        case 'restday':
-            return hours <= 2 ? '1.33倍' : '前2小時1.33倍，後續1.67倍';
-        case 'holiday':
-            return '2倍';
-        default:
-            return '1倍';
+    if (dayType === 'workday') {
+        if (hours <= 2) {
+            return '前2小時1.33倍';
+        } else {
+            return '前2小時1.33倍，後續1.67倍';
+        }
+    } else if (dayType === 'restday') {
+        if (hours <= 2) {
+            return '前2小時1.33倍';
+        } else if (hours <= 8) {
+            return '前2小時1.33倍，後續1.67倍';
+        } else {
+            return '前2小時1.33倍，3-8小時1.67倍，超過8小時2倍';
+        }
+    } else { // holiday
+        return '國定假日2倍';
     }
 }
 
-// 計算時薪（四捨五入）
-function calculateHourlyRate() {
-    const monthlySalaryEl = document.getElementById('monthlySalary');
-    const workingDaysEl = document.getElementById('workingDays');
-    const workingHoursEl = document.getElementById('workingHours');
-    
-    if (!monthlySalaryEl || !workingDaysEl || !workingHoursEl) return 0;
-    
-    const monthlySalary = parseFloat(monthlySalaryEl.value);
-    const workingDays = parseFloat(workingDaysEl.value);
-    const workingHours = parseFloat(workingHoursEl.value);
-    
-    if (isNaN(monthlySalary) || isNaN(workingDays) || isNaN(workingHours) || 
-        monthlySalary <= 0 || workingDays <= 0 || workingHours <= 0) {
-        return 0;
-    }
-    
-    // 先計算基本時薪
-    const baseHourlyRate = monthlySalary / (workingDays * workingHours);
-    
-    // 使用 Math.round() 進行四捨五入
-    return Math.round(baseHourlyRate);
-}
-
-// 計算單筆加班金額（四捨五入）
+// 計算加班費金額
 function calculateAmount(dayType, hours, hourlyRate) {
-    if (hourlyRate <= 0) return 0;
-    
     let amount = 0;
     
-    switch(dayType) {
-        case 'workday':
-            if (hours <= 2) {
-                amount = hourlyRate * 1.33 * hours;
-            } else {
-                amount = hourlyRate * 1.33 * 2 + hourlyRate * 1.67 * (hours - 2);
-            }
-            break;
-        case 'restday':
-            if (hours <= 2) {
-                amount = hourlyRate * 1.33 * hours;
-            } else {
-                amount = hourlyRate * 1.33 * 2 + hourlyRate * 1.67 * (hours - 2);
-            }
-            break;
-        case 'holiday':
-            amount = hourlyRate * 2 * hours;
-            break;
-        default:
-            amount = hourlyRate * hours;
+    if (dayType === 'workday') {
+        if (hours <= 2) {
+            amount = hours * hourlyRate * 1.33;
+        } else {
+            amount = (2 * hourlyRate * 1.33) + ((hours - 2) * hourlyRate * 1.67);
+        }
+    } else if (dayType === 'restday') {
+        if (hours <= 2) {
+            amount = hours * hourlyRate * 1.33;
+        } else if (hours <= 8) {
+            amount = (2 * hourlyRate * 1.33) + ((hours - 2) * hourlyRate * 1.67);
+        } else {
+            amount = (2 * hourlyRate * 1.33) + (6 * hourlyRate * 1.67) + ((hours - 8) * hourlyRate * 2);
+        }
+    } else { // holiday
+        amount = hours * hourlyRate * 2;
     }
     
-    // 使用 Math.round() 進行四捨五入
     return Math.round(amount);
 }
 
-// 計算總時數和總金額
+// 修復計算總計函數
 function calculateTotals() {
-    const hourlyRate = calculateHourlyRate();
     let totalHours = 0;
     let totalAmount = 0;
     
     overtimeRecords.forEach(record => {
-        totalHours += record.totalHours;
-        totalAmount += calculateAmount(record.dayType, record.totalHours, hourlyRate);
+        const hours = parseFloat(record.hours) || 0;
+        const minutes = parseFloat(record.minutes) || 0;
+        const totalTime = hours + (minutes / 60);
+        
+        totalHours += totalTime;
+        
+        const hourlyRate = calculateHourlyRate();
+        const dayType = getDayType(record.date);
+        const amount = calculateAmount(dayType, totalTime, hourlyRate);
+        totalAmount += amount;
     });
     
-    // 格式化總時數顯示（顯示小時和分鐘）
-    const totalHoursInt = Math.floor(totalHours);
-    const totalMinutes = Math.round((totalHours - totalHoursInt) * 60);
-    const totalTimeDisplay = totalMinutes > 0 ? 
-        `${totalHoursInt}小時${totalMinutes}分` : 
-        `${totalHoursInt}小時`;
-    
-    // 顯示結果
-    const totalHoursEl = document.getElementById('totalHours');
-    const totalAmountEl = document.getElementById('totalAmount');
-    const hourlyRateEl = document.getElementById('hourlyRate');
-    
-    if (totalHoursEl) totalHoursEl.textContent = totalTimeDisplay;
-    if (totalAmountEl) totalAmountEl.innerHTML = `${totalAmount.toLocaleString()} <i class="fas fa-calculator text-info small ms-1" data-bs-toggle="tooltip" title="四捨五入計算"></i> 元`;
-    if (hourlyRateEl) hourlyRateEl.innerHTML = `${hourlyRate} <i class="fas fa-calculator text-info small ms-1" data-bs-toggle="tooltip" title="四捨五入計算"></i> 元/時`;
-    
-    // 初始化工具提示
-    initializeTooltips();
+    return {
+        totalHours: totalHours.toFixed(2),
+        totalAmount: Math.round(totalAmount)
+    };
 }
 
-// 確保刪除按鈕綁定事件
+// 修復刪除按鈕綁定函數
 function bindDeleteButtons() {
-    console.log('正在綁定刪除按鈕事件...');
+    console.log('綁定刪除按鈕事件');
     
+    // 移除所有舊的事件監聽器
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        // 先移除所有現有事件
+        // 克隆節點來移除所有事件監聽器
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
-        
-        // 重新綁定點擊事件 - 使用更簡單的方式
-        newBtn.addEventListener('click', function() {
-            const id = parseInt(this.getAttribute('data-id'));
-            console.log('點擊刪除按鈕: ID =', id);
-            deleteOvertimeRecord(id);
+    });
+    
+    // 重新綁定新的事件監聽器
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const recordId = parseInt(this.getAttribute('data-id'));
+            console.log('點擊刪除按鈕，記錄ID:', recordId);
+            
+            if (!recordId) {
+                console.error('無效的記錄ID');
+                showToast('刪除失敗：無效的記錄ID', 'error');
+                return;
+            }
+            
+            // 使用修復後的確認對話框
+            cosmicConfirm('確定要刪除此加班記錄嗎？', function() {
+                deleteOvertimeRecord(recordId);
+            });
         });
     });
     
-    console.log('刪除按鈕事件綁定完成');
+    console.log('刪除按鈕綁定完成，共綁定', document.querySelectorAll('.delete-btn').length, '個按鈕');
+}
+
+// 處理刪除點擊事件
+function handleDeleteClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const recordId = this.getAttribute('data-id');
+    console.log('點擊刪除按鈕，記錄ID:', recordId);
+    
+    if (recordId && confirm('確定要刪除這筆加班記錄嗎？')) {
+        deleteOvertimeRecord(recordId);
+    }
+}
+
+// 修復刪除加班記錄函數
+function deleteOvertimeRecord(recordId) {
+    console.log('開始刪除記錄:', recordId);
+    
+    // 找到要刪除的記錄
+    const recordIndex = overtimeRecords.findIndex(record => record.id == recordId);
+    
+    if (recordIndex === -1) {
+        console.error('找不到要刪除的記錄:', recordId);
+        showToast('找不到要刪除的記錄', 'error');
+        return;
+    }
+    
+    const recordToDelete = overtimeRecords[recordIndex];
+    const dateToUpdate = recordToDelete.date;
+    
+    console.log(`刪除 ${dateToUpdate} 的加班記錄`);
+    
+    // 從陣列中移除記錄
+    overtimeRecords.splice(recordIndex, 1);
+    
+    // 更新 UI
+    renderOvertimeRecords();
+    calculateTotals();
+    
+    // 更新日曆 - 移除該日期的加班標記
+    renderOvertimeEventOnDate(dateToUpdate, null);
+    
+    // 顯示成功訊息
+    showToast('加班記錄已刪除', 'success');
+    
+    console.log('記錄刪除完成，剩餘記錄數:', overtimeRecords.length);
+}
+
+// 從日曆中移除加班事件
+function removeOvertimeEventFromDate(dateStr) {
+    if (!calendar) return;
+    
+    try {
+        const dayCell = calendar.el.querySelector(`[data-date="${dateStr}"]`);
+        if (dayCell) {
+            const overtimeIndicator = dayCell.querySelector('.overtime-indicator');
+            if (overtimeIndicator) {
+                overtimeIndicator.remove();
+            }
+        }
+    } catch (error) {
+        console.error('移除日曆事件時發生錯誤:', error);
+    }
 }
 
 // 初始化工具提示
@@ -1321,204 +1981,204 @@ function initializeTooltips() {
     });
 }
 
-// 顯示提示訊息
+// 改進提示訊息函數
 function showToast(message, type = 'info') {
+    console.log(`Toast: ${message} (${type})`);
+    
     // 創建 toast 元素
-    const toastEl = document.createElement('div');
-    toastEl.className = `cosmic-toast cosmic-toast-${type}`;
-    
-    // 選擇適當的圖標
-    let icon = 'fa-info-circle';
-    if (type === 'success') icon = 'fa-check-circle';
-    if (type === 'error') icon = 'fa-exclamation-circle';
-    if (type === 'warning') icon = 'fa-exclamation-triangle';
-    
-    toastEl.innerHTML = `
-        <div class="cosmic-toast-content">
-            <i class="fas ${icon} me-2"></i>
-            <span>${message}</span>
-        </div>
+    const toast = document.createElement('div');
+    toast.className = 'cosmic-toast';
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10001;
+        transform: translateX(400px);
+        transition: transform 0.3s;
+        max-width: 300px;
+        word-wrap: break-word;
     `;
     
-    // 添加到頁面
-    document.body.appendChild(toastEl);
+    // 選擇圖標
+    const icons = {
+        info: 'ℹ️',
+        success: '✅',
+        error: '❌',
+        warning: '⚠️'
+    };
     
-    // 顯示 toast
+    toast.innerHTML = `${icons[type] || icons.info} ${message}`;
+    
+    document.body.appendChild(toast);
+    
+    // 顯示動畫
     setTimeout(() => {
-        toastEl.classList.add('show');
+        toast.style.transform = 'translateX(0)';
     }, 100);
     
-    // 幾秒後隱藏並移除
+    // 自動隱藏
     setTimeout(() => {
-        toastEl.classList.remove('show');
+        toast.style.transform = 'translateX(400px)';
         setTimeout(() => {
-            if (document.body.contains(toastEl)) {
-                document.body.removeChild(toastEl);
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
             }
         }, 300);
     }, 3000);
 }
 
-// 確保確認對話框能夠顯示並執行回調
+// 修復確認對話框函數
 function cosmicConfirm(message, confirmCallback, cancelCallback) {
-    // 先嘗試使用自定義對話框
+    // 先嘗試使用原生 confirm 作為備用
+    if (typeof confirmCallback !== 'function') {
+        console.error('confirmCallback 必須是一個函數');
+        return;
+    }
+    
     try {
-        // 創建模態對話框容器
+        // 創建模態對話框
         const modal = document.createElement('div');
-        modal.className = 'cosmic-modal';
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.display = 'flex';
-        modal.style.justifyContent = 'center';
-        modal.style.alignItems = 'center';
-        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        modal.style.zIndex = '9999';
-        
-        // 設置對話框內容
-        const content = document.createElement('div');
-        content.className = 'cosmic-modal-content';
-        content.style.background = 'linear-gradient(145deg, rgba(25, 35, 65, 0.95), rgba(35, 45, 85, 0.95))';
-        content.style.borderRadius = '10px';
-        content.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.5)';
-        content.style.width = '90%';
-        content.style.maxWidth = '400px';
-        content.style.padding = '20px';
-        content.style.color = 'white';
-        content.style.border = '1px solid rgba(111, 155, 255, 0.3)';
-        
-        // 添加標題和內容
-        content.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(111, 155, 255, 0.2); padding-bottom: 10px;">
-                <h4 style="margin: 0;">確認操作</h4>
-                <button class="close-btn" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <p style="margin: 0;">${message}</p>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="cancel-btn" style="background: rgba(80, 90, 120, 0.8); border: none; border-radius: 5px; padding: 8px 15px; color: white; cursor: pointer;">取消</button>
-                <button class="confirm-btn" style="background: rgba(111, 155, 255, 0.8); border: none; border-radius: 5px; padding: 8px 15px; color: white; cursor: pointer;">確認</button>
+        modal.className = 'cosmic-confirm-modal';
+        modal.innerHTML = `
+            <div class="cosmic-confirm-overlay" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.3s;
+            ">
+                <div class="cosmic-confirm-dialog" style="
+                    background: linear-gradient(145deg, #1a2550, #2a3570);
+                    border: 2px solid rgba(111, 155, 255, 0.3);
+                    border-radius: 15px;
+                    padding: 25px;
+                    width: 90%;
+                    max-width: 400px;
+                    color: white;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                    transform: scale(0.9);
+                    transition: transform 0.3s;
+                ">
+                    <h4 style="margin: 0 0 15px 0; color: #6f9bff;">確認操作</h4>
+                    <p style="margin: 0 0 20px 0; line-height: 1.5;">${message}</p>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button class="cosmic-confirm-cancel" style="
+                            background: #f44336;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            transition: all 0.3s;
+                        ">取消</button>
+                        <button class="cosmic-confirm-ok" style="
+                            background: #4caf50;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            transition: all 0.3s;
+                        ">確定</button>
+                    </div>
+                </div>
             </div>
         `;
         
-        modal.appendChild(content);
         document.body.appendChild(modal);
         
-        // 綁定按鈕事件
-        const closeAction = () => {
-            document.body.removeChild(modal);
-            if (cancelCallback) cancelCallback();
-        };
+        // 獲取按鈕元素
+        const confirmBtn = modal.querySelector('.cosmic-confirm-ok');
+        const cancelBtn = modal.querySelector('.cosmic-confirm-cancel');
+        const overlay = modal.querySelector('.cosmic-confirm-overlay');
+        const dialog = modal.querySelector('.cosmic-confirm-dialog');
         
-        const confirmAction = () => {
-            document.body.removeChild(modal);
-            if (confirmCallback) confirmCallback();
-        };
+        // 顯示動畫
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            dialog.style.transform = 'scale(1)';
+        }, 10);
         
-        modal.querySelector('.close-btn').addEventListener('click', closeAction);
-        modal.querySelector('.cancel-btn').addEventListener('click', closeAction);
-        modal.querySelector('.confirm-btn').addEventListener('click', confirmAction);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeAction();
+        // 綁定確認按鈕
+        confirmBtn.addEventListener('click', function() {
+            closeConfirmModal();
+            confirmCallback();
         });
-    } catch (error) {
-        console.error('自定義對話框失敗，使用原生對話框', error);
-        // 如果自定義對話框失敗，使用原生對話框作為備用
-        if (window.confirm(message)) {
-            if (confirmCallback) confirmCallback();
-        } else {
-            if (cancelCallback) cancelCallback();
-        }
-    }
-}
-
-// 創建星星背景效果
-function createStarsEffect(container, starCount) {
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'cosmic-star';
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDelay = `${Math.random() * 2}s`;
-        star.style.width = `${Math.random() * 2 + 1}px`;
-        star.style.height = star.style.width;
-        container.appendChild(star);
-    }
-}
-
-// 監控 DOM 變化
-function setupMutationObserver() {
-    try {
-        const observer = new MutationObserver(function(mutations) {
-            let needFix = false;
-            
-            mutations.forEach(function(mutation) {
-                // 如果涉及到表格或邊框相關的變化
-                if (mutation.type === 'attributes' && 
-                    (mutation.attributeName === 'style' || 
-                     mutation.attributeName === 'class')) {
-                    needFix = true;
-                }
-                
-                // 如果是添加或刪除節點
-                if (mutation.type === 'childList' && 
-                    (mutation.target.classList.contains('fc-daygrid-day') ||
-                     mutation.target.classList.contains('fc-scrollgrid'))) {
-                    needFix = true;
-                }
-            });
-            
-            if (needFix) {
-                fixDateDisplay();
+        
+        // 綁定取消按鈕
+        cancelBtn.addEventListener('click', function() {
+            closeConfirmModal();
+            if (typeof cancelCallback === 'function') {
+                cancelCallback();
             }
         });
         
-        // 對日曆容器進行監視
-        const calendarEl = document.querySelector('.fc');
-        if (calendarEl) {
-            observer.observe(calendarEl, {
-                childList: true,
-                subtree: true,
-                attributes: true
-            });
+        // 點擊背景關閉
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeConfirmModal();
+                if (typeof cancelCallback === 'function') {
+                    cancelCallback();
+                }
+            }
+        });
+        
+        // 關閉對話框函數
+        function closeConfirmModal() {
+            overlay.style.opacity = '0';
+            dialog.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                if (modal && modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            }, 300);
         }
-    } catch (err) {
-        console.error('設置觀察者時出錯:', err);
+        
+        // ESC 鍵關閉
+        const escHandler = function(e) {
+            if (e.key === 'Escape') {
+                closeConfirmModal();
+                if (typeof cancelCallback === 'function') {
+                    cancelCallback();
+                }
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+    } catch (error) {
+        console.error('顯示確認對話框失敗:', error);
+        // 降級到原生 confirm
+        if (confirm(message)) {
+            confirmCallback();
+        } else if (typeof cancelCallback === 'function') {
+            cancelCallback();
+        }
     }
 }
 
-// 刷新整個日曆顯示
-function refreshCalendarDisplay() {
-    // 獲取所有日期單元格
-    const dayCells = document.querySelectorAll('.fc-daygrid-day');
-    
-    // 遍歷每個單元格重新渲染
-    dayCells.forEach(cell => {
-        const dateStr = cell.getAttribute('data-date');
-        if (dateStr) {
-            const date = new Date(dateStr);
-            
-            // 先移除所有事件點
-            const existingEvents = cell.querySelectorAll('.fc-event');
-            existingEvents.forEach(event => event.remove());
-            
-            // 重新渲染
-            dayCellRender({date: date, el: cell});
-        }
-    });
-    
-    // 修復其他顯示問題
-    removeAllBorders();
-    fixDateDisplay();
-    
-    // 渲染所有加班記錄的標記
-    console.log('刷新所有加班標記');
-    overtimeRecords.forEach(record => {
-        renderOvertimeEventOnDate(record.date, record);
-    });
+// 關閉模態對話框的輔助函數
+function closeModal(modal) {
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
 }
 
 // 將時間轉換為分鐘
@@ -1595,11 +2255,11 @@ function setupPeriodicCheck() {
 function fixHeaderWhiteEdges() {
     console.log('專門修復星期標頭白邊');
     
-    // 獲取星期標頭行
+    // 獲取星期標題行
     const headerRow = document.querySelector('.fc-col-header');
     if (!headerRow) return;
     
-    // 確保星期標頭行沒有邊框
+    // 確保星期標題行沒有邊框
     headerRow.style.border = 'none';
     headerRow.style.borderWidth = '0';
     headerRow.style.background = 'transparent';
@@ -1615,7 +2275,7 @@ function fixHeaderWhiteEdges() {
         cell.style.borderWidth = '0';
         
         // 設置背景漸變
-        cell.style.background = 'linear-gradient(145deg, rgba(70, 80, 120, 0.8), rgba(50, 60, 100, 0.8))';
+        cell.style.background = 'linear-gradient(145deg, rgba(70, 80, 120, 0.8), rgba(50, 60,  100, 0.8))';
         
         // 設置內間距和外間距
         cell.style.padding = '8px 0';
@@ -1630,11 +2290,13 @@ function fixHeaderWhiteEdges() {
     
     // 確保整個表格無邊框
     const scrollGrid = document.querySelector('.fc-scrollgrid');
-    if (scrollGrid) {
+       if (scrollGrid) {
         scrollGrid.style.border = 'none';
         scrollGrid.style.borderCollapse = 'separate';
         scrollGrid.style.borderSpacing = '1px';
     }
+    
+    console.log('星期標頭白邊修復完成');
 }
 
 // 在頁面加載後執行
@@ -1654,6 +2316,8 @@ calendar.on('datesSet', function() {
 // 徹底解決星期白邊問題 - 專注於白邊不改動其他功能
 function eliminateWeekdayBorders() {
     console.log('正在徹底清除星期表頭白邊');
+    
+
     
     // 1. 先找到星期表頭區域 (fc-col-header)
     const headerRow = document.querySelector('.fc-col-header');
@@ -1721,7 +2385,7 @@ function injectCriticalCSSFix() {
         .fc-col-header table,
         .fc-col-header tr,
         .fc-col-header th,
-        .fc-col-header td,
+               .fc-col-header td,
         .fc-col-header-cell {
             border: none !important;
             border-width: 0 !important;
@@ -1859,4 +2523,51 @@ if (calendar) {
     calendar.on('datesSet', function() {
         setTimeout(enhanceCalendarButtons, 100);
     });
+}
+
+// 修復 getDayType 函數 - 正確處理字串陣列格式
+function getDayType(dateStr) {
+    const date = new Date(dateStr);
+    const dayOfWeek = date.getDay();
+    
+    // 檢查是否為國定假日 - 直接比較字串
+    const isHoliday = holidays.includes(dateStr);
+    
+    if (isHoliday) {
+        return 'holiday';
+    }
+    
+    // 檢查是否為休息日（週六、週日）
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return 'restday';
+    }
+    
+    // 工作日
+    return 'workday';
+}
+
+// 獲取正確的工作類型顯示文字
+function getDayTypeDisplay(dateStr) {
+    const dayType = getDayType(dateStr);
+    
+    switch(dayType) {
+        case 'workday':
+            return '工作日';
+        case 'restday':
+            return '休息日';
+        case 'holiday':
+            return '國定假日';
+        default:
+            return '工作日';
+    }
+}
+// 確保這些函數存在
+function calculateHourlyRate() {
+    const monthlySalary = parseFloat(document.getElementById('monthlySalary')?.value) || 30000;
+    return Math.round(monthlySalary / 30 / 8);
+}
+
+function showToast(message, type = 'info') {
+    console.log(`Toast: ${message} (${type})`);
+    // 這裡可以添加實際的提示功能
 }
