@@ -275,8 +275,24 @@ function bindEventHandlers() {
     // 保存加班記錄按鈕
     const saveBtn = document.getElementById('saveOvertimeBtn');
     if (saveBtn) {
-        saveBtn.addEventListener('click', saveOvertimeRecord);
+        saveBtn.addEventListener('click', function() {
+            saveOvertimeRecord();
+            // 立即更新統計
+            setTimeout(updateTotalDisplay, 100);
+        });
     }
+    
+    // 薪資區域輸入變更事件 - 實時更新
+    ['monthlySalary', 'workingDays', 'workingHours'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', function() {
+                // 實時更新計算結果
+                debounce(updateTotalDisplay, 300)();
+            });
+            el.addEventListener('change', updateTotalDisplay);
+        }
+    });
     
     // 移除原本的計算按鈕綁定，添加匯出按鈕綁定
     bindExportButton();
@@ -371,6 +387,19 @@ function bindEventHandlers() {
     
     // 監控 DOM 變化
     setupMutationObserver();
+}
+
+// 防抖函數
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // 顯示匯出選擇對話框
@@ -1844,7 +1873,7 @@ function calculateAmount(dayType, hours, hourlyRate) {
     return Math.round(amount);
 }
 
-// 修復計算總計函數
+// 修復計算總計函數並立即更新顯示
 function calculateTotals() {
     let totalHours = 0;
     let totalAmount = 0;
@@ -1857,15 +1886,79 @@ function calculateTotals() {
         totalHours += totalTime;
         
         const hourlyRate = calculateHourlyRate();
-        const dayType = getDayType(record.date);
-        const amount = calculateAmount(dayType, totalTime, hourlyRate);
+        const amount = calculateAmount(record.dayType, totalTime, hourlyRate);
         totalAmount += amount;
     });
     
-    return {
-        totalHours: totalHours.toFixed(2),
+    const result = {
+        totalHours: totalHours.toFixed(1),
         totalAmount: Math.round(totalAmount)
     };
+    
+    // 立即更新顯示
+    updateTotalDisplay(result);
+    
+    return result;
+}
+
+// 創建統一的總計更新函數
+function updateTotalDisplay(totals) {
+    if (!totals) {
+        totals = calculateTotals();
+    }
+    
+    console.log('更新統計顯示:', totals);
+    
+    // 更新總時數顯示 - 多種選擇器確保找到元素
+    const totalHoursSelectors = [
+        '.stats-card .stat-value:first-child',
+        '#totalHours',
+        '.total-hours',
+        '[data-stat="totalHours"]'
+    ];
+    
+    for (const selector of totalHoursSelectors) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = totals.totalHours + ' 小時';
+            break;
+        }
+    }
+    
+    // 更新總金額顯示
+    const totalAmountSelectors = [
+        '.stats-card .stat-value:nth-child(3)',
+        '#totalAmount', 
+        '.total-amount',
+        '[data-stat="totalAmount"]'
+    ];
+    
+    for (const selector of totalAmountSelectors) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = totals.totalAmount + ' 元';
+            break;
+        }
+    }
+    
+    // 更新時薪顯示
+    const hourlyRate = calculateHourlyRate();
+    const hourlyRateSelectors = [
+        '.stats-card .stat-value:last-child',
+        '#hourlyRate',
+        '.hourly-rate',
+        '[data-stat="hourlyRate"]'
+    ];
+    
+    for (const selector of hourlyRateSelectors) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = hourlyRate + ' 元/時';
+            break;
+        }
+    }
+    
+    console.log('統計顯示更新完成');
 }
 
 // 修復刪除按鈕綁定函數
