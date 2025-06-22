@@ -68,6 +68,9 @@ function initializeCalendar() {
         return;
     }
     
+    // 完全替換 FullCalendar 的 CSS
+    replaceFullCalendarCSS();
+    
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
@@ -83,78 +86,174 @@ function initializeCalendar() {
         selectable: true,
         dateClick: handleDateClick,
         dayCellDidMount: dayCellRender,
-        viewDidMount: function() {
-            console.log('視圖已掛載');
-            setTimeout(fixCalendarDisplay, 100);
-        },
-        datesSet: function(info) {
-            console.log('日期已設置，正在更新視圖');
-            
-            // 先取消任何可能的待處理計時器
-            if (window._calendarRefreshTimer) {
-                clearTimeout(window._calendarRefreshTimer);
+        
+        // 簡化所有樣式相關選項，避免使用不支援的屬性
+        eventDisplay: 'block',
+        eventBackgroundColor: 'transparent',
+        
+        views: {
+            dayGridMonth: {
+                dayMaxEventRows: true,
+                dayHeaderFormat: { weekday: 'short' }
             }
-            
-            // 立即移除所有現有的加班標記 - 防止疊加顯示
-            document.querySelectorAll('.fc-event, .overtime-badge').forEach(el => {
-                el.remove();
-            });
-            
-            // 使用單一計時器來處理所有渲染邏輯，避免衝突
-            window._calendarRefreshTimer = setTimeout(() => {
-                // 再次確保移除所有舊的事件點
-                document.querySelectorAll('.fc-event, .overtime-badge').forEach(el => {
-                    el.remove();
-                });
-                
-                // 使用唯一的渲染過程
-                console.log('開始重新渲染加班標記...');
-                
-                // 由於可能存在多個同一日期的記錄，先對記錄進行排序和合併
-                const uniqueDates = [...new Set(overtimeRecords.map(record => record.date))];
-                
-                uniqueDates.forEach(dateStr => {
-                    // 找出對應日期的所有記錄
-                    const recordsForDate = overtimeRecords.filter(r => r.date === dateStr);
-                    
-                    // 如果只有一個記錄，直接渲染
-                    if (recordsForDate.length === 1) {
-                        renderOvertimeEventOnDate(dateStr, recordsForDate[0]);
-                    } 
-                    // 如果有多個記錄，要合併後再渲染
-                    else if (recordsForDate.length > 1) {
-                        console.log(`日期 ${dateStr} 有 ${recordsForDate.length} 個記錄，進行合併`);
-                        // 這裡應處理合併邏輯，但目前應該不需要
-                        renderOvertimeEventOnDate(dateStr, recordsForDate[0]);
-                    }
-                });
-                
-                // 修復其他顯示問題
-                fixCalendarDisplay();
-                
-                console.log('加班標記渲染完成');
-            }, 100);
         }
     });
     
     // 渲染月曆
     calendar.render();
+}
+
+// 完全替換 FullCalendar 的 CSS
+function replaceFullCalendarCSS() {
+    console.log('替換 FullCalendar 的 CSS');
     
-    setTimeout(() => {
-        // 渲染所有加班記錄
-        overtimeRecords.forEach(record => {
-            renderOvertimeEventOnDate(record.date, record);
-        });
+    // 移除所有可能的 FullCalendar 原始樣式表
+    document.querySelectorAll('link[href*="fullcalendar"]').forEach(link => {
+        link.remove();
+    });
+    
+    // 移除已有的自訂樣式
+    const oldStyle = document.getElementById('fc-no-borders-style');
+    if (oldStyle) {
+        oldStyle.remove();
+    }
+    
+    // 創建新的樣式表
+    const styleEl = document.createElement('style');
+    styleEl.id = 'fc-no-borders-style';
+    
+    // 完整重寫 FullCalendar 的關鍵樣式
+    styleEl.textContent = `
+        /* 核心容器 */
+        .fc {
+            max-width: 100%;
+            background: transparent;
+            font-family: 'Arial', sans-serif;
+        }
         
-        // 移除所有邊框
-        forceRemoveAllBorders();
+        /* 移除所有邊框 */
+        .fc * {
+            border: none !important;
+            box-sizing: border-box;
+        }
         
-        // 修復日期顯示
-        fixDateDisplay();
+        /* 表格設置 */
+        .fc .fc-scrollgrid,
+        .fc table {
+            width: 100%;
+            border-collapse: separate !important;
+            border-spacing: 2px !important;
+            background: transparent;
+        }
         
-        // 創建顏色圖例
-        createOvertimeLegend();
-    }, 300);
+        /* 星期標題 */
+        .fc .fc-col-header-cell {
+            background: linear-gradient(145deg, rgba(70, 80, 120, 0.8), rgba(50, 60, 100, 0.8)) !important;
+            color: white;
+            padding: 10px 0;
+            border-radius: 8px !important;
+            margin: 1px;
+            text-align: center;
+        }
+        
+        /* 設置日期格子 */
+        .fc .fc-daygrid-day {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin: 1px;
+            padding: 0;
+            height: 80px;
+            max-height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 日期數字樣式 */
+        .fc .fc-daygrid-day-number {
+            padding: 5px;
+            color: #ddd;
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 14px;
+            z-index: 3;
+        }
+        
+        /* 日期格子內容 */
+        .fc .fc-daygrid-day-frame {
+            height: 100%;
+            position: relative;
+        }
+        
+        /* 工作日 */
+        .fc .fc-day-workday {
+            background-color: rgba(240, 240, 255, 0.05);
+        }
+        
+        /* 休息日 */
+        .fc .fc-day-restday {
+            background-color: rgba(255, 200, 200, 0.1);
+        }
+        
+        /* 假日 */
+        .fc .fc-day-holiday {
+            background-color: rgba(255, 150, 150, 0.15);
+        }
+        
+        /* 加班標記 */
+        .overtime-badge {
+            background: rgba(111, 155, 255, 0.8);
+            color: white;
+            border-radius: 6px;
+            padding: 3px 8px;
+            margin: 5px auto;
+            text-align: center;
+            width: 80%;
+            display: block;
+            z-index: 4;
+        }
+        
+        /* 移除工具列邊框 */
+        .fc .fc-toolbar {
+            margin-bottom: 10px;
+            border: none;
+        }
+        
+        /* 按鈕樣式 */
+        .fc .fc-button-primary {
+            background-color: rgba(70, 80, 120, 0.8);
+            border: none;
+            box-shadow: none;
+        }
+        
+        /* 修復滾動網格問題 */
+        .fc .fc-scrollgrid-section,
+        .fc .fc-scrollgrid-section table,
+        .fc .fc-scrollgrid-section > td {
+            height: auto;
+            border: none !important;
+        }
+        
+        /* 修復內容區域 */
+        .fc .fc-daygrid-body {
+            width: 100% !important;
+        }
+        
+        /* 處理事件容器 */
+        .fc .fc-daygrid-event-harness {
+            margin: 0;
+        }
+        
+        /* 今日高亮 */
+        .fc .fc-day-today {
+            background-color: rgba(100, 150, 255, 0.1) !important;
+        }
+    `;
+    
+    // 將樣式添加到文檔頭部
+    document.head.appendChild(styleEl);
+    
+    console.log('FullCalendar CSS 替换完成');
 }
 
 // 修復月曆顯示問題
@@ -800,6 +899,32 @@ function renderOvertimeRecords() {
         console.log('表格渲染完成並綁定了刪除按鈕');
     }, 0);
 }
+
+// 替換月份導航按鈕圖標為更美觀的版本
+function replaceCalendarButtonIcons() {
+    // 上個月按鈕
+    const prevButton = document.querySelector('.fc-prev-button');
+    if (prevButton) {
+        const icon = prevButton.querySelector('.fc-icon');
+        if (icon) {
+            icon.innerHTML = '&#10094;'; // 左箭頭符號
+            icon.style.fontSize = '1em';
+        }
+    }
+    
+    // 下個月按鈕
+    const nextButton = document.querySelector('.fc-next-button');
+    if (nextButton) {
+        const icon = nextButton.querySelector('.fc-icon');
+        if (icon) {
+            icon.innerHTML = '&#10095;'; // 右箭頭符號
+            icon.style.fontSize = '1em';
+        }
+    }
+}
+
+// 在適當的時機調用圖標替換函數
+setTimeout(replaceCalendarButtonIcons, 500);
 
 // 創建和添加顏色圖例函數
 function createOvertimeLegend() {
@@ -1632,3 +1757,106 @@ function injectCriticalCSSFix() {
 document.addEventListener('DOMContentLoaded', injectCriticalCSSFix);
 // 確保在所有資源載入後也執行一次
 window.addEventListener('load', injectCriticalCSSFix);
+
+// 優化月份切換按鈕的互動體驗
+function enhanceCalendarButtons() {
+    console.log('增強月曆按鈕體驗');
+    
+    // 查找所有按鈕
+    const buttons = document.querySelectorAll('.fc-button-primary');
+    
+    buttons.forEach(button => {
+        // 添加點擊波紋效果
+        button.addEventListener('click', function(e) {
+            // 創建波紋元素
+            const ripple = document.createElement('span');
+            ripple.classList.add('btn-ripple');
+            ripple.style.cssText = `
+                position: absolute;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+                animation: rippleEffect 0.8s linear;
+            `;
+            
+            // 定位波紋
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            // 添加動畫關鍵幀
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes rippleEffect {
+                    0% { width: 0; height: 0; opacity: 0.5; }
+                    100% { width: 200px; height: 200px; opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 添加波紋到按鈕
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            // 移除波紋
+            setTimeout(() => {
+                ripple.remove();
+                style.remove();
+            }, 800);
+        });
+        
+        // 添加工具提示
+        if (button.classList.contains('fc-prev-button')) {
+            button.title = '上個月';
+        } else if (button.classList.contains('fc-next-button')) {
+            button.title = '下個月';
+        } else if (button.classList.contains('fc-today-button')) {
+            button.title = '跳至今天';
+        }
+    });
+    
+    // 優化標題文本 - 可選：為日曆標題添加微妙的閃光效果
+    const title = document.querySelector('.fc-toolbar-title');
+    if (title) {
+        title.innerHTML = `<span class="calendar-title-text">${title.textContent}</span>`;
+        
+        // 添加標題樣式
+        const titleStyle = document.createElement('style');
+        titleStyle.textContent = `
+            .calendar-title-text {
+                background: linear-gradient(90deg, #a0c9ff, #ffffff, #a0c9ff);
+                background-size: 200% auto;
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                animation: title-shine 5s linear infinite;
+            }
+            
+            @keyframes title-shine {
+                0% { background-position: 0% center; }
+                50% { background-position: 100% center; }
+                100% { background-position: 0% center; }
+            }
+        `;
+        document.head.appendChild(titleStyle);
+    }
+}
+
+// 在初始化日曆後和月份切換時呼叫此函數
+document.addEventListener('DOMContentLoaded', function() {
+    // 在日曆初始化後延遲執行
+    setTimeout(enhanceCalendarButtons, 500);
+});
+
+// 如果已有 datesSet 事件監聽器，請在其中添加對 enhanceCalendarButtons 的呼叫
+// 或者添加這個監聽器
+if (calendar) {
+    calendar.on('datesSet', function() {
+        setTimeout(enhanceCalendarButtons, 100);
+    });
+}
