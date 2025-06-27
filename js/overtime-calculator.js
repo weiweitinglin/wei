@@ -1207,25 +1207,82 @@ function dayCellRender(info) {
     const dateStr = formatDate(date);
     const cell = info.el;
     
+
+    // 重要：清除處理標記，允許重新處理
+    cell.dataset.processed = 'false';
+
     // 清除舊的元素和類別
     cell.className = cell.className
         .replace(/fc-day-(holiday|workday|restday)/g, '')
         .replace(/fc-day-clicked/g, '');
-    
+
+    // 清除現有的假日名稱
     const existingHolidayName = cell.querySelector('.holiday-name');
     if (existingHolidayName) {
         existingHolidayName.remove();
     }
     
+    // 清除現有的加班標記
+    const existingBadges = cell.querySelectorAll('.fc-event, .overtime-badge');
+    existingBadges.forEach(badge => badge.remove());
+
     // 清除所有舊的事件點
     const existingEvents = cell.querySelectorAll('.fc-event');
     existingEvents.forEach(event => event.remove());
     
-    // 清除數字後的日文字
+   // 修復日期數字重複問題
     const dayNumber = cell.querySelector('.fc-daygrid-day-number');
     if (dayNumber) {
+        // 清除所有文字內容，只保留正確的日期
+        dayNumber.innerHTML = '';
         dayNumber.textContent = date.getDate();
+        
+        // 確保樣式正確
+        dayNumber.style.fontSize = '14px';
+        dayNumber.style.fontWeight = 'bold';
+        dayNumber.style.color = 'inherit';
     }
+
+    
+    // 添加一個專門修復日期顯示的函數
+function fixDateNumberDisplay() {
+    console.log('修復日期數字顯示');
+    
+    document.querySelectorAll('.fc-daygrid-day-number').forEach(dayNumberEl => {
+        // 獲取原始日期數字
+        const dayText = dayNumberEl.textContent.trim();
+        
+        // 如果出現重複數字（如 "26日26"），只保留數字部分
+        const match = dayText.match(/(\d+)/);
+        if (match) {
+            const dayNum = match[1];
+            dayNumberEl.innerHTML = '';
+            dayNumberEl.textContent = dayNum;
+        }
+    });
+}
+
+// 修復月份切換處理函數
+function handleMonthChange() {
+    console.log('處理月份切換');
+    
+    setTimeout(() => {
+        // 1. 修復日期數字顯示
+        fixDateNumberDisplay();
+        
+        // 2. 清除重複徽章
+        clearDuplicateBadges();
+        
+        // 3. 重新渲染加班徽章
+        renderCurrentMonthBadges();
+        
+        // 4. 修復其他樣式
+        eliminateWeekdayBorders();
+        createOvertimeLegend();
+        
+        console.log('月份切換處理完成');
+    }, 100);
+}
     
     // 處理日期類型
     if (holidays.includes(dateStr)) {
@@ -1297,29 +1354,28 @@ function dayCellRender(info) {
     }
 }
 
-// 為月份切換添加淡入淡出效果
+
+// 修復月份切換按鈕事件綁定
 function addCalendarTransitionEffects() {
-    // 獲取 prev/next 按鈕
+    // 獲取按鈕
     const prevBtn = document.querySelector('.fc-prev-button');
     const nextBtn = document.querySelector('.fc-next-button');
     const todayBtn = document.querySelector('.fc-today-button');
     
+    // 移除舊的事件監聽器
     if (prevBtn) {
-        prevBtn.addEventListener('click', function() {
-            applyCalendarTransition();
-        });
+        prevBtn.removeEventListener('click', applyCalendarTransition);
+        prevBtn.addEventListener('click', applyCalendarTransition);
     }
     
     if (nextBtn) {
-        nextBtn.addEventListener('click', function() {
-            applyCalendarTransition();
-        });
+        nextBtn.removeEventListener('click', applyCalendarTransition);
+        nextBtn.addEventListener('click', applyCalendarTransition);
     }
     
     if (todayBtn) {
-        todayBtn.addEventListener('click', function() {
-            applyCalendarTransition();
-        });
+        todayBtn.removeEventListener('click', applyCalendarTransition);
+        todayBtn.addEventListener('click', applyCalendarTransition);
     }
 }
 
