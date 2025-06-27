@@ -2720,3 +2720,4 @@ function showToast(message, type = 'info') {
     console.log(`Toast: ${message} (${type})`);
     // 這裡可以添加實際的提示功能
 }
+
