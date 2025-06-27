@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能測試</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 音樂和主題功能測試</h1>
+    
+    <div class="test-section">
+        <h2>音樂控制測試</h2>
+        <button class="button" onclick="testMusic()">測試音樂播放</button>
+        <button class="button" onclick="testFallbackAudio()">測試備用音頻</button>
+        <div id="musicStatus" class="status">音樂狀態：未開始</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>主題切換測試</h2>
+        <button class="button" onclick="testTheme()">切換主題</button>
+        <div id="themeStatus" class="status">當前主題：<span id="currentTheme">dark</span></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>無版權音樂連結測試</h2>
+        <div id="musicLinks"></div>
+    </div>
+
+    <script>
+        // 測試音樂功能
+        let testAudio = null;
+        let audioFallback = null;
+
+        function testMusic() {
+            const status = document.getElementById('musicStatus');
+            
+            if (!testAudio) {
+                testAudio = new Audio();
+                // 使用 Pixabay 免費音樂
+                testAudio.src = 'https://cdn.pixabay.com/audio/2022/03/21/audio_4bb50f1ded.mp3';
+                testAudio.loop = true;
+                testAudio.volume = 0.3;
+                
+                testAudio.addEventListener('loadstart', () => {
+                    status.textContent = '音樂狀態：開始載入...';
+                });
+                
+                testAudio.addEventListener('canplay', () => {
+                    status.textContent = '音樂狀態：準備播放';
+                });
+                
+                testAudio.addEventListener('playing', () => {
+                    status.textContent = '音樂狀態：正在播放 ✅';
+                });
+                
+                testAudio.addEventListener('pause', () => {
+                    status.textContent = '音樂狀態：已暫停';
+                });
+                
+                testAudio.addEventListener('error', (e) => {
+                    status.textContent = '音樂狀態：載入失敗 ❌ - ' + e.message;
+                    console.error('音樂載入錯誤:', e);
+                });
+            }
+            
+            if (testAudio.paused) {
+                testAudio.play().catch(error => {
+                    status.textContent = '音樂狀態：播放失敗 - ' + error.message;
+                });
+            } else {
+                testAudio.pause();
+            }
+        }
+
+        function testFallbackAudio() {
+            const status = document.getElementById('musicStatus');
+            
+            if (!audioFallback) {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    
+                    oscillator.start();
+                    
+                    audioFallback = { oscillator, gainNode, audioContext, isPlaying: true };
+                    status.textContent = '備用音頻狀態：播放中 ✅';
+                    
+                    setTimeout(() => {
+                        oscillator.stop();
+                        audioFallback = null;
+                        status.textContent = '備用音頻狀態：已停止';
+                    }, 3000);
+                    
+                } catch (error) {
+                    status.textContent = '備用音頻狀態：不支援 ❌ - ' + error.message;
+                }
+            }
+        }
+
+        function testTheme() {
+            const currentThemeSpan = document.getElementById('currentTheme');
+            const currentTheme = currentThemeSpan.textContent;
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            currentThemeSpan.textContent = newTheme;
+            
+            // 視覺反饋
+            document.body.style.background = newTheme === 'light' ? '#f8f9fa' : '#212529';
+            document.body.style.color = newTheme === 'light' ? '#212529' : '#f8f9fa';
+        }
+
+        // 顯示音樂連結測試
+        function displayMusicLinks() {
+            const musicLinks = [
+                'https://cdn.pixabay.com/audio/2022/03/21/audio_4bb50f1ded.mp3',
+                'https://cdn.pixabay.com/audio/2022/03/10/audio_d24b2c4eb3.mp3',
+                'https://cdn.pixabay.com/audio/2022/01/18/audio_f645888b26.mp3'
+            ];
+            
+            const container = document.getElementById('musicLinks');
+            container.innerHTML = '<h3>測試音樂連結：</h3>';
+            
+            musicLinks.forEach((link, index) => {
+                const linkElement = document.createElement('p');
+                linkElement.innerHTML = `
+                    <strong>音樂 ${index + 1}:</strong> 
+                    <a href="${link}" target="_blank">測試連結</a>
+                    <button class="button" onclick="testSpecificMusic('${link}', ${index + 1})">播放測試</button>
+                    <span id="status${index + 1}"></span>
+                `;
+                container.appendChild(linkElement);
+            });
+        }
+
+        function testSpecificMusic(url, index) {
+            const status = document.getElementById(`status${index}`);
+            const audio = new Audio(url);
+            
+            status.textContent = ' 載入中...';
+            
+            audio.addEventListener('canplay', () => {
+                status.textContent = ' ✅ 可播放';
+                audio.play().then(() => {
+                    status.textContent = ' ✅ 播放中';
+                    setTimeout(() => {
+                        audio.pause();
+                        status.textContent = ' ⏸️ 測試完成';
+                    }, 2000);
+                });
+            });
+            
+            audio.addEventListener('error', () => {
+                status.textContent = ' ❌ 載入失敗';
+            });
+        }
+
+        // 頁面載入完成後顯示音樂連結
+        document.addEventListener('DOMContentLoaded', displayMusicLinks);
+    </script>
+</body>
+</html>

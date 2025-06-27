@@ -1,0 +1,140 @@
+/* 波紋效果和其他小組件的CSS */
+
+/* 波紋效果 */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* 通知系統 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(15, 25, 60, 0.95);
+    backdrop-filter: blur(20px);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--neon-cyan);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 10000;
+    max-width: 300px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-error {
+    border-left-color: #ff4757;
+}
+
+.notification-success {
+    border-left-color: #2ed573;
+}
+
+.notification-warning {
+    border-left-color: #ffa502;
+}
+
+/* 動畫類 */
+.animate-in {
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 移動設備優化 */
+.mobile-optimized * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+}
+
+.mobile-optimized .stars-background {
+    display: none;
+}
+
+.mobile-optimized #particles-js {
+    opacity: 0.3;
+}
+
+/* 拖拽元素 */
+.draggable {
+    cursor: grab;
+    user-select: none;
+    position: relative;
+}
+
+.draggable:active {
+    cursor: grabbing;
+}
+
+/* 滾動條美化補充 */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(111, 155, 255, 0.5) transparent;
+}
+
+/* 可訪問性改進 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 焦點狀態 */
+.btn:focus,
+.nav-link:focus,
+.dropdown-item:focus {
+    outline: 2px solid var(--neon-cyan);
+    outline-offset: 2px;
+}
+
+/* 減少動畫偏好設置 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .stars-background {
+        display: none;
+    }
+    
+    #particles-js {
+        display: none;
+    }
+}

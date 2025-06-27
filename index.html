@@ -1,254 +1,582 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="utf-8" />
     <!-- 修改 viewport meta 標籤 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>廷造星球</title>
+    <meta name="description" content="廷造星球 - 創新程式開發工具平台，提供實用的開發工具和資源" />
+    <meta name="author" content="廷造星球團隊" />
+    <meta name="keywords" content="程式開發,工具,計算器,QR碼,小工具" />
+    <title>廷造星球 | 創新程式工具平台</title>
+    
+    <!-- SEO 和社交分享 -->
+    <meta property="og:title" content="廷造星球 | 創新程式工具平台" />
+    <meta property="og:description" content="打造完美星球，每一段程式都是創造星球的一顆星" />
+    <meta property="og:type" content="website" />
+    
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="css/imagesloaded.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
-    <link href="css/fix-sizes.css" rel="stylesheet" /> <!-- 新增的修復文件 -->
+    <link href="css/enhanced-styles.css" rel="stylesheet" />
+    <link href="css/effects.css" rel="stylesheet" />
+    <link href="css/fix-sizes.css" rel="stylesheet" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
-<body id="page-top">
+<body id="page-top" class="overflow-x-hidden">
+    <!-- 星空背景效果 -->
+    <div class="stars-background">
+        <div class="stars-layer stars-layer-1"></div>
+        <div class="stars-layer stars-layer-2"></div>
+        <div class="stars-layer stars-layer-3"></div>
+    </div>
+    
+    <!-- 粒子效果容器 -->
+    <div id="particles-js"></div>
+    
+    <!-- 回到頂部按鈕 -->
+    <div class="back-to-top">
+        <button id="backToTop" class="back-to-top-btn" aria-label="回到頂部">
+            <i class="fas fa-rocket"></i>
+        </button>
+    </div>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" data-aos="fade-down">
         <div class="container px-4 px-lg-5">
-            <!-- 替換原有的 navbar-brand -->
-            <a class="navbar-brand" href="#page-top">
-                <span class="brand-icon">
+            <!-- 品牌logo -->
+            <a class="navbar-brand d-flex align-items-center" href="#page-top">
+                <span class="brand-icon me-2">
                     <div class="planet-ring"></div>
-                    <div class="planet"></div>
+                    <div class="planet">
+                        <div class="planet-core"></div>
+                        <div class="planet-atmosphere"></div>
+                    </div>
+                    <div class="orbit-1"></div>
+                    <div class="orbit-2"></div>
                 </span>
-                TING造星球
+                <span class="brand-text">
+                    <span class="brand-main">TING造星球</span>
+                    <span class="brand-sub">創新程式工具平台</span>
+                </span>
             </a>
-            <!-- 確保漢堡選單按鈕屬性完整 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
+            
+            <!-- 漢堡選單按鈕 -->
+            <button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="toggler-line"></span>
+                <span class="toggler-line"></span>
+                <span class="toggler-line"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#about">星球簡介</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#projects">地表資源</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/overtime_calculator.html">星際血汗</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
-                    <!-- 修改下拉選單部分 -->
-                    <li class="nav-item dropdown mobile-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false" 
-                           aria-haspopup="true">
-                            小工具衛星
+                    <li class="nav-item">
+                        <a class="nav-link smooth-scroll" href="#about">
+                            <i class="fas fa-planet-moon me-1"></i>星球簡介
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
-                            <li><a class="dropdown-item" href="/wei/html/flooring_calculator.html">地板拼接計算器</a></li>
-                            <li><a class="dropdown-item" href="/wei/html/flooring_number of square meters.html">坪數計算器</a></li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link smooth-scroll" href="#projects">
+                            <i class="fas fa-tools me-1"></i>地表資源
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="html/overtime_calculator.html">
+                            <i class="fas fa-clock me-1"></i>星際血汗
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="html/QR code.html">
+                            <i class="fas fa-qrcode me-1"></i>星碼工廠
+                        </a>
+                    </li>
+                    <!-- 改進的下拉選單 -->
+                    <li class="nav-item dropdown modern-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-satellite me-1"></i>小工具衛星
+                        </a>
+                        <ul class="dropdown-menu modern-dropdown-menu" aria-labelledby="toolsDropdown">
+                            <li>
+                                <a class="dropdown-item" href="html/flooring_calculator.html">
+                                    <i class="fas fa-calculator me-2"></i>地板拼接計算器
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="html/flooring_number of square meters.html">
+                                    <i class="fas fa-ruler-combined me-2"></i>坪數計算器
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item coming-soon" href="#" onclick="return false;">
+                                    <i class="fas fa-magic me-2"></i>更多工具即將推出...
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
+                
+                <!-- 主題切換按鈕 -->
+                <div class="navbar-theme-toggle ms-3">
+                    <button id="themeToggle" class="theme-btn" aria-label="切換主題">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
             </div>
-        </div>
+        </div>>
     </nav>
 
-    <!-- Main Slider -->
-    <div class="slider">
-        <button class="slider--btn slider--btn__prev">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-        </button>
-
-        <div class="slides__wrapper">
-            <div class="slides">
-                <!-- Slide 1 -->
-                <div class="slide" data-current>
-                    <div class="slide__inner">
-                        <div class="slide--image__wrapper">
-                            <img class="slide--image" src="assets/img/back.jpg" alt="廷造星球" />
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Slide 2 -->
-                <div class="slide" data-next>
-                    <div class="slide__inner">
-                        <div class="slide--image__wrapper">
-                            <img class="slide--image" src="assets/img/back2.jpg" alt="地板系列" />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="slide" data-next2>
-                    <div class="slide__inner">
-                        <div class="slide--image__wrapper">
-                            <img class="slide--image" src="assets/img/back3.jpg" alt="地板系列" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 背景區塊 - 修改樣式以確保覆蓋整個視窗 -->
-            <div class="slide__backgrounds">
-                <div class="slide__bg" data-current></div>
-                <div class="slide__bg" data-next></div>
-                <div class="slide__bg" data-next2></div>
-            </div>
-
-            <div class="slides--infos">
-                <!-- Slide Info 1 -->
-                <div class="slide-info" data-current>
-                    <div class="slide-info__inner">
-                        <div class="slide-info--text__wrapper">
-                            <div data-title class="slide-info--text">
-                                <span>TING造星球</span>
-                            </div>
-                            <div data-subtitle class="slide-info--text">
-                                <span>打造完美星球</span>
-                            </div>
-                            <div data-description class="slide-info--text">
-                                <span>每一段程式，都是創造星球的一顆星</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide Info 2 -->
-                <div class="slide-info" data-next>
-                    <div class="slide-info__inner">
-                        <div class="slide-info--text__wrapper">
-                            <div data-title class="slide-info--text">
-                                <span>用創意點亮宇宙</span>
-                            </div>
-                            <div data-subtitle class="slide-info--text">
-                                <span>串起點子與靈感</span>
-                            </div>
-                            <div data-description class="slide-info--text">
-                                <span>每一個工具，都是星空中的閃耀新星</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide Info 3 -->
-                <div class="slide-info" data-next2>
-                    <div class="slide-info__inner">
-                        <div class="slide-info--text__wrapper">
-                            <div data-title class="slide-info--text">
-                                <span>程式編寫我的星系</span>
-                            </div>
-                            <div data-subtitle class="slide-info--text">
-                                <span>編寫出屬於自己的星系</span>
-                            </div>
-                            <div data-description class="slide-info--text">
-                                <span>每一次開發，都是探索未知的宇宙旅程</span>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-content" data-aos="fade-up" data-aos-delay="300">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <div class="hero-text">
+                            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="500">
+                                <span class="title-accent">TING造星球</span>
+                            </h1>
+                            <h2 class="hero-subtitle" data-aos="fade-up" data-aos-delay="700">
+                                打造完美星球
+                            </h2>
+                            <p class="hero-description" data-aos="fade-up" data-aos-delay="900">
+                                每一段程式，都是創造星球的一顆星
+                            </p>
+                            <div class="hero-actions" data-aos="fade-up" data-aos-delay="1100">
+                                <a href="#about" class="btn btn-primary btn-glow smooth-scroll">
+                                    <i class="fas fa-rocket me-2"></i>開始探索
+                                </a>
+                                <a href="#projects" class="btn btn-outline-light smooth-scroll">
+                                    <i class="fas fa-tools me-2"></i>查看工具
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- 向下滾動提示 -->
+        <div class="scroll-indicator" data-aos="bounce" data-aos-delay="2000">
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
+            <span class="scroll-text">向下探索更多</span>
+        </div>
+    </section>
 
-        <button class="slider--btn slider--btn__next">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m9 18 6-6-6-6" />
-            </svg>
-        </button>
+    <!-- 載入動畫 -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="planet-loader">
+                <div class="planet-core"></div>
+                <div class="planet-ring-1"></div>
+                <div class="planet-ring-2"></div>
+                <div class="planet-ring-3"></div>
+            </div>
+            <div class="loader__text">
+                <span class="loading-text">載入中</span>
+                <span class="loading-percentage">0%</span>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="loader">
-        <span class="loader__text">0%</span>
-    </div>
+    <!-- 關於我們區塊 -->
+    <section id="about" class="about-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="about-content">
+                        <h2 class="section-title">
+                            <span class="title-accent">關於</span>
+                            <span class="title-main">廷造星球</span>
+                        </h2>
+                        <p class="lead">
+                            我們致力於創造實用且創新的程式工具，讓每個開發者都能在這個數位宇宙中找到屬於自己的星球。
+                        </p>
+                        <div class="features-list">
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+                                <div class="feature-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>程式開發工具</h4>
+                                    <p>提供各種實用的開發工具，提升工作效率</p>
+                                </div>
+                            </div>
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+                                <div class="feature-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>計算器系列</h4>
+                                    <p>專業的計算工具，解決日常工作需求</p>
+                                </div>
+                            </div>
+                            <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                                <div class="feature-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>響應式設計</h4>
+                                    <p>完美適配各種設備，隨時隨地使用</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="about-visual">
+                        <div class="floating-elements">
+                            <div class="floating-element element-1">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="floating-element element-2">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="floating-element element-3">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                        </div>
+                        <div class="central-planet">
+                            <div class="planet-core"></div>
+                            <div class="planet-atmosphere"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具展示區塊 -->
+    <section id="projects" class="projects-section py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title">
+                    <span class="title-accent">地表</span>
+                    <span class="title-main">資源</span>
+                </h2>
+                <p class="section-subtitle">探索我們的工具宇宙，發現無限可能</p>
+            </div>
+            
+            <div class="row">
+                <!-- 工具卡片 1 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="tool-card">
+                        <div class="card-header">
+                            <div class="tool-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3>星際血汗</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>精確計算加班時數與薪資，讓您的時間價值得到應有的回報。</p>
+                            <ul class="features">
+                                <li><i class="fas fa-check"></i> 自動計算加班費</li>
+                                <li><i class="fas fa-check"></i> 支援多種計算方式</li>
+                                <li><i class="fas fa-check"></i> 數據本地儲存</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="html/overtime_calculator.html" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>立即使用
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工具卡片 2 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="tool-card">
+                        <div class="card-header">
+                            <div class="tool-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <h3>星碼工廠</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>快速產生各種QR碼，支援多種格式與自訂樣式。</p>
+                            <ul class="features">
+                                <li><i class="fas fa-check"></i> 多種QR碼類型</li>
+                                <li><i class="fas fa-check"></i> 自訂顏色樣式</li>
+                                <li><i class="fas fa-check"></i> 高品質輸出</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="html/QR code.html" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>立即使用
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工具卡片 3 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="tool-card">
+                        <div class="card-header">
+                            <div class="tool-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3>地板拼接計算器</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>專業的地板材料計算工具，精確計算所需材料數量。</p>
+                            <ul class="features">
+                                <li><i class="fas fa-check"></i> 多種地板類型</li>
+                                <li><i class="fas fa-check"></i> 損耗率計算</li>
+                                <li><i class="fas fa-check"></i> 成本估算</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="html/flooring_calculator.html" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>立即使用
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工具卡片 4 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="tool-card">
+                        <div class="card-header">
+                            <div class="tool-icon">
+                                <i class="fas fa-ruler-combined"></i>
+                            </div>
+                            <h3>坪數計算器</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>快速轉換各種面積單位，支援坪、平方米等多種單位。</p>
+                            <ul class="features">
+                                <li><i class="fas fa-check"></i> 多種單位轉換</li>
+                                <li><i class="fas fa-check"></i> 即時計算結果</li>
+                                <li><i class="fas fa-check"></i> 精確度控制</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <a href="html/flooring_number of square meters.html" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>立即使用
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 更多工具預告 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="tool-card coming-soon-card">
+                        <div class="card-header">
+                            <div class="tool-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <h3>更多工具</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>更多實用工具正在開發中，敬請期待！</p>
+                            <ul class="features">
+                                <li><i class="fas fa-hourglass-half"></i> 圖片處理工具</li>
+                                <li><i class="fas fa-hourglass-half"></i> 文件轉換器</li>
+                                <li><i class="fas fa-hourglass-half"></i> 密碼產生器</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-secondary disabled">
+                                <i class="fas fa-clock me-2"></i>即將推出
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 統計數據區塊 -->
+    <section class="stats-section py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="stat-number" data-count="4">0</div>
+                        <div class="stat-label">實用工具</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number" data-count="1000">0</div>
+                        <div class="stat-label">使用者</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="stat-number" data-count="5000">0</div>
+                        <div class="stat-label">下載次數</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-number" data-count="98">0</div>
+                        <div class="stat-label">滿意度 %</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer modern-footer">
         <div class="container">
-            <p class="copyright">© 2025 廷造星球. All rights reserved.</p>
+            <div class="row">
+                <div class="col-lg-4 mb-4" data-aos="fade-up">
+                    <div class="footer-brand">
+                        <div class="brand-icon-footer">
+                            <div class="planet-ring"></div>
+                            <div class="planet">
+                                <div class="planet-core"></div>
+                            </div>
+                        </div>
+                        <h4>廷造星球</h4>
+                        <p>創新程式工具平台，致力於為開發者提供最優質的工具體驗。</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <h5>快速連結</h5>
+                    <ul class="footer-links">
+                        <li><a href="#about">關於我們</a></li>
+                        <li><a href="#projects">工具資源</a></li>
+                        <li><a href="#" onclick="return false;">幫助中心</a></li>
+                        <li><a href="#" onclick="return false;">聯絡我們</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <h5>工具分類</h5>
+                    <ul class="footer-links">
+                        <li><a href="html/overtime_calculator.html">時間工具</a></li>
+                        <li><a href="html/QR code.html">QR碼工具</a></li>
+                        <li><a href="html/flooring_calculator.html">計算工具</a></li>
+                        <li><a href="#" onclick="return false;">更多工具</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <h5>聯絡資訊</h5>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@tingplanet.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+886-123-456-789</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>台灣 台北市</span>
+                        </div>
+                    </div>
+                    <div class="social-links mt-3">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="copyright mb-0">© 2025 廷造星球. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-meta">
+                        <a href="#" onclick="return false;">隱私政策</a>
+                        <span class="separator">|</span>
+                        <a href="#" onclick="return false;">服務條款</a>
+                        <span class="separator">|</span>
+                        <a href="#" onclick="return false;">Cookie政策</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer波浪效果 -->
+        <div class="footer-waves">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="rgba(111, 155, 255, 0.1)" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/dropdown-fix.js"></script> <!-- 新增的修復檔案 -->
-    <script type="module" src="js/imagesloaded.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="js/dropdown-fix.js"></script>
     <script src="js/scripts.js"></script>
-    <script src="js/startrail.js"></script>
-    <!-- 在頁面底部，其他腳本之後添加 -->
+    <script src="js/enhanced-features.js"></script>
+    
+    <!-- 增強的初始化腳本 -->
     <script>
-        // 在頁面加載完成後等待一段時間再顯示導航欄
+        // 簡化的初始化腳本，保留載入動畫和基本功能
+        
+        // 手機版下拉選單修復（保留原有功能）
         document.addEventListener('DOMContentLoaded', function() {
-            // 先確保導航欄在 CSS 中被隱藏
-            document.getElementById('mainNav').style.opacity = '0';
-            document.getElementById('mainNav').style.visibility = 'hidden';
-            
-            // 等待一段時間後顯示導航欄
-            setTimeout(function() {
-                document.getElementById('mainNav').style.opacity = '1';
-                document.getElementById('mainNav').style.visibility = 'visible';
-                document.getElementById('mainNav').style.transition = 'opacity 0.8s ease, visibility 0.8s ease';
-            }, 2000); // 3秒後顯示，可以根據需要調整
-        });
-
-        // 立即執行的下拉選單修復
-        document.addEventListener('DOMContentLoaded', function() {
-            // 檢測是否為移動設備
             const isMobile = window.innerWidth <= 768;
             
             if (isMobile) {
-                setTimeout(function() {
-                    // 獲取下拉選單元素
+                setTimeout(() => {
                     const dropdownToggle = document.querySelector('#toolsDropdown');
                     const dropdownMenu = document.querySelector('.dropdown-menu');
                     
                     if (dropdownToggle && dropdownMenu) {
-                        // 移除 Bootstrap 原生事件處理
                         dropdownToggle.removeAttribute('data-bs-toggle');
                         
-                        // 清除原有的點擊事件處理器
                         const newDropdownToggle = dropdownToggle.cloneNode(true);
                         dropdownToggle.parentNode.replaceChild(newDropdownToggle, dropdownToggle);
                         
-                        // 添加新的點擊事件處理器
                         newDropdownToggle.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
                             
-                            // 切換下拉選單顯示/隱藏
                             dropdownMenu.style.display = 
                                 dropdownMenu.style.display === 'block' ? 'none' : 'block';
                         });
                         
-                        // 添加樣式確保正確顯示
                         dropdownMenu.style.position = 'static';
                         dropdownMenu.style.width = '100%';
                         dropdownMenu.style.display = 'none';
                         
-                        // 防止點擊選單項目時關閉選單
-                        const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
-                        dropdownItems.forEach(function(item) {
-                            item.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                            });
-                        });
-                        
-                        // 點擊頁面其他區域時關閉選單
                         document.addEventListener('click', function(e) {
                             if (!e.target.closest('.dropdown')) {
                                 dropdownMenu.style.display = 'none';
                             }
                         });
-                        
-                        console.log('手機版下拉選單修復已套用');
                     }
-                }, 500); // 延遲確保DOM已經完全載入
+                }, 500);
             }
         });
     </script>
