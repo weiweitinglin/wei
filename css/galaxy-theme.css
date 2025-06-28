@@ -12,6 +12,19 @@
  * 適用於所有工具頁面：地板計算器、坪數計算器、QR生成器、加班計算器等
  */
 
+/* 全域樣式重置，確保銀河主題優先 */
+html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body.watermark-generator {
+    background: transparent !important;
+}
+
 /* 導航欄層級調整 */
 #mainNav {
     z-index: 1000 !important;
@@ -28,11 +41,12 @@
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: 100vw !important;
+    height: 100vh !important;
     z-index: 1 !important;
     pointer-events: none !important;
-    background: transparent !important;
+    background: radial-gradient(ellipse at center, #1a1f3a 0%, #0f1527 50%, #000000 100%) !important;
+    overflow: hidden !important;
 }
 
 /* 根變數定義 */
@@ -119,7 +133,7 @@
 
 /* 主容器現代化 */
 .calculator-container {
-    margin-top: 120px;
+    margin-top: 40px;
     margin-bottom: 80px;
     position: relative;
     z-index: 10;
@@ -999,13 +1013,7 @@ canvas {
 
 /* 備用動畫樣式（當 particles.js 載入失敗時使用） */
 .fallback-animation {
-    background: linear-gradient(45deg, #0f1527 25%, transparent 25%), 
-                linear-gradient(-45deg, #0f1527 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #1a1f3a 75%), 
-                linear-gradient(-45deg, transparent 75%, #1a1f3a 75%);
-    background-size: 60px 60px;
-    background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
-    animation: moveBackground 20s linear infinite;
+    background: radial-gradient(ellipse at center, #1a1f3a 0%, #0f1527 50%, #000000 100%);
 }
 
 .fallback-stars,
@@ -1014,38 +1022,54 @@ canvas {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, rgba(66, 245, 230, 0.8), transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(66, 133, 244, 0.6), transparent),
-        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 130px 80px, rgba(139, 92, 246, 0.4), transparent),
-        radial-gradient(2px 2px at 160px 30px, rgba(66, 245, 230, 0.7), transparent);
+    background: transparent;
+    background-size: 300px 300px, 200px 200px, 100px 100px;
     background-repeat: repeat;
-    background-size: 200px 150px;
 }
 
 .fallback-stars {
-    animation: twinkleFallback 3s ease-in-out infinite;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(66, 245, 230, 0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(139, 92, 246, 0.4), transparent),
+        radial-gradient(2px 2px at 160px 30px, rgba(66, 245, 230, 0.3), transparent);
+    animation: starField 20s linear infinite;
 }
 
 .fallback-stars-2 {
-    animation: twinkleFallback 4s ease-in-out infinite reverse;
-    background-size: 250px 180px;
+    background-image: 
+        radial-gradient(1px 1px at 70px 50px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 120px 100px, rgba(66, 245, 230, 0.5), transparent),
+        radial-gradient(1px 1px at 190px 70px, rgba(255, 255, 255, 0.4), transparent);
+    animation: starField 30s linear infinite reverse;
 }
 
 .fallback-stars-3 {
-    animation: twinkleFallback 5s ease-in-out infinite;
-    background-size: 180px 120px;
+    background-image: 
+        radial-gradient(1px 1px at 50px 80px, rgba(139, 92, 246, 0.5), transparent),
+        radial-gradient(1px 1px at 150px 40px, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 80px 120px, rgba(66, 245, 230, 0.4), transparent);
+    animation: starField 40s linear infinite;
 }
 
-@keyframes moveBackground {
-    0% { background-position: 0 0, 0 30px, 30px -30px, -30px 0px; }
-    100% { background-position: 60px 60px, 60px 90px, 90px 30px, 30px 60px; }
+@keyframes starField {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-300px); }
 }
 
-@keyframes twinkleFallback {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+/* 響應式備用動畫 */
+@media (max-width: 768px) {
+    .fallback-stars,
+    .fallback-stars-2,
+    .fallback-stars-3 {
+        background-size: 200px 200px, 150px 150px, 80px 80px;
+    }
+    
+    @keyframes starField {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-200px); }
+    }
 }
 
 /* 地板拼接計算器專用樣式 */
@@ -1194,7 +1218,7 @@ canvas {
     background-image: 
         radial-gradient(1px 1px at 20% 30%, rgba(66, 245, 230, 0.3), transparent),
         radial-gradient(1px 1px at 40% 70%, rgba(66, 133, 244, 0.2), transparent),
-        radial-gradient(1px 1px at 90% 40%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.3), transparent),
         radial-gradient(1px 1px at 70% 80%, rgba(139, 92, 246, 0.2), transparent);
     background-repeat: repeat;
     background-size: 100px 100px;
@@ -1379,4 +1403,584 @@ canvas {
     .custom-confirm-btn {
         max-width: none;
     }
+}
+
+/* 浮水印生成器特定樣式 */
+.watermark-generator {
+    background: transparent !important;
+    min-height: 100vh;
+}
+
+.watermark-generator .calculator-container {
+    margin-top: 20px;
+    padding-top: 60px;
+}
+
+.watermark-generator .cosmic-background {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* 確保星空背景正確顯示 */
+.watermark-generator .cosmic-background .stars,
+.watermark-generator .cosmic-background .stars2,
+.watermark-generator .cosmic-background .stars3 {
+    display: block !important;
+}
+
+/* 星空動畫效果 */
+.stars,
+.stars2,
+.stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.stars {
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(66, 245, 230, 0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(66, 133, 244, 0.7), transparent),
+        radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.9), transparent);
+    background-repeat: repeat;
+    background-size: 250px 250px;
+    animation: starField 20s linear infinite;
+}
+
+.stars2 {
+    background-image: 
+        radial-gradient(1px 1px at 25px 25px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(2px 2px at 50px 100px, rgba(139, 92, 246, 0.5), transparent),
+        radial-gradient(1px 1px at 125px 50px, rgba(66, 245, 230, 0.8), transparent),
+        radial-gradient(1px 1px at 200px 100px, rgba(255, 255, 255, 0.4), transparent);
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    animation: starField 15s linear infinite reverse;
+}
+
+.stars3 {
+    background-image: 
+        radial-gradient(1px 1px at 10px 10px, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(2px 2px at 80px 80px, rgba(66, 133, 244, 0.4), transparent),
+        radial-gradient(1px 1px at 150px 150px, rgba(139, 92, 246, 0.6), transparent),
+        radial-gradient(1px 1px at 200px 200px, rgba(66, 245, 230, 0.3), transparent);
+    background-repeat: repeat;
+    background-size: 400px 400px;
+    animation: starField 25s linear infinite;
+}
+
+@keyframes starField {
+    0% { 
+        transform: translateY(0); 
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(-100px); 
+        opacity: 0.8;
+    }
+}
+
+/* 浮水印生成器美化樣式 */
+
+/* 位置選擇器網格美化 */
+.watermark-generator .position-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 280px;
+    margin: 0 auto;
+    padding: 15px;
+    background: linear-gradient(145deg, rgba(66, 245, 230, 0.05), rgba(74, 163, 255, 0.05));
+    border: 1px solid rgba(66, 245, 230, 0.2);
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-generator .position-selector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(90deg, transparent 49%, rgba(66, 245, 230, 0.3) 50%, rgba(66, 245, 230, 0.3) 51%, transparent 52%),
+        linear-gradient(0deg, transparent 49%, rgba(66, 245, 230, 0.3) 50%, rgba(66, 245, 230, 0.3) 51%, transparent 52%);
+    background-size: 93px 93px;
+    background-position: 15px 15px;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.watermark-generator .position-btn {
+    padding: 12px 8px;
+    border: 2px solid rgba(66, 245, 230, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.watermark-generator .position-btn:hover {
+    border-color: rgba(66, 245, 230, 0.6);
+    background: rgba(66, 245, 230, 0.1);
+    color: #42f5e6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(66, 245, 230, 0.2);
+}
+
+.watermark-generator .position-btn.active {
+    border-color: #42f5e6;
+    background: linear-gradient(135deg, rgba(66, 245, 230, 0.2), rgba(74, 163, 255, 0.2));
+    color: #42f5e6;
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.3), inset 0 0 20px rgba(66, 245, 230, 0.1);
+}
+
+.watermark-generator .position-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(66, 245, 230, 0.3), transparent);
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.watermark-generator .position-btn:hover::before {
+    width: 100px;
+    height: 100px;
+}
+
+/* 第1個按鈕（左上） */
+.watermark-generator .position-btn:nth-child(1) { grid-area: 1 / 1; }
+/* 第2個按鈕（右上） */
+.watermark-generator .position-btn:nth-child(2) { grid-area: 1 / 3; }
+/* 第3個按鈕（置中） */
+.watermark-generator .position-btn:nth-child(3) { grid-area: 2 / 2; }
+/* 第4個按鈕（左下） */
+.watermark-generator .position-btn:nth-child(4) { grid-area: 3 / 1; }
+/* 第5個按鈕（右下） */
+.watermark-generator .position-btn:nth-child(5) { grid-area: 3 / 3; }
+
+/* 美化滑動條 */
+.watermark-generator .cosmic-range {
+    height: 8px;
+    background: linear-gradient(90deg, 
+        rgba(66, 245, 230, 0.2) 0%, 
+        rgba(74, 163, 255, 0.2) 50%, 
+        rgba(66, 245, 230, 0.2) 100%);
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid rgba(66, 245, 230, 0.3);
+}
+
+.watermark-generator .cosmic-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #42f5e6, #4aa3ff);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(66, 245, 230, 0.5), 0 0 30px rgba(66, 245, 230, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.watermark-generator .cosmic-range::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.7), 0 0 40px rgba(66, 245, 230, 0.3);
+}
+
+.watermark-generator .cosmic-range::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #42f5e6, #4aa3ff);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(66, 245, 230, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 美化檔案輸入框 */
+.watermark-generator .cosmic-input[type="file"] {
+    background: rgba(66, 245, 230, 0.05);
+    border: 2px dashed rgba(66, 245, 230, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-generator .cosmic-input[type="file"]:hover {
+    border-color: rgba(66, 245, 230, 0.6);
+    background: rgba(66, 245, 230, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(66, 245, 230, 0.1);
+}
+
+.watermark-generator .cosmic-input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, rgba(66, 245, 230, 0.8), rgba(74, 163, 255, 0.8));
+    color: rgba(20, 30, 60, 0.9);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 600;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.watermark-generator .cosmic-input[type="file"]::file-selector-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(66, 245, 230, 0.3);
+}
+
+/* 美化預覽區域 */
+.watermark-generator .preview-canvas {
+    min-height: 300px;
+    background: 
+        linear-gradient(45deg, rgba(66, 245, 230, 0.03) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(74, 163, 255, 0.03) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(66, 245, 230, 0.03) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(74, 163, 255, 0.03) 75%);
+    background-size: 30px 30px;
+    background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+    border: 2px solid rgba(66, 245, 230, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-generator .preview-canvas::before {
+    content: '🖼️';
+    position: absolute;
+    font-size: 4rem;
+    opacity: 0.1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+    50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+/* 美化按鈕 */
+.watermark-generator .btn-cosmic {
+    background: linear-gradient(135deg, rgba(66, 245, 230, 0.8), rgba(74, 163, 255, 0.8));
+    border: 2px solid rgba(66, 245, 230, 0.5);
+    color: rgba(20, 30, 60, 0.9);
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-generator .btn-cosmic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.watermark-generator .btn-cosmic:hover::before {
+    left: 100%;
+}
+
+.watermark-generator .btn-cosmic:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(66, 245, 230, 0.3);
+    border-color: #42f5e6;
+}
+
+.watermark-generator .btn-cosmic:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 美化卡片標題 */
+.watermark-generator .upload-header h2,
+.watermark-generator .settings-header h2,
+.watermark-generator .preview-header h2,
+.watermark-generator .generate-header h2 {
+    background: linear-gradient(135deg, #42f5e6, #4aa3ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0;
+    text-shadow: none;
+}
+
+/* 美化數值輸入框 */
+.watermark-generator .cosmic-input[type="number"] {
+    background: rgba(66, 245, 230, 0.05);
+    border: 2px solid rgba(66, 245, 230, 0.2);
+    color: #42f5e6;
+    font-weight: 500;
+}
+
+.watermark-generator .cosmic-input[type="number"]:focus {
+    border-color: #42f5e6;
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.2);
+    background: rgba(66, 245, 230, 0.08);
+}
+
+/* 美化選擇框 */
+.watermark-generator .cosmic-select {
+    background: rgba(66, 245, 230, 0.05);
+    border: 2px solid rgba(66, 245, 230, 0.2);
+    color: #42f5e6;
+    font-weight: 500;
+}
+
+.watermark-generator .cosmic-select:focus {
+    border-color: #42f5e6;
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.2);
+}
+
+/* 美化複選框 */
+.watermark-generator .cosmic-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: #42f5e6;
+    border: 2px solid rgba(66, 245, 230, 0.3);
+    border-radius: 5px;
+}
+
+/* 美化標籤 */
+.watermark-generator .form-label {
+    color: #42f5e6;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(66, 245, 230, 0.3);
+}
+
+/* 圖片預覽美化 */
+.watermark-generator #watermarkPreview img,
+.watermark-generator #imagesPreview img {
+    border-radius: 10px;
+    border: 2px solid rgba(66, 245, 230, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.watermark-generator #watermarkPreview img:hover,
+.watermark-generator #imagesPreview img:hover {
+    transform: scale(1.05);
+    border-color: #42f5e6;
+    box-shadow: 0 10px 25px rgba(66, 245, 230, 0.3);
+}
+
+/* 拖放上傳美化效果 */
+.watermark-generator .upload-card {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.watermark-generator .upload-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(66, 245, 230, 0.1);
+}
+
+.watermark-generator .form-floating {
+    position: relative;
+}
+
+.watermark-generator .form-floating::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(66, 245, 230, 0.05) 0%, 
+        rgba(74, 163, 255, 0.05) 50%, 
+        rgba(66, 245, 230, 0.05) 100%);
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.watermark-generator .form-floating:hover::before {
+    opacity: 1;
+}
+
+.watermark-generator .form-floating label {
+    color: rgba(66, 245, 230, 0.8);
+    font-weight: 500;
+    z-index: 2;
+    position: relative;
+}
+
+/* 動畫載入效果 */
+.watermark-generator .loading-animation {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(66, 245, 230, 0.3);
+    border-radius: 50%;
+    border-top-color: #42f5e6;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 成功上傳動畫 */
+.watermark-generator .upload-success {
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark-generator .upload-success::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #42f5e6, #4aa3ff);
+    color: rgba(20, 30, 60, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    animation: successBounce 0.6s ease-out;
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.5);
+}
+
+@keyframes successBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* 進度指示器美化 */
+.watermark-generator .progress-indicator {
+    width: 100%;
+    height: 6px;
+    background: rgba(66, 245, 230, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+}
+
+.watermark-generator .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #42f5e6, #4aa3ff, #42f5e6);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: progressShine 2s ease-in-out infinite;
+    transition: width 0.3s ease;
+}
+
+@keyframes progressShine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* 設定區域美化 */
+.watermark-generator .settings-section {
+    position: relative;
+}
+
+.watermark-generator .settings-section::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #42f5e6, transparent);
+    opacity: 0.5;
+}
+
+/* 響應式美化 */
+@media (max-width: 768px) {
+    .watermark-generator .position-selector {
+        max-width: 240px;
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    .watermark-generator .position-btn {
+        padding: 10px 6px;
+        font-size: 0.8rem;
+    }
+}
+
+/* 工具提示美化 */
+.watermark-generator [data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+.watermark-generator [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 30, 60, 0.95);
+    color: #42f5e6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: 1px solid rgba(66, 245, 230, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.watermark-generator [data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
 }

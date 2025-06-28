@@ -12,205 +12,204 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../css/styles.css" rel="stylesheet" />
-    <link href="../css/enhanced-styles.css" rel="stylesheet" />
     <link href="../css/galaxy-theme.css" rel="stylesheet" />
     <link href="../css/fix-sizes.css" rel="stylesheet" />
-    <link href="../css/watermark.css" rel="stylesheet" />
 </head>
 
-<body id="page-top">
-    <!-- 宇宙背景效果 -->
-    <div class="cosmic-background">
-        <div class="stars"></div>
-        <div class="stars2"></div>
-        <div class="stars3"></div>
-    </div>
+<body id="page-top" class="watermark-generator">
+    <!-- Particles.js 星座連線背景 -->
+    <div id="particles-js"></div>
     
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container px-4 px-lg-5">
-            <!-- 網站LOGO -->
-            <a class="navbar-brand" href="../index.html">
-                <span class="brand-icon">
-                    <div class="planet-ring"></div>
-                    <div class="planet"></div>
-                </span>
-                TING造星球
-            </a>
-            <!-- 漢堡選單按鈕 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="../index.html#about">星球簡介</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../index.html#projects">地表資源</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/overtime_calculator.html">星際血汗</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
-                    <!-- 下拉選單 -->
-                    <li class="nav-item dropdown mobile-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            星球工具
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/wei/html/flooring_calculator.html">地板計算機</a></li>
-                            <li><a class="dropdown-item" href="/wei/html/flooring_number of square meters.html">地板坪數計算</a></li>
-                            <li><a class="dropdown-item active" href="/wei/html/watermark_generator.html">星際浮水印</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 標題區域 -->
-    <div class="masthead">
-        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-            <div class="d-flex justify-content-center">
-                <div class="text-center">
-                    <h1 class="text-white-50 mx-auto mt-2 mb-2">星際浮水印製造機</h1>
-                    <p class="text-white-50 mx-auto mt-2 mb-5">上傳圖片和浮水印，自定義位置和大小，批量處理圖片</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 主要內容 -->
-    <main class="container px-4 px-lg-5">
-        <section class="upload-section cosmic-panel">
-            <div class="panel-header">
-                <h2>上傳圖片</h2>
-            </div>
-            <div class="panel-body row">
-                <div class="col-lg-6 mb-4">
-                    <div class="watermark-upload">
-                        <h3><i class="fas fa-water me-2"></i>第一步：上傳浮水印圖片</h3>
-                        <div class="upload-area" id="watermarkUpload">
-                            <label for="watermarkInput">選擇浮水印圖片</label>
-                            <input type="file" id="watermarkInput" accept="image/*">
-                            <div class="preview" id="watermarkPreview"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="images-upload">
-                        <h3><i class="fas fa-images me-2"></i>第二步：上傳要添加浮水印的圖片</h3>
-                        <div class="upload-area" id="imagesUpload">
-                            <label for="imagesInput">選擇一張或多張圖片</label>
-                            <input type="file" id="imagesInput" accept="image/*" multiple>
-                            <div class="preview-gallery" id="imagesPreview"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="settings-section cosmic-panel">
-            <div class="panel-header">
-                <h2>浮水印設定</h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-4 mb-4">
-                        <div class="position-settings cosmic-control-panel">
-                            <h3><i class="fas fa-map-marker-alt me-2"></i>位置設定</h3>
-                            <div class="position-selector">
-                                <button class="position-btn" data-position="top-left">左上</button>
-                                <button class="position-btn" data-position="top-right">右上</button>
-                                <button class="position-btn" data-position="center" id="defaultPosition">置中</button>
-                                <button class="position-btn" data-position="bottom-left">左下</button>
-                                <button class="position-btn" data-position="bottom-right">右下</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-4 mb-4">
-                        <div class="size-settings cosmic-control-panel">
-                            <h3><i class="fas fa-expand-arrows-alt me-2"></i>大小設定</h3>
-                            <div class="size-inputs">
-                                <div class="input-group">
-                                    <label for="watermarkWidth">寬度 (像素):</label>
-                                    <input type="number" id="watermarkWidth" class="form-control cosmic-input" min="10" value="200">
-                                </div>
-                                <div class="input-group">
-                                    <label for="watermarkHeight">高度 (像素):</label>
-                                    <input type="number" id="watermarkHeight" class="form-control cosmic-input" min="10" value="200">
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="maintainAspect" class="cosmic-checkbox" checked>
-                                    <label for="maintainAspect">保持原始比例</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="opacity-settings cosmic-control-panel">
-                            <h3><i class="fas fa-layer-group me-2"></i>透明度設定</h3>
-                            <div class="opacity-slider">
-                                <label for="opacityRange">透明度: <span id="opacityValue">50%</span></label>
-                                <input type="range" id="opacityRange" class="form-range cosmic-range" min="10" max="100" value="50">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="preview-section cosmic-panel">
-            <div class="panel-header">
-                <h2>預覽效果</h2>
-            </div>
-            <div class="panel-body">
-                <div class="preview-container">
-                    <div id="previewImage" class="preview-canvas">
-                        <p>上傳圖片後在這裡預覽</p>
-                    </div>
-                </div>
-                <div class="control-buttons text-center mt-4">
-                    <button id="previewBtn" class="btn-cosmic" disabled>
-                        <i class="fas fa-eye me-2"></i>預覽效果
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section class="generate-section cosmic-panel">
-            <div class="panel-header">
-                <h2>生成和下載</h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-6 mx-auto">
-                        <div class="generate-options text-center">
-                            <div class="output-format">
-                                <label for="outputFormat">輸出格式:</label>
-                                <select id="outputFormat" class="form-select cosmic-select">
-                                    <option value="jpeg">JPEG</option>
-                                    <option value="png">PNG</option>
-                                </select>
-                                <div class="quality-slider mt-3" id="jpegQualityContainer">
-                                    <label for="jpegQuality">品質: <span id="qualityValue">90%</span></label>
-                                    <input type="range" id="jpegQuality" class="form-range cosmic-range" min="10" max="100" value="90">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="control-buttons text-center mt-4">
-                            <button id="processBtn" class="btn-cosmic primary-btn" disabled>
-                                <i class="fas fa-magic me-2"></i>處理圖片
+    <!-- Main Content -->
+    <main class="calculator-container">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- 標題區域 -->
+                    <div class="text-center mb-5">
+                        <h1 class="cosmic-title">
+                            <i class="fas fa-magic me-2"></i>星際浮水印製造機
+                        </h1>
+                        <p class="cosmic-subtitle">銀河級圖像處理系統</p>
+                        <p class="cosmic-description">運用星際科技為您的圖片添加專業浮水印</p>
+                        
+                        <!-- 快速導航按鈕 -->
+                        <div class="quick-nav-buttons mt-4">
+                            <button type="button" class="btn btn-galaxy-primary me-3" onclick="scrollToUpload()" id="startBtn">
+                                <i class="fas fa-upload me-2"></i>開始製作
                             </button>
-                            <button id="downloadBtn" class="btn-cosmic-secondary" disabled>
-                                <i class="fas fa-download me-2"></i>下載全部
+                            <button type="button" class="btn btn-galaxy-secondary" onclick="goToHomePage()" id="homeBtn">
+                                <i class="fas fa-home me-2"></i>返回首頁
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <div id="resultGallery" class="result-gallery mt-5"></div>
+                    <div class="calculator-panel" id="uploadSection">
+                        <!-- 上傳區域 -->
+                        <div class="upload-section mb-4">
+                            <div class="upload-card">
+                                <div class="upload-header">
+                                    <h2><i class="fas fa-cloud-upload-alt me-2"></i>圖像上傳台</h2>
+                                </div>
+                                <div class="upload-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="form-floating">
+                                                <input type="file" class="form-control cosmic-input" id="watermarkInput" accept="image/*">
+                                                <label for="watermarkInput">
+                                                    <i class="fas fa-water me-2"></i>第一步：上傳浮水印圖片
+                                                </label>
+                                            </div>
+                                            <div class="preview mt-3" id="watermarkPreview"></div>
+                                        </div>
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="form-floating">
+                                                <input type="file" class="form-control cosmic-input" id="imagesInput" accept="image/*" multiple>
+                                                <label for="imagesInput">
+                                                    <i class="fas fa-images me-2"></i>第二步：上傳要添加浮水印的圖片
+                                                </label>
+                                            </div>
+                                            <div class="preview-gallery mt-3" id="imagesPreview"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 設定區域 -->
+                        <div class="settings-section mb-4">
+                            <div class="settings-card">
+                                <div class="settings-header">
+                                    <h2><i class="fas fa-cogs me-2"></i>浮水印參數控制台</h2>
+                                </div>
+                                <div class="settings-body">
+                                    <div class="row g-4">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    <i class="fas fa-map-marker-alt me-2"></i>位置設定
+                                                    <small class="text-muted d-block">選擇浮水印在圖片上的位置</small>
+                                                </label>
+                                                <div class="position-selector" data-tooltip="點擊選擇浮水印位置">
+                                                    <button class="btn-cosmic position-btn" data-position="top-left" data-tooltip="左上角">左上</button>
+                                                    <button class="btn-cosmic position-btn" data-position="top-right" data-tooltip="右上角">右上</button>
+                                                    <button class="btn-cosmic position-btn active" data-position="center" id="defaultPosition" data-tooltip="居中位置">置中</button>
+                                                    <button class="btn-cosmic position-btn" data-position="bottom-left" data-tooltip="左下角">左下</button>
+                                                    <button class="btn-cosmic position-btn" data-position="bottom-right" data-tooltip="右下角">右下</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    <i class="fas fa-expand-arrows-alt me-2"></i>大小設定
+                                                    <small class="text-muted d-block">調整浮水印的尺寸大小</small>
+                                                </label>
+                                                <div class="form-floating mb-2">
+                                                    <input type="number" id="watermarkWidth" class="form-control cosmic-input" min="10" value="200" data-tooltip="浮水印寬度(像素)">
+                                                    <label for="watermarkWidth">寬度 (像素)</label>
+                                                </div>
+                                                <div class="form-floating mb-2">
+                                                    <input type="number" id="watermarkHeight" class="form-control cosmic-input" min="10" value="200" data-tooltip="浮水印高度(像素)">
+                                                    <label for="watermarkHeight">高度 (像素)</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" id="maintainAspect" class="form-check-input cosmic-checkbox" checked data-tooltip="保持原始長寬比例">
+                                                    <label for="maintainAspect" class="form-check-label">
+                                                        <i class="fas fa-lock me-2"></i>保持原始比例
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label for="opacityRange" class="form-label">
+                                                    <i class="fas fa-layer-group me-2"></i>透明度: <span id="opacityValue" class="badge bg-gradient text-dark">50%</span>
+                                                    <small class="text-muted d-block">調整浮水印的透明程度</small>
+                                                </label>
+                                                <input type="range" id="opacityRange" class="form-range cosmic-range" min="10" max="100" value="50" data-tooltip="拖動調整透明度">
+                                                <div class="d-flex justify-content-between text-muted small mt-1">
+                                                    <span>10%</span>
+                                                    <span>50%</span>
+                                                    <span>100%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 預覽區域 -->
+                        <div class="preview-section mb-4">
+                            <div class="preview-card">
+                                <div class="preview-header">
+                                    <h2><i class="fas fa-eye me-2"></i>實時預覽系統</h2>
+                                </div>
+                                <div class="preview-body text-center">
+                                    <div id="previewImage" class="preview-canvas mb-4">
+                                        <p class="text-muted">上傳圖片後在這裡預覽效果</p>
+                                    </div>
+                                    <button id="previewBtn" class="btn-cosmic" disabled>
+                                        <i class="fas fa-eye me-2"></i>預覽效果
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 生成和下載區域 -->
+                        <div class="generate-section mb-4">
+                            <div class="generate-card">
+                                <div class="generate-header">
+                                    <h2><i class="fas fa-magic me-2"></i>圖像處理與輸出</h2>
+                                </div>
+                                <div class="generate-body">
+                                    <div class="row justify-content-center">
+                                        <div class="col-lg-6">
+                                            <div class="form-floating mb-3">
+                                                <select id="outputFormat" class="form-select cosmic-select">
+                                                    <option value="jpeg">JPEG</option>
+                                                    <option value="png">PNG</option>
+                                                </select>
+                                                <label for="outputFormat">
+                                                    <i class="fas fa-file-image me-2"></i>輸出格式
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="form-group mb-4" id="jpegQualityContainer">
+                                                <label for="jpegQuality" class="form-label">
+                                                    <i class="fas fa-sliders-h me-2"></i>品質: <span id="qualityValue">90%</span>
+                                                </label>
+                                                <input type="range" id="jpegQuality" class="form-range cosmic-range" min="10" max="100" value="90">
+                                            </div>
+                                            
+                                            <div class="text-center">
+                                                <button id="processBtn" class="btn-cosmic me-3" disabled>
+                                                    <i class="fas fa-magic me-2"></i>處理圖片
+                                                </button>
+                                                <button id="downloadBtn" class="btn-cosmic-secondary" disabled>
+                                                    <i class="fas fa-download me-2"></i>下載全部
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 結果顯示區域 -->
+                                    <div class="result-display-area mt-4" id="resultSection" style="display: none;">
+                                        <div class="result-header">
+                                            <h3><i class="fas fa-check-circle me-2"></i>處理結果</h3>
+                                        </div>
+                                        <div id="resultGallery" class="result-gallery"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -220,8 +219,540 @@
         </div>
     </footer>
     
+    <!-- Processing Overlay -->
+    <div id="processingOverlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="cosmic-spinner"></div>
+            <div class="processing-text">正在處理圖片...</div>
+            <div class="processing-details">請稍候，星際處理系統正在為您的圖片添加浮水印</div>
+        </div>
+    </div>
+
+    <!-- Success Animation -->
+    <div id="successAnimation" class="success-animation" style="display: none;">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="success-title">處理完成！</div>
+        <div class="success-subtitle">您的圖片已成功添加浮水印</div>
+    </div>
+
     <!-- Bootstrap 核心 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <!-- Particles JS 初始化和 Toast 系統 -->
+    <script>
+        // 調試工具：顯示載入狀態
+        window.showDebugInfo = function() {
+            const debugDiv = document.createElement('div');
+            debugDiv.id = 'debug-info';
+            debugDiv.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                font-family: monospace;
+                font-size: 12px;
+                z-index: 9999;
+                max-width: 300px;
+                max-height: 200px;
+                overflow-y: auto;
+            `;
+            
+            const particlesContainer = document.getElementById('particles-js');
+            const hasCanvas = particlesContainer ? particlesContainer.querySelector('canvas') : false;
+            const hasFallback = particlesContainer ? particlesContainer.classList.contains('fallback-animation') : false;
+            
+            debugDiv.innerHTML = `
+                <strong>🔧 Particles.js 調試信息</strong><br>
+                ✓ particles.js 載入: ${typeof particlesJS !== 'undefined' ? '成功' : '失敗'}<br>
+                ✓ particles 容器: ${particlesContainer ? '存在' : '不存在'}<br>
+                ✓ canvas 元素: ${hasCanvas ? '存在' : '不存在'}<br>
+                ✓ 備用動畫: ${hasFallback ? '已啟動' : '未啟動'}<br>
+                ✓ 當前時間: ${new Date().toLocaleTimeString()}<br>
+                <button onclick="document.body.removeChild(this.parentElement)" style="margin-top: 5px; padding: 2px 5px;">關閉</button>
+            `;
+            
+            // 移除舊的調試信息
+            const oldDebug = document.getElementById('debug-info');
+            if (oldDebug) {
+                document.body.removeChild(oldDebug);
+            }
+            
+            document.body.appendChild(debugDiv);
+        };
+
+        // 多重 CDN 備援載入系統
+        function loadParticlesJS() {
+            return new Promise((resolve, reject) => {
+                // 首先檢查是否已載入
+                if (typeof particlesJS !== 'undefined') {
+                    resolve();
+                    return;
+                }
+                
+                const cdnList = [
+                    'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js',
+                    'https://unpkg.com/particles.js@2.0.0/particles.min.js'
+                ];
+                
+                let currentCdn = 0;
+                
+                function tryLoadCdn() {
+                    if (currentCdn >= cdnList.length) {
+                        reject(new Error('All CDN sources failed'));
+                        return;
+                    }
+                    
+                    console.log(`嘗試載入 particles.js from: ${cdnList[currentCdn]}`);
+                    const script = document.createElement('script');
+                    script.src = cdnList[currentCdn];
+                    
+                    script.onload = function() {
+                        console.log(`✅ particles.js 載入成功 from: ${cdnList[currentCdn]}`);
+                        resolve();
+                    };
+                    
+                    script.onerror = function() {
+                        console.warn(`❌ particles.js 載入失敗 from: ${cdnList[currentCdn]}`);
+                        currentCdn++;
+                        tryLoadCdn();
+                    };
+                    
+                    document.head.appendChild(script);
+                }
+                
+                tryLoadCdn();
+            });
+        }
+
+        // Particles.js 初始化函數（與銀河坪數計算器完全一致）
+        window.initParticlesSystem = function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS("particles-js", {
+                    particles: {
+                        number: { 
+                            value: window.innerWidth > 768 ? 80 : 40, 
+                            density: { enable: true, value_area: 800 } 
+                        },
+                        color: { value: "#ffffff" },
+                        shape: { 
+                            type: "circle",
+                            stroke: { width: 0, color: "#000000" }
+                        },
+                        opacity: { 
+                            value: 0.5, 
+                            random: true,
+                            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                        },
+                        size: { 
+                            value: 3, 
+                            random: true,
+                            anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                        },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: "#ffffff",
+                            opacity: 0.4,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 2,
+                            direction: "none",
+                            random: true,
+                            straight: false,
+                            out_mode: "out",
+                            bounce: false,
+                            attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                        }
+                    },
+                    interactivity: {
+                        detect_on: "canvas",
+                        events: {
+                            onhover: { enable: true, mode: "repulse" },
+                            onclick: { enable: true, mode: "push" },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 400, line_linked: { opacity: 1 } },
+                            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                            repulse: { distance: 200, duration: 0.4 },
+                            push: { particles_nb: 4 },
+                            remove: { particles_nb: 2 }
+                        }
+                    },
+                    retina_detect: true
+                });
+                
+                console.log('🎉 Particles.js 初始化成功！星座連線動畫已啟動');
+                
+                // 確保 particles 容器樣式正確
+                const particlesContainer = document.getElementById('particles-js');
+                if (particlesContainer) {
+                    particlesContainer.style.cssText = `
+                        position: fixed !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 100vw !important;
+                        height: 100vh !important;
+                        z-index: 1 !important;
+                        pointer-events: none !important;
+                        background: radial-gradient(ellipse at center, #1a1f3a 0%, #0f1527 50%, #000000 100%) !important;
+                        overflow: hidden !important;
+                    `;
+                    console.log('✅ Particles 容器樣式已設定');
+                    
+                    // 強制觸發 Particles.js 重新渲染
+                    setTimeout(() => {
+                        const canvas = particlesContainer.querySelector('canvas');
+                        if (canvas) {
+                            console.log('✅ Particles canvas 已創建:', canvas);
+                            canvas.style.visibility = 'visible';
+                            canvas.style.opacity = '1';
+                            canvas.style.display = 'block';
+                            // 確保 canvas 有正確的尺寸
+                            canvas.width = window.innerWidth;
+                            canvas.height = window.innerHeight;
+                        } else {
+                            console.warn('❌ 找不到 particles canvas，重新初始化...');
+                            // 重新初始化 Particles.js
+                            setTimeout(() => {
+                                if (typeof particlesJS !== 'undefined') {
+                                    window.initParticlesSystem();
+                                }
+                            }, 500);
+                        }
+                    }, 500);
+                }
+            } else {
+                console.warn('⚠️ Particles.js 載入失敗，使用備用星空效果');
+                window.initFallbackAnimation();
+            }
+        };
+
+        // 備用動畫系統（與銀河坪數計算器一致）
+        window.initFallbackAnimation = function() {
+            console.log('🎨 啟動備用 CSS 星空動畫...');
+            const particlesContainer = document.getElementById('particles-js');
+            if (particlesContainer) {
+                particlesContainer.innerHTML = `
+                    <div class="fallback-stars"></div>
+                    <div class="fallback-stars-2"></div>
+                    <div class="fallback-stars-3"></div>
+                `;
+                particlesContainer.classList.add('fallback-animation');
+                particlesContainer.style.cssText = `
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    z-index: 1 !important;
+                    pointer-events: none !important;
+                    background: radial-gradient(ellipse at center, #1a1f3a 0%, #0f1527 50%, #000000 100%) !important;
+                `;
+                console.log('✅ 備用動畫已啟動');
+            }
+        };
+
+        // Toast 提示訊息系統
+        window.showToast = function(message, type = 'info') {
+            // 檢查是否已存在 Toast，如果有則移除
+            const existingToast = document.querySelector('.cosmic-toast');
+            if (existingToast) {
+                document.body.removeChild(existingToast);
+            }
+            
+            // 建立新的 Toast 元素
+            const toast = document.createElement('div');
+            toast.className = `cosmic-toast cosmic-toast-${type}`;
+            
+            // 設置 Toast 內容
+            const icon = type === 'success' ? 'check-circle' : 
+                         type === 'error' ? 'exclamation-circle' : 
+                         type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+                         
+            toast.innerHTML = `
+                <div class="cosmic-toast-content">
+                    <i class="fas fa-${icon} me-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // 將 Toast 添加到頁面
+            document.body.appendChild(toast);
+            
+            // 顯示 Toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 自動隱藏 Toast
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        };
+
+        // 滾動到上傳區域功能
+        window.scrollToUpload = function() {
+            const uploadSection = document.getElementById('uploadSection');
+            if (uploadSection) {
+                uploadSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                showToast('📤 準備開始上傳圖片！', 'info');
+            }
+        };
+
+        // 返回首頁功能（優化版）
+        window.goToHomePage = function() {
+            console.log('🚀 返回首頁函數被調用');
+            
+            try {
+                // 使用自定義星際主題確認對話框
+                showCustomConfirm({
+                    title: '星際傳送確認',
+                    message: '準備返回到星球主控中心嗎？',
+                    icon: 'fas fa-rocket',
+                    details: [
+                        '目前的浮水印製作進度',
+                        '所有上傳的圖片與設定'
+                    ],
+                    confirmText: '確定傳送',
+                    cancelText: '取消'
+                }).then(confirmed => {
+                    console.log('✅ 確認對話框回應:', confirmed);
+                    if (confirmed) {
+                        showToast('🚀 正在傳送至星球主控中心...', 'info');
+                        setTimeout(() => {
+                            console.log('🎯 執行頁面跳轉');
+                            window.location.href = '../index.html';
+                        }, 800);
+                    } else {
+                        showToast('已取消返回首頁', 'info');
+                    }
+                }).catch(error => {
+                    console.error('❌ 自定義對話框錯誤:', error);
+                    // 出錯時使用原生確認框
+                    const confirmed = confirm('確定要返回首頁嗎？\n\n將會清除目前的浮水印製作進度和所有上傳的圖片設定');
+                    if (confirmed) {
+                        showToast('🚀 正在返回首頁...', 'info');
+                        setTimeout(() => {
+                            window.location.href = '../index.html';
+                        }, 500);
+                    }
+                });
+            } catch (error) {
+                console.error('❌ goToHomePage 執行錯誤:', error);
+                // 最終降級方案
+                const confirmed = confirm('確定要返回首頁嗎？');
+                if (confirmed) {
+                    window.location.href = '../index.html';
+                }
+            }
+        };
+
+        // 自定義星際主題確認對話框函數（簡化版）
+        window.showCustomConfirm = function(options) {
+            return new Promise((resolve) => {
+                console.log('🎯 創建自定義確認對話框');
+                
+                try {
+                    // 創建遮罩層
+                    const overlay = document.createElement('div');
+                    overlay.className = 'custom-confirm-overlay';
+                    
+                    // 創建對話框容器
+                    const modal = document.createElement('div');
+                    modal.className = 'custom-confirm-modal';
+                    
+                    // 創建對話框內容
+                    const content = `
+                        <div class="custom-confirm-header">
+                            <div class="custom-confirm-icon">
+                                <i class="${options.icon}"></i>
+                            </div>
+                            <h3 class="custom-confirm-title">${options.title}</h3>
+                        </div>
+                        <div class="custom-confirm-body">
+                            <p class="custom-confirm-message">${options.message}</p>
+                            ${options.details ? `
+                                <div class="custom-confirm-details">
+                                    <p>將會清除：</p>
+                                    <ul>
+                                        ${options.details.map(detail => `<li>${detail}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="custom-confirm-actions">
+                            <button class="custom-confirm-btn custom-confirm-btn-cancel" data-action="cancel">
+                                ${options.cancelText}
+                            </button>
+                            <button class="custom-confirm-btn custom-confirm-btn-confirm" data-action="confirm">
+                                ${options.confirmText}
+                            </button>
+                        </div>
+                    `;
+                    
+                    modal.innerHTML = content;
+                    overlay.appendChild(modal);
+                    document.body.appendChild(overlay);
+                    
+                    // 添加點擊事件
+                    const handleClick = (e) => {
+                        const action = e.target.getAttribute('data-action');
+                        if (action) {
+                            console.log('🎯 用戶選擇:', action);
+                            
+                            // 移除對話框
+                            overlay.classList.remove('show');
+                            setTimeout(() => {
+                                if (document.body.contains(overlay)) {
+                                    document.body.removeChild(overlay);
+                                }
+                            }, 300);
+                            
+                            // 返回結果
+                            resolve(action === 'confirm');
+                        }
+                    };
+                    
+                    // 點擊遮罩關閉
+                    overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) {
+                            console.log('🎯 點擊遮罩關閉');
+                            overlay.classList.remove('show');
+                            setTimeout(() => {
+                                if (document.body.contains(overlay)) {
+                                    document.body.removeChild(overlay);
+                                }
+                            }, 300);
+                            resolve(false);
+                        }
+                    });
+                    
+                    modal.addEventListener('click', handleClick);
+                    
+                    // 顯示動畫
+                    setTimeout(() => {
+                        overlay.classList.add('show');
+                    }, 10);
+                    
+                } catch (error) {
+                    console.error('❌ 自定義對話框創建失敗:', error);
+                    // 降級到原生確認框
+                    const confirmed = confirm(`${options.title}\n\n${options.message}\n\n將會清除：\n${options.details ? options.details.map(d => `• ${d}`).join('\n') : ''}`);
+                    resolve(confirmed);
+                }
+            });
+        };
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌟 DOM載入完成，開始初始化...');
+            
+            // 強制初始化 Particles.js（多重保險）
+            const initParticles = () => {
+                console.log('🎯 強制初始化 Particles.js');
+                window.showDebugInfo(); // 顯示調試信息
+                
+                if (typeof particlesJS !== 'undefined') {
+                    window.initParticlesSystem();
+                } else {
+                    console.log('⚠️ Particles.js 尚未載入，使用備用動畫');
+                    window.initFallbackAnimation();
+                }
+                
+                // 3秒後再次顯示調試信息
+                setTimeout(window.showDebugInfo, 3000);
+            };
+            
+            // 立即嘗試初始化
+            initParticles();
+            
+            // 0.5秒後再次嘗試
+            setTimeout(initParticles, 500);
+            
+            // 1秒後再次嘗試
+            setTimeout(initParticles, 1000);
+            
+            // 強制載入 Particles.js
+            loadParticlesJS().then(() => {
+                console.log('✅ Particles.js 強制載入完成');
+                setTimeout(() => {
+                    window.initParticlesSystem();
+                }, 100);
+            }).catch(() => {
+                console.log('🎨 強制載入失敗，使用備用動畫');
+                window.initFallbackAnimation();
+            });
+            
+            // 添加按鈕事件監聽器作為備用方案
+            const homeBtn = document.getElementById('homeBtn');
+            const startBtn = document.getElementById('startBtn');
+            
+            if (homeBtn) {
+                homeBtn.addEventListener('click', function(e) {
+                    console.log('🏠 備用返回首頁事件被觸發');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToHomePage();
+                });
+                console.log('✅ 返回首頁按鈕事件監聽器已添加');
+                
+                // 測試按鈕功能
+                console.log('🧪 測試按鈕功能...');
+                setTimeout(() => {
+                    console.log('🔍 homeBtn元素:', homeBtn);
+                    console.log('🔍 goToHomePage函數:', typeof goToHomePage);
+                }, 1000);
+            } else {
+                console.error('❌ 無法找到返回首頁按鈕');
+            }
+            
+            if (startBtn) {
+                startBtn.addEventListener('click', function(e) {
+                    console.log('🚀 備用開始製作事件被觸發');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollToUpload();
+                });
+                console.log('✅ 開始製作按鈕事件監聽器已添加');
+            } else {
+                console.error('❌ 無法找到開始製作按鈕');
+            }
+            
+            // 載入並初始化 Particles.js（移除重複載入）
+            // 顯示歡迎 Toast
+            setTimeout(() => {
+                showToast('🌟 歡迎使用星際浮水印製造機！', 'success');
+            }, 1000);
+        });
+
+        // 響應式調整
+        window.addEventListener('resize', function() {
+            if (typeof pJSDom !== 'undefined' && pJSDom[0] && pJSDom[0].pJS) {
+                pJSDom[0].pJS.particles.number.value = window.innerWidth > 768 ? 80 : 40;
+                pJSDom[0].pJS.fn.particlesRefresh();
+            }
+        });
+    </script>
+    
     <!-- 修復下拉選單 JS -->
     <script src="../js/dropdown-fix.js"></script>
     <!-- 自訂 JS -->
