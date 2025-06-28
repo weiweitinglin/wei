@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景測試</title>
+    <link href="../css/galaxy-theme.css" rel="stylesheet" />
+    <style>
+        .test-content {
+            position: relative;
+            z-index: 10;
+            color: white;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            margin: 20px;
+            border-radius: 10px;
+        }
+        .tall-content {
+            height: 2000px;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,0.05) 50%, 
+                rgba(255,255,255,0.1) 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子效果容器 -->
+    <div id="particles-js"></div>
+    
+    <div class="test-content">
+        <h1>🌌 背景測試頁面</h1>
+        <p>這個頁面用來測試背景是否正確覆蓋整個頁面高度。</p>
+        <p>請向下滾動查看背景是否保持一致。</p>
+        
+        <div class="tall-content">
+            <h2>長內容區域</h2>
+            <p>這個區域很高，用來測試背景是否會在頁面底部出現白色。</p>
+            <p>背景應該從頭到尾都是深色銀河主題。</p>
+            
+            <div style="margin-top: 500px;">
+                <h3>中間內容</h3>
+                <p>繼續測試背景...</p>
+            </div>
+            
+            <div style="margin-top: 500px;">
+                <h3>更多內容</h3>
+                <p>還是測試背景...</p>
+            </div>
+            
+            <div style="margin-top: 500px;">
+                <h3>底部內容</h3>
+                <p>如果您看到這裡仍然有深色背景，那麼修復成功了！</p>
+                <p>如果看到白色背景，那麼還需要進一步修復。</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        // 初始化粒子效果
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 50, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: false },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                    modes: { repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+        }
+        
+        // 動態調整背景高度
+        function adjustBackgroundHeight() {
+            const particlesContainer = document.getElementById('particles-js');
+            if (particlesContainer) {
+                const documentHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.clientHeight,
+                    document.documentElement.scrollHeight,
+                    document.documentElement.offsetHeight
+                );
+                
+                particlesContainer.style.height = documentHeight + 'px';
+                console.log('背景高度調整為:', documentHeight + 'px');
+            }
+        }
+        
+        window.addEventListener('load', adjustBackgroundHeight);
+        window.addEventListener('resize', adjustBackgroundHeight);
+    </script>
+</body>
+</html>

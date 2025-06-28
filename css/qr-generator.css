@@ -296,7 +296,217 @@
     to { opacity: 1; }
 }
 
-/* 響應式設計 */
+/* Cosmic Toast 通知系統 */
+.cosmic-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.cosmic-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.cosmic-toast-content {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cosmic-toast-content i {
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+/* Toast 類型樣式 */
+.cosmic-toast-info {
+    border-left: 4px solid var(--primary-color);
+}
+
+.cosmic-toast-info .cosmic-toast-content i {
+    color: var(--primary-color);
+}
+
+.cosmic-toast-success {
+    border-left: 4px solid var(--success-color);
+}
+
+.cosmic-toast-success .cosmic-toast-content i {
+    color: var(--success-color);
+}
+
+.cosmic-toast-warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.cosmic-toast-warning .cosmic-toast-content i {
+    color: var(--warning-color);
+}
+
+.cosmic-toast-error {
+    border-left: 4px solid var(--error-color);
+}
+
+.cosmic-toast-error .cosmic-toast-content i {
+    color: var(--error-color);
+}
+
+/* 自定義確認對話框樣式 */
+.custom-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-confirm-overlay.show {
+    opacity: 1;
+}
+
+.custom-confirm-modal {
+    background: var(--galaxy-surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--galaxy-border);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    color: var(--galaxy-text-primary);
+    font-family: var(--font-primary);
+    box-shadow: var(--galaxy-shadow);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.custom-confirm-overlay.show .custom-confirm-modal {
+    transform: scale(1);
+}
+
+.custom-confirm-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.custom-confirm-icon {
+    font-size: 48px;
+    color: var(--galaxy-accent);
+    margin-bottom: 15px;
+}
+
+.custom-confirm-title {
+    color: var(--galaxy-text-primary);
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.custom-confirm-message {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: var(--galaxy-text-secondary);
+}
+
+.custom-confirm-details {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.custom-confirm-details h6 {
+    color: var(--galaxy-text-primary);
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.custom-confirm-details ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.custom-confirm-details li {
+    color: var(--galaxy-text-secondary);
+    font-size: 14px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.custom-confirm-details li::before {
+    content: '•';
+    color: var(--galaxy-accent);
+    position: absolute;
+    left: -15px;
+}
+
+.custom-confirm-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.custom-confirm-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.custom-confirm-btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--galaxy-text-primary);
+    border: 1px solid var(--galaxy-border);
+}
+
+.custom-confirm-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.custom-confirm-btn-confirm {
+    background: var(--galaxy-gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+}
+
+.custom-confirm-btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+}
+
+/* 手機版適配 */
 @media (max-width: 768px) {
     .tool-hero {
         min-height: 60vh;
@@ -322,6 +532,31 @@
     .result-actions .btn {
         width: 100%;
         margin-bottom: 0.5rem;
+    }
+    
+    .cosmic-toast {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
+        transform: translateY(-100%);
+    }
+    
+    .cosmic-toast.show {
+        transform: translateY(0);
+    }
+    
+    .custom-confirm-modal {
+        margin: 20px;
+        padding: 25px;
+    }
+    
+    .custom-confirm-actions {
+        flex-direction: column;
+    }
+    
+    .custom-confirm-btn {
+        width: 100%;
     }
 }
 

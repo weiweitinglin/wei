@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code 測試頁面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🛠️ QR Code 網站診斷工具</h1>
+        <p>此工具幫助檢查 QR Code 生成器的狀態</p>
+        
+        <div id="results"></div>
+        
+        <button class="test-button" onclick="runTests()">🧪 執行測試</button>
+        <button class="test-button" onclick="openQRPage()">🚀 開啟 QR Code 頁面</button>
+        <button class="test-button" onclick="testDirectGeneration()">⚡ 直接測試生成</button>
+        
+        <h3>📋 測試清單：</h3>
+        <ul>
+            <li>檢查 HTML 檔案存在性</li>
+            <li>檢查 JavaScript 檔案存在性</li>
+            <li>檢查 CSS 檔案存在性</li>
+            <li>測試基本頁面載入</li>
+            <li>測試 QR Code 生成功能</li>
+        </ul>
+    </div>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        async function runTests() {
+            document.getElementById('results').innerHTML = '';
+            addResult('🚀 開始執行診斷測試...', 'info');
+            
+            // 測試 1: 檢查主頁面
+            try {
+                const response = await fetch('./QR code.html');
+                if (response.ok) {
+                    addResult('✅ QR code.html 檔案存在且可訪問', 'success');
+                } else {
+                    addResult('❌ QR code.html 檔案無法訪問', 'error');
+                }
+            } catch (error) {
+                addResult('❌ 無法檢查 QR code.html: ' + error.message, 'error');
+            }
+            
+            // 測試 2: 檢查 JavaScript 檔案
+            const jsFiles = [
+                '../js/qr-generator.js',
+                '../js/enhanced-features.js',
+                '../js/qrcode-simple.js'
+            ];
+            
+            for (const file of jsFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        addResult(`✅ ${file} 檔案存在`, 'success');
+                    } else {
+                        addResult(`❌ ${file} 檔案無法訪問`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ 無法檢查 ${file}: ${error.message}`, 'error');
+                }
+            }
+            
+            // 測試 3: 檢查 CSS 檔案
+            const cssFiles = [
+                '../css/galaxy-theme.css',
+                '../css/qr-generator.css'
+            ];
+            
+            for (const file of cssFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        addResult(`✅ ${file} 檔案存在`, 'success');
+                    } else {
+                        addResult(`❌ ${file} 檔案無法訪問`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ 無法檢查 ${file}: ${error.message}`, 'error');
+                }
+            }
+            
+            addResult('🏁 診斷測試完成！', 'info');
+        }
+        
+        function openQRPage() {
+            addResult('🌐 開啟 QR Code 頁面...', 'info');
+            window.open('./QR code.html', '_blank');
+        }
+        
+        function testDirectGeneration() {
+            addResult('⚡ 開始直接測試 QR Code 生成...', 'info');
+            
+            // 創建測試用的 canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            
+            // 簡單的測試生成
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.fillStyle = '#000000';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('QR Test', 100, 100);
+            
+            // 將 canvas 添加到頁面
+            const container = document.getElementById('results');
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test-result success';
+            testDiv.innerHTML = '<strong>Canvas 測試結果:</strong><br>';
+            testDiv.appendChild(canvas);
+            container.appendChild(testDiv);
+            
+            addResult('✅ Canvas 繪製功能正常', 'success');
+        }
+        
+        // 頁面載入時自動執行基礎檢查
+        window.addEventListener('load', () => {
+            addResult('🔧 QR Code 診斷工具已就緒', 'info');
+            addResult('💡 點擊"執行測試"開始診斷', 'info');
+        });
+    </script>
+</body>
+</html>
