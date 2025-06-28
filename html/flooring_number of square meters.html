@@ -13,11 +13,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="../css/styles.css" rel="stylesheet">
+    <link href="../css/enhanced-styles.css" rel="stylesheet">
+    <link href="../css/flooring-galaxy-fixed.css" rel="stylesheet">
     <link href="../css/fix-sizes.css" rel="stylesheet">
-    <link href="../css/overtime-calculator.css" rel="stylesheet">
 </head>
 
 <body id="page-top" class="overtime-calculator">
+    <!-- 星座連線背景 -->
+    <div id="particles-js"></div>
+    
     <!-- 宇宙背景 -->
     <div class="cosmic-background">
         <div class="stars"></div>
@@ -73,11 +77,28 @@
                     <h1 class="cosmic-title">
                         <i class="fas fa-calculator me-2"></i>銀河坪數計算器
                     </h1>
-                    <p class="cosmic-subtitle">輸入空間的長度和寬度，瞬間轉換成精確坪數</p>
+                    <p class="cosmic-subtitle">跨銀河通訊協議</p>
+                    <p class="cosmic-description">用星際語言創造跨銀河的聯繫方式</p>
+                    
+                    <!-- 快速導航按鈕 -->
+                    <div class="quick-nav-buttons mt-4">
+                        <button type="button" class="btn btn-galaxy-primary me-3" onclick="scrollToCalculator()">
+                            <i class="fas fa-rocket me-2"></i>開始計算
+                        </button>
+                        <button type="button" class="btn btn-galaxy-secondary" onclick="goToHomePage()">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 計算器主體 -->
-                <div class="calculator-panel">
+                <div class="calculator-panel" id="calculatorSection">
+                    <div class="section-header mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-atom me-2"></i>量子坪數轉換儀
+                        </h2>
+                        <p class="section-subtitle">精確測量您的空間維度</p>
+                    </div>
                     <!-- 輸入表單 -->
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3">
@@ -100,24 +121,24 @@
                         </div>
                     </div>
 
-                    <!-- 計算按鈕 -->
+    <!-- 計算按鈕 -->
                     <div class="text-center mb-4">
                         <button type="button" class="btn btn-cosmic calculate-btn" id="calculateBtn">
-                            <i class="fas fa-calculator me-2"></i>計算坪數
+                            <i class="fas fa-rocket me-2"></i>啟動計算引擎
                         </button>
                     </div>
 
                     <!-- 結果顯示 -->
-                    <div class="row g-3 mb-4">
+                    <div class="row g-3 mb-4" id="resultsSection">
                         <div class="col-md-6">
                             <div class="info-box">
-                                <h3><i class="fas fa-chart-area me-2"></i>面積</h3>
+                                <h3><i class="fas fa-expand-arrows-alt me-2"></i>空間面積</h3>
                                 <p id="areaResult">-- 平方公尺</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="info-box">
-                                <h3><i class="fas fa-vector-square me-2"></i>坪數</h3>
+                                <h3><i class="fas fa-home me-2"></i>坪數換算</h3>
                                 <p id="pingResult">-- 坪</p>
                             </div>
                         </div>
@@ -125,9 +146,15 @@
 
                     <!-- 視覺化圖形 -->
                     <div class="visual-box">
-                        <h3 class="visual-title"><i class="fas fa-draw-polygon me-2"></i>空間視圖</h3>
+                        <h3 class="visual-title"><i class="fas fa-cube me-2"></i>3D 空間視覺化</h3>
                         <div class="canvas-wrapper">
                             <canvas id="canvas" width="700" height="400"></canvas>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                視覺化圖形會根據您輸入的尺寸自動調整比例
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -136,16 +163,239 @@
     </div>
 
     <!-- 頁尾 -->
-    <footer class="footer bg-black small text-center text-white-50">
+    <footer class="footer bg-black small text-center text-white-50" style="padding: 2rem 0 3rem 0;">
         <div class="container px-4 px-lg-5">
-            <p>© 2025 銀河計算系統 | 探索宇宙間的精確計算</p>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <p class="mb-2">
+                        <span class="brand-icon-small me-2">
+                            <div class="planet-ring-small"></div>
+                            <div class="planet-small"></div>
+                        </span>
+                        TING造星球
+                    </p>
+                    <p class="mb-0 opacity-75">© 2025 銀河計算系統 | 探索宇宙間的精確計算</p>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- 更強化的 Particles JS 載入 -->
+    <script>
+        // 多重 CDN 備援載入系統
+        function loadParticlesJS() {
+            return new Promise((resolve, reject) => {
+                // 首先檢查是否已載入
+                if (typeof particlesJS !== 'undefined') {
+                    resolve();
+                    return;
+                }
+                
+                const cdnList = [
+                    'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js',
+                    'https://unpkg.com/particles.js@2.0.0/particles.min.js'
+                ];
+                
+                let currentCdn = 0;
+                
+                function tryLoadCdn() {
+                    if (currentCdn >= cdnList.length) {
+                        reject(new Error('All CDN sources failed'));
+                        return;
+                    }
+                    
+                    console.log(`嘗試載入 particles.js from: ${cdnList[currentCdn]}`);
+                    const script = document.createElement('script');
+                    script.src = cdnList[currentCdn];
+                    
+                    script.onload = function() {
+                        console.log(`✅ particles.js 載入成功 from: ${cdnList[currentCdn]}`);
+                        resolve();
+                    };
+                    
+                    script.onerror = function() {
+                        console.warn(`❌ particles.js 載入失敗 from: ${cdnList[currentCdn]}`);
+                        currentCdn++;
+                        tryLoadCdn();
+                    };
+                    
+                    document.head.appendChild(script);
+                }
+                
+                tryLoadCdn();
+            });
+        }
+        
+        // 頁面載入完成後立即執行
+        window.addEventListener('load', function() {
+            loadParticlesJS().then(() => {
+                setTimeout(() => {
+                    if (window.initParticlesSystem) {
+                        window.initParticlesSystem();
+                    }
+                }, 100);
+            }).catch((error) => {
+                console.error('Failed to load particles.js:', error);
+                // 使用備用動畫
+                if (window.initFallbackAnimation) {
+                    window.initFallbackAnimation();
+                }
+            });
+        });
+    </script>
     <!-- 自定義 JS -->
     <script>
+        // 與首頁完全一致的 particles.js 初始化
+        window.initParticlesSystem = function() {
+            if (typeof particlesJS !== 'undefined') {                    particlesJS("particles-js", {
+                        particles: {
+                            number: { 
+                                value: window.innerWidth > 768 ? 80 : 40, 
+                                density: { enable: true, value_area: 800 } 
+                            },
+                            color: { value: "#ffffff" },
+                            shape: { 
+                                type: "circle",
+                                stroke: { width: 0, color: "#000000" }
+                            },
+                            opacity: { 
+                                value: 0.5, 
+                                random: true,
+                                anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                            },
+                            size: { 
+                                value: 3, 
+                                random: true,
+                                anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                            },
+                            line_linked: {
+                                enable: true,
+                                distance: 150,
+                                color: "#ffffff",
+                                opacity: 0.4,
+                                width: 1
+                            },
+                            move: {
+                                enable: true,
+                                speed: 2,
+                                direction: "none",
+                                random: true,
+                                straight: false,
+                                out_mode: "out",
+                                bounce: false,
+                                attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                            }
+                        },
+                        interactivity: {
+                            detect_on: "canvas",
+                            events: {
+                                onhover: { enable: true, mode: "repulse" },
+                                onclick: { enable: true, mode: "push" },
+                                resize: true
+                            },
+                            modes: {
+                                grab: { distance: 400, line_linked: { opacity: 1 } },
+                                bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                                repulse: { distance: 200, duration: 0.4 },
+                                push: { particles_nb: 4 },
+                                remove: { particles_nb: 2 }
+                            }
+                        },
+                        retina_detect: true
+                    });
+                    
+                    console.log('🎉 Particles.js 初始化成功！星座連線動畫已啟動');
+                    
+                    // 確保 particles 容器樣式正確
+                    const particlesContainer = document.getElementById('particles-js');
+                    if (particlesContainer) {
+                        particlesContainer.style.cssText = `
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            width: 100% !important;
+                            height: 100% !important;
+                            z-index: 1 !important;
+                            pointer-events: none !important;
+                            background: transparent !important;
+                        `;
+                        console.log('✅ Particles 容器樣式已設定');
+                        
+                        // 檢查 particles.js 是否創建了 canvas
+                        setTimeout(() => {
+                            const canvas = particlesContainer.querySelector('canvas');
+                            if (canvas) {
+                                console.log('✅ Particles canvas 已創建:', canvas);
+                                canvas.style.visibility = 'visible';
+                                canvas.style.opacity = '1';
+                            } else {
+                                console.warn('❌ 找不到 particles canvas');
+                            }
+                        }, 500);
+                    }
+            } else {
+                console.log('Particles.js 未載入，使用備用動畫');
+                window.initFallbackAnimation();
+            }
+        }
+        
+        // 備用動畫系統
+        window.initFallbackAnimation = function() {
+            console.log('🎨 啟動備用 CSS 星空動畫...');
+            const particlesContainer = document.getElementById('particles-js');
+            if (particlesContainer) {
+                particlesContainer.innerHTML = `
+                    <div class="fallback-stars"></div>
+                    <div class="fallback-stars-2"></div>
+                    <div class="fallback-stars-3"></div>
+                `;
+                particlesContainer.classList.add('fallback-animation');
+                particlesContainer.style.cssText = `
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    z-index: 1 !important;
+                    pointer-events: none !important;
+                `;
+                console.log('✅ 備用動畫已啟動');
+            }
+        }
+        
+        // 立即檢查並初始化（最優先）
+        if (typeof particlesJS !== 'undefined') {
+            setTimeout(window.initParticlesSystem, 50);
+        }
+        
+        // 頁面載入完成後立即初始化
+        window.addEventListener('load', function() {
+            setTimeout(window.initParticlesSystem, 100);
+        });
+        
+        // DOM 載入完成後也嘗試初始化（雙重保險）
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof particlesJS !== 'undefined') {
+                    window.initParticlesSystem();
+                } else {
+                    // 如果還是沒載入，強制重新載入
+                    console.log('強制重新載入 particles.js...');
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+                    script.onload = function() {
+                        setTimeout(window.initParticlesSystem, 100);
+                    };
+                    document.head.appendChild(script);
+                }
+            }, 500);
+        });
+        
         // 當頁面載入完成時執行
         document.addEventListener('DOMContentLoaded', function() {
             // 獲取DOM元素
@@ -188,6 +438,17 @@
                     areaResultElement.textContent = `${areaSquareMeters.toFixed(2)} 平方公尺`;
                     pingResultElement.textContent = `${areaPing.toFixed(2)} 坪`;
                     
+                    // 結果區域淡入效果
+                    const resultsSection = document.getElementById('resultsSection');
+                    resultsSection.style.opacity = '0';
+                    resultsSection.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        resultsSection.style.transition = 'all 0.5s ease';
+                        resultsSection.style.opacity = '1';
+                        resultsSection.style.transform = 'translateY(0)';
+                    }, 100);
+                    
                     // 結果動畫效果
                     animateResults();
                     
@@ -208,39 +469,66 @@
                 const ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // 設置深空背景
-                ctx.fillStyle = '#0c1445';
+                // 設置深空背景漸變
+                const bgGradient = ctx.createRadialGradient(
+                    canvas.width / 2, canvas.height / 2, 0,
+                    canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
+                );
+                bgGradient.addColorStop(0, '#1a1f3a');
+                bgGradient.addColorStop(0.7, '#0f1527');
+                bgGradient.addColorStop(1, '#000000');
+                
+                ctx.fillStyle = bgGradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // 繪製一些小星星
-                drawStars(ctx, 100);
+                // 繪製動態星星背景
+                drawAdvancedStars(ctx, 150);
                 
-                // 顯示提示文字
-                ctx.font = '16px "Space Grotesk", sans-serif';
+                // 顯示等待提示
+                ctx.font = '18px "Space Grotesk", sans-serif';
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
                 ctx.textAlign = 'center';
-                ctx.fillText('', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('🚀 準備啟動計算引擎', canvas.width / 2, canvas.height / 2 - 10);
+                ctx.font = '14px "Space Grotesk", sans-serif';
+                ctx.fillStyle = 'rgba(66, 245, 230, 0.8)';
+                ctx.fillText('輸入尺寸以查看 3D 視覺化效果', canvas.width / 2, canvas.height / 2 + 15);
             }
             
-            // 繪製星星
-            function drawStars(ctx, count) {
+            // 繪製進階星星背景
+            function drawAdvancedStars(ctx, count) {
                 for (let i = 0; i < count; i++) {
                     const x = Math.random() * canvas.width;
                     const y = Math.random() * canvas.height;
-                    const radius = Math.random() * 1.5;
+                    const radius = Math.random() * 2 + 0.5;
                     const opacity = Math.random() * 0.8 + 0.2;
                     
+                    // 主星星
                     ctx.beginPath();
                     ctx.arc(x, y, radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
                     ctx.fill();
                     
-                    // 有時候添加光暈效果
-                    if (Math.random() > 0.8) {
+                    // 彩色光暈效果
+                    if (Math.random() > 0.7) {
+                        const colors = ['66, 245, 230', '66, 133, 244', '139, 92, 246'];
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        
                         ctx.beginPath();
-                        ctx.arc(x, y, radius * 3, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(111, 155, 255, ${opacity * 0.3})`;
+                        ctx.arc(x, y, radius * 4, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${color}, ${opacity * 0.2})`;
                         ctx.fill();
+                        
+                        // 十字星芒效果
+                        if (Math.random() > 0.8) {
+                            ctx.strokeStyle = `rgba(${color}, ${opacity * 0.6})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(x - radius * 6, y);
+                            ctx.lineTo(x + radius * 6, y);
+                            ctx.moveTo(x, y - radius * 6);
+                            ctx.lineTo(x, y + radius * 6);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
@@ -249,12 +537,12 @@
             function drawRectangle(length, width) {
                 const ctx = canvas.getContext('2d');
                 
-                // 清空畫布
+                // 重新初始化背景
                 initCanvas();
                 
                 // 計算適當的縮放比例
                 const maxDimension = Math.max(length, width);
-                const scaleFactor = Math.min(canvas.width * 0.7 / width, canvas.height * 0.7 / length);
+                const scaleFactor = Math.min(canvas.width * 0.6 / width, canvas.height * 0.6 / length);
                 
                 // 縮放後的尺寸
                 const lengthScaled = length * scaleFactor;
@@ -264,70 +552,148 @@
                 const startX = (canvas.width - widthScaled) / 2;
                 const startY = (canvas.height - lengthScaled) / 2;
                 
-                // 設置矩形樣式 - 使用漸變填充
-                const gradient = ctx.createLinearGradient(startX, startY, startX + widthScaled, startY + lengthScaled);
-                gradient.addColorStop(0, 'rgba(81, 125, 225, 0.6)');
-                gradient.addColorStop(1, 'rgba(111, 155, 255, 0.4)');
+                // 建立多層漸變效果
+                const mainGradient = ctx.createLinearGradient(startX, startY, startX + widthScaled, startY + lengthScaled);
+                mainGradient.addColorStop(0, 'rgba(66, 245, 230, 0.3)');
+                mainGradient.addColorStop(0.5, 'rgba(66, 133, 244, 0.4)');
+                mainGradient.addColorStop(1, 'rgba(139, 92, 246, 0.3)');
                 
-                // 繪製矩形
-                ctx.fillStyle = gradient;
-                ctx.strokeStyle = '#4fc3f7';
+                // 繪製陰影
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = 'rgba(66, 245, 230, 0.5)';
+                
+                // 繪製主矩形
+                ctx.fillStyle = mainGradient;
+                ctx.strokeStyle = '#42f5e6';
                 ctx.lineWidth = 2;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = 'rgba(79, 195, 247, 0.5)';
                 
                 ctx.beginPath();
                 ctx.rect(startX, startY, widthScaled, lengthScaled);
                 ctx.fill();
                 ctx.stroke();
                 
-                // 移除陰影效果，以免影響後續繪製
+                // 移除陰影
                 ctx.shadowBlur = 0;
                 
-                // 繪製尺寸標籤
-                ctx.font = '14px "Space Grotesk", sans-serif';
+                // 繪製邊框裝飾
+                ctx.strokeStyle = 'rgba(66, 245, 230, 0.8)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.rect(startX - 5, startY - 5, widthScaled + 10, lengthScaled + 10);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // 繪製尺寸標籤（優化樣式）
+                ctx.font = 'bold 14px "Space Grotesk", sans-serif';
                 ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'center';
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.lineWidth = 3;
                 
                 // 寬度標籤
-                ctx.fillText(`${width} cm`, startX + widthScaled / 2, startY + lengthScaled + 25);
+                const widthText = `寬度: ${width} cm`;
+                ctx.strokeText(widthText, startX + widthScaled / 2, startY + lengthScaled + 30);
+                ctx.fillText(widthText, startX + widthScaled / 2, startY + lengthScaled + 30);
                 
                 // 長度標籤
                 ctx.save();
-                ctx.translate(startX - 20, startY + lengthScaled / 2);
+                ctx.translate(startX - 30, startY + lengthScaled / 2);
                 ctx.rotate(-Math.PI / 2);
-                ctx.fillText(`${length} cm`, 0, 0);
+                const lengthText = `長度: ${length} cm`;
+                ctx.strokeText(lengthText, 0, 0);
+                ctx.fillText(lengthText, 0, 0);
                 ctx.restore();
                 
-                // 在四個角落添加點
-                drawCornerPoint(ctx, startX, startY);
-                drawCornerPoint(ctx, startX + widthScaled, startY);
-                drawCornerPoint(ctx, startX, startY + lengthScaled);
-                drawCornerPoint(ctx, startX + widthScaled, startY + lengthScaled);
+                // 繪製裝飾性角落
+                drawEnhancedCorners(ctx, startX, startY, widthScaled, lengthScaled);
+                
+                // 添加網格效果
+                drawGrid(ctx, startX, startY, widthScaled, lengthScaled);
             }
             
-            // 繪製角落點
-            function drawCornerPoint(ctx, x, y) {
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#4fc3f7';
-                ctx.fill();
+            // 繪製增強型角落裝飾
+            function drawEnhancedCorners(ctx, x, y, width, height) {
+                const corners = [
+                    {x: x, y: y},
+                    {x: x + width, y: y},
+                    {x: x, y: y + height},
+                    {x: x + width, y: y + height}
+                ];
                 
-                ctx.beginPath();
-                ctx.arc(x, y, 8, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(79, 195, 247, 0.5)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
+                corners.forEach(corner => {
+                    // 主要光點
+                    ctx.beginPath();
+                    ctx.arc(corner.x, corner.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#42f5e6';
+                    ctx.fill();
+                    
+                    // 光暈效果
+                    ctx.beginPath();
+                    ctx.arc(corner.x, corner.y, 12, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(66, 245, 230, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // 十字線裝飾
+                    ctx.strokeStyle = 'rgba(66, 245, 230, 0.6)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(corner.x - 8, corner.y);
+                    ctx.lineTo(corner.x + 8, corner.y);
+                    ctx.moveTo(corner.x, corner.y - 8);
+                    ctx.lineTo(corner.x, corner.y + 8);
+                    ctx.stroke();
+                });
+            }
+            
+            // 繪製網格效果
+            function drawGrid(ctx, x, y, width, height) {
+                ctx.strokeStyle = 'rgba(66, 245, 230, 0.1)';
+                ctx.lineWidth = 0.5;
+                
+                const gridSize = 20;
+                
+                // 垂直線
+                for (let i = gridSize; i < width; i += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + i, y);
+                    ctx.lineTo(x + i, y + height);
+                    ctx.stroke();
+                }
+                
+                // 水平線
+                for (let i = gridSize; i < height; i += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + i);
+                    ctx.lineTo(x + width, y + i);
+                    ctx.stroke();
+                }
             }
             
             // 結果數字動畫效果
             function animateResults() {
                 const infoBoxes = document.querySelectorAll('.info-box');
-                infoBoxes.forEach(box => {
-                    box.classList.add('pulse-animation');
+                infoBoxes.forEach((box, index) => {
+                    // 錯開動畫時間
                     setTimeout(() => {
-                        box.classList.remove('pulse-animation');
-                    }, 1000);
+                        box.classList.add('pulse-animation');
+                        
+                        // 數字動畫效果
+                        const resultText = box.querySelector('p');
+                        const originalText = resultText.textContent;
+                        resultText.style.transform = 'scale(1.1)';
+                        resultText.style.color = '#42f5e6';
+                        
+                        setTimeout(() => {
+                            resultText.style.transform = 'scale(1)';
+                            resultText.style.color = '';
+                        }, 300);
+                        
+                        setTimeout(() => {
+                            box.classList.remove('pulse-animation');
+                        }, 600);
+                    }, index * 200);
                 });
             }
             
@@ -372,6 +738,32 @@
                 }, 3000);
             }
             
+            // 快速導航功能
+            window.scrollToCalculator = function() {
+                const calculatorSection = document.getElementById('calculatorSection');
+                calculatorSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // 聚焦到第一個輸入框
+                setTimeout(() => {
+                    lengthInput.focus();
+                    // 添加輕微的發光效果提示
+                    lengthInput.style.boxShadow = '0 0 20px rgba(66, 245, 230, 0.6)';
+                    setTimeout(() => {
+                        lengthInput.style.boxShadow = '';
+                    }, 2000);
+                }, 500);
+            };
+            
+            window.goToHomePage = function() {
+                // 確認對話框
+                if (confirm('🚀 準備返回星球主頁嗎？')) {
+                    window.location.href = '../index.html';
+                }
+            };
+            
             // 為輸入框添加鍵盤事件監聽
             lengthInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -384,76 +776,21 @@
                     calculateArea();
                 }
             });
+            
+            // 備用動畫（如果 particles.js 失敗）
+            function initFallbackAnimation() {
+                console.log('使用備用 CSS 動畫...');
+                const particlesContainer = document.getElementById('particles-js');
+                if (particlesContainer) {
+                    particlesContainer.innerHTML = `
+                        <div class="fallback-stars"></div>
+                        <div class="fallback-stars-2"></div>
+                        <div class="fallback-stars-3"></div>
+                    `;
+                    particlesContainer.classList.add('fallback-animation');
+                }
+            }
         });
     </script>
-    
-    <!-- 網頁特定樣式 -->
-    <style>
-        /* 視覺化圖形區域 */
-        .visual-box {
-            background: rgba(16, 23, 41, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid rgba(111, 127, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        
-        .visual-title {
-            color: #a0c9ff;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-            text-align: center;
-        }
-        
-        .canvas-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(10, 15, 30, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        canvas {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-        }
-        
-        /* 結果動畫 */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse-animation {
-            animation: pulse 0.5s ease-in-out;
-        }
-        
-        /* 調整行動裝置上的顯示 */
-        @media (max-width: 576px) {
-            .cosmic-title {
-                font-size: 1.5rem;
-            }
-            
-            .cosmic-subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .info-box h3 {
-                font-size: 0.9rem;
-            }
-            
-            .info-box p {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
 </body>
 </html>

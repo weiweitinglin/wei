@@ -1,0 +1,858 @@
+/* 銀河坪數計算器 - 現代化樣式 */
+
+/* 導航欄層級調整 */
+#mainNav {
+    z-index: 1000 !important;
+}
+
+/* 頁尾層級調整 */
+.footer {
+    position: relative;
+    z-index: 10;
+}
+
+/* Particles.js 星座連線背景 */
+#particles-js {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background: transparent !important;
+}
+
+/* 根變數定義 */
+:root {
+    --galaxy-primary: #4285f4;
+    --galaxy-secondary: #6366f1;
+    --galaxy-accent: #42f5e6;
+    --galaxy-dark: #0f1527;
+    --galaxy-surface: rgba(255, 255, 255, 0.08);
+    --galaxy-border: rgba(255, 255, 255, 0.15);
+    --galaxy-text-primary: #ffffff;
+    --galaxy-text-secondary: #a3b2cc;
+    --galaxy-glow: 0 0 30px rgba(66, 245, 230, 0.3);
+    --galaxy-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    
+    /* 漸變效果 */
+    --galaxy-gradient-primary: linear-gradient(135deg, #4285f4 0%, #6366f1 100%);
+    --galaxy-gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --galaxy-gradient-button: linear-gradient(135deg, #42f5e6 0%, #4285f4 100%);
+    --galaxy-gradient-result: linear-gradient(135deg, rgba(66, 245, 230, 0.2) 0%, rgba(66, 133, 244, 0.2) 100%);
+}
+
+/* 增強的深空背景效果 */
+.cosmic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background: radial-gradient(ellipse at center, #1a1f3a 0%, #0f1527 50%, #000000 100%);
+    overflow: hidden;
+}
+
+.cosmic-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(66, 245, 230, 0.3), transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(66, 133, 244, 0.2), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(139, 92, 246, 0.2), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(66, 245, 230, 0.4), transparent);
+    background-repeat: repeat;
+    background-size: 150px 100px;
+    animation: cosmicTwinkle 8s linear infinite;
+    opacity: 0.6;
+}
+
+.cosmic-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(66, 245, 230, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(66, 133, 244, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(66, 245, 230, 0.03) 0%, transparent 50%);
+    animation: cosmicPulse 12s ease-in-out infinite alternate;
+}
+
+@keyframes cosmicTwinkle {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(-100px) translateX(-50px); }
+}
+
+@keyframes cosmicPulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+@keyframes starField {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100px); }
+}
+
+/* 主容器現代化 */
+.calculator-container {
+    margin-top: 120px;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 10;
+}
+
+/* 標題區域優化 */
+.cosmic-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, 
+        #42f5e6 0%, 
+        #4285f4 25%, 
+        #6366f1 50%, 
+        #8b5cf6 75%, 
+        #42f5e6 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 40px rgba(66, 245, 230, 0.6);
+    position: relative;
+    animation: galaxyTitleFlow 3s ease-in-out infinite alternate;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+@keyframes galaxyTitleFlow {
+    0% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        background-position: 100% 50%;
+        filter: hue-rotate(10deg);
+    }
+    100% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+}
+
+.cosmic-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        #42f5e6 25%, 
+        #4285f4 50%, 
+        #42f5e6 75%, 
+        transparent 100%);
+    background-size: 200% 100%;
+    border-radius: 2px;
+    box-shadow: 0 0 20px rgba(66, 245, 230, 0.6);
+    animation: galaxyUnderlineFlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes galaxyUnderlineFlow {
+    0% {
+        background-position: 0% 50%;
+        opacity: 0.8;
+    }
+    100% {
+        background-position: 100% 50%;
+        opacity: 1;
+    }
+}
+
+.cosmic-subtitle {
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, 
+        rgba(163, 178, 204, 1) 0%, 
+        rgba(66, 245, 230, 0.8) 50%, 
+        rgba(163, 178, 204, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+/* 標題文字優化 */
+.cosmic-description {
+    font-size: 1rem;
+    background: linear-gradient(135deg, 
+        rgba(163, 178, 204, 0.9) 0%, 
+        rgba(255, 255, 255, 0.7) 50%, 
+        rgba(163, 178, 204, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* 快速導航按鈕樣式 */
+.quick-nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-galaxy-primary {
+    background: var(--galaxy-gradient-button);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(66, 245, 230, 0.3);
+    min-width: 140px;
+}
+
+.btn-galaxy-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--galaxy-border);
+    border-radius: 12px;
+    color: var(--galaxy-text-primary);
+    font-weight: 500;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.btn-galaxy-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-galaxy-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 245, 230, 0.4);
+    color: white;
+}
+
+.btn-galaxy-primary:hover::before {
+    left: 100%;
+}
+
+.btn-galaxy-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--galaxy-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(66, 245, 230, 0.2);
+    color: var(--galaxy-text-primary);
+}
+
+.btn-galaxy-primary:active,
+.btn-galaxy-secondary:active {
+    transform: translateY(0);
+}
+
+/* 計算器面板現代化 */
+.calculator-panel {
+    background: var(--galaxy-gradient-card);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--galaxy-border);
+    box-shadow: var(--galaxy-shadow);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--galaxy-accent), transparent);
+    opacity: 0.5;
+}
+
+/* 區塊標題樣式 */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, 
+        #ffffff 0%, 
+        #42f5e6 50%, 
+        #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    position: relative;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.section-title i {
+    color: var(--galaxy-accent);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: var(--galaxy-gradient-primary);
+    border-radius: 1px;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    color: var(--galaxy-text-secondary);
+    margin: 0;
+    font-weight: 300;
+}
+
+/* 表單標籤現代化 */
+.form-label {
+    color: var(--galaxy-text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.form-label i {
+    color: var(--galaxy-accent);
+    margin-right: 0.5rem;
+}
+
+/* 輸入框現代化 */
+.form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--galaxy-border);
+    border-radius: 12px;
+    color: var(--galaxy-text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--galaxy-accent);
+    box-shadow: 0 0 0 0.2rem rgba(66, 245, 230, 0.25), 
+                inset 0 0 20px rgba(66, 245, 230, 0.1);
+    color: var(--galaxy-text-primary);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--galaxy-text-secondary);
+    opacity: 0.7;
+}
+
+/* 輸入群組現代化 */
+.input-group-text {
+    background: rgba(66, 245, 230, 0.1);
+    border: 1px solid var(--galaxy-border);
+    border-left: none;
+    color: var(--galaxy-accent);
+    font-weight: 500;
+    border-radius: 0 12px 12px 0;
+}
+
+/* 計算按鈕現代化 */
+.btn-cosmic {
+    background: var(--galaxy-gradient-button);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(66, 245, 230, 0.3);
+}
+
+.btn-cosmic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-cosmic:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(66, 245, 230, 0.4);
+}
+
+.btn-cosmic:hover::before {
+    left: 100%;
+}
+
+.btn-cosmic:active {
+    transform: translateY(0);
+}
+
+/* 結果顯示區域現代化 */
+.info-box {
+    background: var(--galaxy-gradient-result);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    border: 1px solid rgba(66, 245, 230, 0.2);
+    padding: 1.8rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--galaxy-gradient-primary);
+    opacity: 0.6;
+}
+
+.info-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(66, 245, 230, 0.2);
+    border-color: rgba(66, 245, 230, 0.4);
+}
+
+.info-box h3 {
+    color: var(--galaxy-text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.3px;
+}
+
+.info-box h3 i {
+    color: var(--galaxy-accent);
+    margin-right: 0.5rem;
+}
+
+.info-box p {
+    color: var(--galaxy-accent);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(66, 245, 230, 0.5);
+}
+
+/* 視覺化區域現代化 */
+.visual-box {
+    background: var(--galaxy-gradient-card);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--galaxy-border);
+    box-shadow: var(--galaxy-shadow);
+    padding: 2rem;
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.visual-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--galaxy-accent), transparent);
+    opacity: 0.5;
+}
+
+.visual-title {
+    background: linear-gradient(135deg, 
+        #ffffff 0%, 
+        #42f5e6 30%, 
+        #4285f4 70%, 
+        #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.visual-title i {
+    color: var(--galaxy-accent);
+    margin-right: 0.5rem;
+}
+
+.canvas-wrapper {
+    background: rgba(15, 21, 39, 0.6);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(66, 245, 230, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(66, 245, 230, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(66, 133, 244, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Toast 通知現代化 */
+.cosmic-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--galaxy-gradient-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--galaxy-border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: var(--galaxy-text-primary);
+    font-weight: 500;
+    box-shadow: var(--galaxy-shadow);
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.cosmic-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.cosmic-toast-success {
+    border-left: 4px solid #10b981;
+}
+
+.cosmic-toast-error {
+    border-left: 4px solid #ef4444;
+}
+
+.cosmic-toast-content {
+    display: flex;
+    align-items: center;
+}
+
+.cosmic-toast-content i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* 脈衝動畫優化 */
+@keyframes galaxyPulse {
+    0% { 
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    50% { 
+        transform: scale(1.02);
+        box-shadow: 0 8px 30px rgba(66, 245, 230, 0.3);
+    }
+    100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.pulse-animation {
+    animation: galaxyPulse 0.6s ease-in-out;
+}
+
+/* Footer 品牌圖標樣式 */
+.brand-icon-small {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.planet-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: var(--galaxy-gradient-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(66, 245, 230, 0.5);
+}
+
+.planet-ring-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(20deg);
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(66, 245, 230, 0.6);
+    border-radius: 50%;
+    border-style: dashed;
+    animation: slowRotate 20s linear infinite;
+}
+
+@keyframes slowRotate {
+    from { transform: translate(-50%, -50%) rotate(20deg); }
+    to { transform: translate(-50%, -50%) rotate(380deg); }
+}
+
+/* 載入動畫 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.calculator-panel {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* 響應式設計優化 */
+@media (max-width: 768px) {
+    .calculator-container {
+        margin-top: 100px;
+        padding: 0 1rem;
+    }
+    
+    .cosmic-title {
+        font-size: 2rem;
+    }
+    
+    .cosmic-subtitle {
+        font-size: 1rem;
+    }
+    
+    .calculator-panel {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .btn-cosmic {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .info-box {
+        padding: 1.2rem;
+    }
+    
+    .info-box h3 {
+        font-size: 0.9rem;
+    }
+    
+    .info-box p {
+        font-size: 1.3rem;
+    }
+    
+    .visual-box {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .canvas-wrapper {
+        padding: 1rem;
+    }
+    
+    .quick-nav-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-galaxy-primary,
+    .btn-galaxy-secondary {
+        width: 100%;
+        max-width: 200px;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .cosmic-description {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .cosmic-title {
+        font-size: 1.7rem;
+    }
+    
+    .calculator-panel {
+        padding: 1.2rem;
+    }
+    
+    .btn-cosmic {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .cosmic-toast {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        transform: translateY(-100px);
+    }
+    
+    .cosmic-toast.show {
+        transform: translateY(0);
+    }
+}
+
+/* 滾動條美化 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--galaxy-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--galaxy-gradient-primary);
+    border-radius: 4px;
+    box-shadow: var(--galaxy-glow);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--galaxy-accent);
+}
+
+/* 備用動畫樣式（當 particles.js 載入失敗時使用） */
+.fallback-animation {
+    background: linear-gradient(45deg, #0f1527 25%, transparent 25%), 
+                linear-gradient(-45deg, #0f1527 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #1a1f3a 75%), 
+                linear-gradient(-45deg, transparent 75%, #1a1f3a 75%);
+    background-size: 60px 60px;
+    background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+    animation: moveBackground 20s linear infinite;
+}
+
+.fallback-stars,
+.fallback-stars-2,
+.fallback-stars-3 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(66, 245, 230, 0.8), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(66, 133, 244, 0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(139, 92, 246, 0.4), transparent),
+        radial-gradient(2px 2px at 160px 30px, rgba(66, 245, 230, 0.7), transparent);
+    background-repeat: repeat;
+    background-size: 200px 150px;
+}
+
+.fallback-stars {
+    animation: twinkleFallback 3s ease-in-out infinite;
+}
+
+.fallback-stars-2 {
+    animation: twinkleFallback 4s ease-in-out infinite reverse;
+    background-size: 250px 180px;
+}
+
+.fallback-stars-3 {
+    animation: twinkleFallback 5s ease-in-out infinite;
+    background-size: 180px 120px;
+}
+
+@keyframes moveBackground {
+    0% { background-position: 0 0, 0 30px, 30px -30px, -30px 0px; }
+    100% { background-position: 60px 60px, 60px 90px, 90px 30px, 30px 60px; }
+}
+
+@keyframes twinkleFallback {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
