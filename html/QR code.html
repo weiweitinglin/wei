@@ -4,146 +4,299 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>星碼工廠 - 廷造星球</title>
+  
+  <!-- SEO 和社交分享 -->
+  <meta property="og:title" content="星碼工廠 - TING造星球" />
+  <meta property="og:description" content="快速產生各種QR碼，支援多種格式與自訂樣式" />
+  <meta property="og:type" content="website" />
+  
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="../css/styles.css" rel="stylesheet" />
+  <link href="../css/enhanced-styles.css" rel="stylesheet" />
+  <link href="../css/effects.css" rel="stylesheet" />
   <link href="../css/fix-sizes.css" rel="stylesheet" />
-  <link href="../css/star-qrcode.css" rel="stylesheet" /> <!-- 星際主題樣式 -->
-  <!-- 引入最新 PyScript -->
-  <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css" />
-  <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+  <link href="../css/qr-generator.css" rel="stylesheet" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
 </head>
 
-<body id="page-top">
-  <!-- PyScript 配置: 安裝 segno 與 Pillow -->
-  <py-config>
-    packages = [
-        "segno",
-        "Pillow"
-    ]
-  </py-config>
+<body id="page-top" class="overflow-x-hidden">
+  <!-- 星空背景效果 -->
+  <div class="stars-background">
+    <div class="stars-layer stars-layer-1"></div>
+    <div class="stars-layer stars-layer-2"></div>
+    <div class="stars-layer stars-layer-3"></div>
+  </div>
+  
+  <!-- 粒子效果容器 -->
+  <div id="particles-js"></div>
+  
+  <!-- 回到頂部按鈕 -->
+  <div class="back-to-top">
+    <button id="backToTop" class="back-to-top-btn" aria-label="回到頂部">
+      <i class="fas fa-rocket"></i>
+    </button>
+  </div>
 
-  <!-- Navigation - 與 overtime_calculator.html 保持一致 -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" data-aos="fade-down">
     <div class="container px-4 px-lg-5">
-      <!-- 替換原有的 navbar-brand -->
-      <a class="navbar-brand" href="../index.html">
-        <span class="brand-icon">
+      <!-- 品牌logo -->
+      <a class="navbar-brand d-flex align-items-center" href="../index.html">
+        <span class="brand-icon me-2">
           <div class="planet-ring"></div>
-          <div class="planet"></div>
+          <div class="planet">
+            <div class="planet-core"></div>
+            <div class="planet-atmosphere"></div>
+          </div>
+          <div class="orbit-1"></div>
+          <div class="orbit-2"></div>
         </span>
-        TING造星球
+        <span class="brand-text">
+          <span class="brand-main">TING造星球</span>
+          <span class="brand-sub">星碼工廠</span>
+        </span>
       </a>
-      <!-- 確保漢堡選單按鈕屬性完整 -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
+      
+      <!-- 漢堡選單按鈕 -->
+      <button class="navbar-toggler modern-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" 
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="toggler-line"></span>
+        <span class="toggler-line"></span>
+        <span class="toggler-line"></span>
       </button>
+      
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="../index.html#about">星球簡介</a></li>
-          <li class="nav-item"><a class="nav-link" href="../index.html#projects">地表資源</a></li>
-          <li class="nav-item"><a class="nav-link" href="/wei/html/overtime_calculator.html">銀河工時計量器</a></li>
-          <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
-          <!-- 修改下拉選單部分 -->
-          <li class="nav-item dropdown mobile-dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
-               data-bs-toggle="dropdown" aria-expanded="false" 
-               aria-haspopup="true">
-              小工具衛星
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">
+              <i class="fas fa-home me-1"></i>返回首頁
             </a>
-            <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
-              <li><a class="dropdown-item" href="/wei/html/flooring_calculator.html">地板拼接計算器</a></li>
-              <li><a class="dropdown-item" href="/wei/html/flooring_number of square meters.html">坪數計算器</a></li>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html#about">
+              <i class="fas fa-planet-moon me-1"></i>星球簡介
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html#projects">
+              <i class="fas fa-tools me-1"></i>地表資源
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="overtime_calculator.html">
+              <i class="fas fa-clock me-1"></i>星際血汗
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="QR code.html">
+              <i class="fas fa-qrcode me-1"></i>星碼工廠
+            </a>
+          </li>
+          <!-- 改進的下拉選單 -->
+          <li class="nav-item dropdown modern-dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
+               data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-satellite me-1"></i>小工具衛星
+            </a>
+            <ul class="dropdown-menu modern-dropdown-menu" aria-labelledby="toolsDropdown">
+              <li>
+                <a class="dropdown-item" href="flooring_calculator.html">
+                  <i class="fas fa-calculator me-2"></i>地板拼接計算器
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="flooring_number of square meters.html">
+                  <i class="fas fa-ruler-combined me-2"></i>坪數計算器
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item coming-soon" href="#" onclick="return false;">
+                  <i class="fas fa-magic me-2"></i>更多工具即將推出...
+                </a>
+              </li>
             </ul>
           </li>
         </ul>
+        
+        <!-- 主題切換按鈕 -->
+        <div class="navbar-theme-toggle ms-3">
+          <button id="themeToggle" class="theme-btn" aria-label="切換主題">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- 頁面標頭區域 -->
-  <header class="masthead">
-    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-      <div class="text-center">
-        <h1 class="mx-auto my-0 text-uppercase">星際碼生成器</h1>
-        <p class="text-white-50 mx-auto mt-2 mb-5">用星際語言創造跨銀河的聯繫方式</p>
-      </div>
-    </div>
-  </header>
-
-  <!-- 產生QR code區域 -->
-  <section id="generator" class="py-5">
-    <div class="container px-4 px-lg-5">
-      <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-lg-8 bg-space p-4 p-md-5">
-          <h2 class="text-center text-uppercase mb-4">星際碼創建儀</h2>
-          <p class="text-center text-muted mb-5">請輸入通訊座標，並選擇是否上傳識別標誌</p>
-
-          <!-- 輸入與選項 -->
-          <form class="row g-3 justify-content-center">
-            <!-- 輸入網址 -->
-            <div class="col-md-6">
-              <label for="urlInput" class="form-label">輸入通訊坐標 (URL):</label>
-              <input
-                type="text"
-                class="form-control"
-                id="urlInput"
-                placeholder="https://example.com"
-                required
-              />
-            </div>
-
-            <!-- 是否加入Logo -->
-            <div class="col-md-6 d-flex align-items-end">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="includeLogo"
-                />
-                <label class="form-check-label" for="includeLogo">
-                  於星際碼中加入識別標誌
-                </label>
+  <!-- Hero Section -->
+  <section class="hero-section tool-hero" id="hero">
+    <div class="hero-content" data-aos="fade-up" data-aos-delay="300">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-lg-8">
+            <div class="hero-text">
+              <h1 class="hero-title" data-aos="fade-up" data-aos-delay="500">
+                <span class="title-accent">星碼工廠</span>
+              </h1>
+              <h2 class="hero-subtitle" data-aos="fade-up" data-aos-delay="700">
+                跨銀河通訊協議
+              </h2>
+              <p class="hero-description" data-aos="fade-up" data-aos-delay="900">
+                用星際語言創造跨銀河的聯繫方式
+              </p>
+              <div class="hero-actions" data-aos="fade-up" data-aos-delay="1100">
+                <a href="#generator" class="btn btn-primary btn-glow smooth-scroll">
+                  <i class="fas fa-qrcode me-2"></i>開始創建
+                </a>
+                <a href="../index.html" class="btn btn-outline-light">
+                  <i class="fas fa-home me-2"></i>返回首頁
+                </a>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 向下滾動提示 -->
+    <div class="scroll-indicator" data-aos="bounce" data-aos-delay="2000">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span class="scroll-text">向下開始創建</span>
+    </div>
+  </section>
 
-            <!-- 上傳Logo檔案 -->
-            <div class="col-md-6">
-              <label for="logoFile" class="form-label">上傳識別標誌 (選填):</label>
-              <input
-                class="form-control"
-                type="file"
-                id="logoFile"
-                accept="image/*"
-                disabled
-              />
+  <!-- 產生QR code區域 -->
+  <section id="generator" class="qr-generator-section py-5">
+    <div class="container px-4 px-lg-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <!-- 工具卡片容器 -->
+          <div class="tool-card card-enhanced" data-aos="fade-up">
+            <div class="card-header text-center">
+              <div class="tool-icon mb-3">
+                <i class="fas fa-satellite-dish"></i>
+              </div>
+              <h2 class="section-title mb-0">
+                <span class="title-accent">星際碼</span>
+                <span class="title-main">創建儀</span>
+              </h2>
+              <p class="section-subtitle mt-2">請輸入通訊座標，並選擇是否上傳識別標誌</p>
             </div>
+            
+            <div class="card-body">
+              <!-- 輸入與選項 -->
+              <form class="qr-form" data-aos="fade-up" data-aos-delay="200">
+                <div class="row g-4">
+                  <!-- 輸入網址 -->
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="urlInput" class="form-label">
+                        <i class="fas fa-link me-2"></i>輸入通訊坐標 (URL)
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-globe"></i>
+                        </span>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="urlInput"
+                          placeholder="https://example.com"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-            <!-- 產生按鈕 -->
-            <div class="col-md-12 text-center">
-              <button type="button" class="btn btn-primary mt-4" id="generateBtn">
-                <i class="fas fa-satellite-dish me-2"></i>生成星際碼
-              </button>
+                  <!-- Logo選項 -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="custom-checkbox">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          value=""
+                          id="includeLogo"
+                        />
+                        <label class="form-check-label" for="includeLogo">
+                          <i class="fas fa-image me-2"></i>於星際碼中加入識別標誌
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 上傳Logo檔案 -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="logoFile" class="form-label">
+                        <i class="fas fa-upload me-2"></i>上傳識別標誌 (選填)
+                      </label>
+                      <input
+                        class="form-control file-input"
+                        type="file"
+                        id="logoFile"
+                        accept="image/*"
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <!-- 產生按鈕 -->
+                  <div class="col-12 text-center">
+                    <button type="button" class="btn btn-primary btn-enhanced btn-lg" id="generateBtn">
+                      <i class="fas fa-satellite-dish me-2"></i>
+                      <span class="btn-text">生成星際碼</span>
+                      <div class="btn-loading d-none">
+                        <i class="fas fa-spinner fa-spin me-2"></i>正在生成...
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- QR Code 結果顯示區域 (整合在表單內) -->
+                  <div class="col-12" id="qrResultSection" style="display: none;">
+                    <hr class="my-4">
+                    <div class="text-center">
+                      <h5 class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        星際通訊碼已生成
+                      </h5>
+                      <div class="qr-display-container mb-3">
+                        <canvas
+                          id="qrcodeResult"
+                          class="qr-code-display"
+                          style="display: none;"
+                        ></canvas>
+                      </div>
+                      <div class="action-buttons">
+                        <button class="btn btn-success btn-sm me-2" onclick="downloadQRCode()">
+                          <i class="fas fa-download me-2"></i>下載圖片
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="generateNew()">
+                          <i class="fas fa-redo me-2"></i>重新生成
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
-          </form>
-
-          <!-- 結果顯示 -->
-          <div class="mt-5 text-center">
-            <h3 class="text-center mb-4">星際通訊碼:</h3>
-            <!-- 顯示產生的QR code  -->
-            <img
-              id="qrcodeResult"
-              class="p-2 mt-3"
-              alt="這裡將顯示生成的星際通訊碼"
-              style="display: none;"
-            />
           </div>
         </div>
       </div>
@@ -151,147 +304,93 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer modern-footer">
     <div class="container">
-      <p class="copyright">© 2025 廷造星球. All rights reserved.</p>
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center mb-4" data-aos="fade-up">
+          <div class="footer-brand">
+            <div class="brand-icon-footer">
+              <div class="planet-ring"></div>
+              <div class="planet">
+                <div class="planet-core"></div>
+              </div>
+            </div>
+            <h5 class="footer-title">星碼工廠</h5>
+            <p class="footer-desc">跨銀河通訊協議生成工具</p>
+          </div>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="copyright mb-0">© 2025 廷造星球. All rights reserved.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="footer-social">
+            <button class="btn btn-sm btn-outline-light" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+              <i class="fas fa-arrow-up"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer波浪效果 -->
+    <div class="footer-waves">
+      <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="rgba(111, 155, 255, 0.1)" d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      </svg>
     </div>
   </footer>
 
-  <!-- PyScript 邏輯 (保持不變) -->
-  <py-script>
-    import segno
-    from PIL import Image
-    import io
-    import base64
-
-    from js import document, FileReader
-    from pyodide.ffi import to_js, create_proxy
-
-    # ----------------------------------------------------------
-    # 當「是否加入 Logo」的 checkbox 狀態變更時，決定是否啟用檔案上傳
-    # ----------------------------------------------------------
-    def on_include_logo_change(event=None):
-      checkbox = document.getElementById("includeLogo")
-      file_input = document.getElementById("logoFile")
-      file_input.disabled = not checkbox.checked
-
-    # ----------------------------------------------------------
-    # 主函式：產生 QR code
-    # ----------------------------------------------------------
-    def generate_qrcode(event=None):
-      # 1. 取得使用者輸入的 URL
-      url = document.getElementById("urlInput").value.strip()
-      if not url:
-        alert("請輸入通訊坐標(URL)！")
-        return
-
-      # 2. 取得是否加入 Logo
-      include_logo = document.getElementById("includeLogo").checked
-
-      # 3. 產生 QR code (先不含 Logo)
-      qrcode = segno.make(url, error="h")  # 可自行調整 error 容錯率
-      # 先把不含Logo的QR code繪製到一個 BytesIO
-      buffer_no_logo = io.BytesIO()
-      qrcode.save(buffer_no_logo, kind='png', scale=5, dark='black', light='white')
-      buffer_no_logo.seek(0)
-
-      # 4. 若不用 Logo，直接顯示 QR code
-      if not include_logo:
-        display_qrcode(buffer_no_logo)
-        return
-
-      # 5. 若使用 Logo，則需要讀取檔案
-      file_input = document.getElementById("logoFile")
-      if file_input.files.length == 0:
-        alert("請上傳識別標誌或取消勾選「於星際碼中加入識別標誌」。")
-        return
-
-      # --------------------------------------------------------
-      #   以下示範如何在 PyScript / Python 中讀取使用者上傳的檔案
-      #   透過 JS FileReader 先讀成 base64，再傳給 Python。
-      # --------------------------------------------------------
-      js_file = file_input.files.item(0)
-      reader = FileReader.new()
-
-      def on_file_load(e):
-        # e.target.result 會是一個 base64 的 dataURL，例如：
-        # data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...
-        data_url = e.target.result
-        # 去掉 data:image/png;base64, 頭部資訊，取出真正的 base64 資料
-        comma_index = data_url.find(",")
-        if comma_index == -1:
-          alert("讀取檔案時發生錯誤。")
-          return
-
-        base64_str = data_url[comma_index+1:]
-
-        # 將 base64 轉成 BytesIO，再用 Pillow 開啟
-        logo_bytes = io.BytesIO(base64.b64decode(base64_str))
-        logo_img = Image.open(logo_bytes).convert("RGBA")
-
-        # --------------------------------------------------------
-        # 產生QR code並把Logo貼上去的示例演算法（最小可行示範）
-        # 步驟：
-        #   1. 先把 QR code BytesIO -> PIL Image
-        #   2. 把 Logo 貼到 QR code 的中央 (可自行決定大小與位置)
-        #   3. 合成完成後，再轉回 BytesIO
-        # --------------------------------------------------------
-        qr_img = Image.open(buffer_no_logo).convert("RGBA")
-        qr_w, qr_h = qr_img.size
-
-        # 決定 Logo 在 QR code 中的顯示大小（自行調整縮放比例）
-        scale_factor = 4
-        logo_w = qr_w // scale_factor
-        logo_h = qr_h // scale_factor
-        logo_img = logo_img.resize((logo_w, logo_h), Image.Resampling.LANCZOS)
-
-        # 貼上位置：置中
-        pos_x = (qr_w - logo_w) // 2
-        pos_y = (qr_h - logo_h) // 2
-        qr_img.paste(logo_img, (pos_x, pos_y), logo_img)
-
-        # 合成後存到新的 buffer
-        final_buffer = io.BytesIO()
-        qr_img.save(final_buffer, format="PNG")
-        final_buffer.seek(0)
-
-        # 最後顯示到頁面上
-        display_qrcode(final_buffer)
-
-      # FileReader 的 onload callback
-      reader.onload = create_proxy(on_file_load)
-      # 讀取檔案
-      reader.readAsDataURL(js_file)
-
-    # ----------------------------------------------------------
-    # 顯示 QR code 到網頁 <img> 標籤
-    # ----------------------------------------------------------
-    def display_qrcode(buffer):
-      # 把 BytesIO 轉成 base64，並設到 <img> src
-      raw_data = buffer.getvalue()
-      base64_data = base64.b64encode(raw_data).decode("utf-8")
-      img_tag = document.getElementById("qrcodeResult")
-      img_tag.src = f"data:image/png;base64,{base64_data}"
-      img_tag.style.display = "block"  # 顯示圖片
-
-    # ----------------------------------------------------------
-    # 警告提示函數 (呼叫瀏覽器內建 alert)
-    # ----------------------------------------------------------
-    def alert(msg):
-      from js import alert
-      alert(msg)
-
-    # ----------------------------------------------------------
-    # 綁定事件
-    # ----------------------------------------------------------
-    include_logo_checkbox = document.getElementById("includeLogo")
-    include_logo_checkbox.addEventListener("change", create_proxy(on_include_logo_change))
-
-    generate_btn = document.getElementById("generateBtn")
-    generate_btn.addEventListener("click", create_proxy(generate_qrcode))
-  </py-script>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  
+  <!-- QR Code Library - 確保在使用前載入 -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  
+  <!-- 備用 QR Code 庫載入 -->
+  <script>
+    // 測試 QRCode 庫載入
+    console.log('Testing QRCode library...');
+    
+    function loadQRCodeBackup() {
+      setTimeout(() => {
+        if (typeof QRCode === 'undefined') {
+          console.log('Loading backup QRCode library...');
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js';
+          script.onload = function() {
+            console.log('Backup QRCode library loaded');
+            if (window.qrGenerator) {
+              window.qrGenerator.setupGenerator();
+            }
+          };
+          script.onerror = function() {
+            console.error('Backup QRCode library also failed to load');
+            // 嘗試第三個來源
+            const script2 = document.createElement('script');
+            script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+            document.head.appendChild(script2);
+          };
+          document.head.appendChild(script);
+        } else {
+          console.log('QRCode library loaded successfully');
+        }
+      }, 100);
+    }
+    
+    loadQRCodeBackup();
+  </script>
+  
+  <script src="../js/dropdown-fix.js"></script>
+  <script src="../js/scripts.js"></script>
+  <script src="../js/enhanced-features.js"></script>
+  <!-- Simple QR Code Generator (備用方案) -->
+  <script src="../js/qrcode-simple.js"></script>
+  <!-- QR Code Generator -->
+  <script src="../js/qr-generator.js"></script>
 </body>
 </html>

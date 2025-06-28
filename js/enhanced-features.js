@@ -9,6 +9,7 @@ class EnhancedWebsite {
         this.setupEventListeners();
         this.setupAnimations();
         this.setupInteractions();
+        this.setupInteractiveFeatures();
     }
 
     initializeComponents() {
@@ -97,24 +98,29 @@ class EnhancedWebsite {
     }
 
     initLoader() {
-        const loader = document.getElementById('loader');
-        const progressBar = document.querySelector('.loading-progress');
-        const percentageText = document.querySelector('.loading-percentage');
+        const loader = document.getElementById('loadingOverlay');
         
-        if (!loader || !progressBar || !percentageText) return;
+        if (!loader) {
+            console.log('載入動畫元素未找到');
+            return;
+        }
 
+        // 簡化的載入動畫
         let progress = 0;
-        const increment = Math.random() * 5 + 2; // 2-7之間的隨機增量
-
+        const loadingText = document.querySelector('.loading-text');
+        
         const loadingInterval = setInterval(() => {
-            progress += increment;
-            if (progress > 100) progress = 100;
-            
-            progressBar.style.width = progress + '%';
-            percentageText.textContent = Math.floor(progress) + '%';
+            progress += Math.random() * 15 + 5; // 5-20之間的隨機增量
             
             if (progress >= 100) {
+                progress = 100;
                 clearInterval(loadingInterval);
+                
+                if (loadingText) {
+                    loadingText.textContent = '載入完成！';
+                }
+                
+                // 隱藏載入動畫
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     setTimeout(() => {
@@ -122,9 +128,13 @@ class EnhancedWebsite {
                         document.body.classList.add('loaded');
                         this.showNavbar();
                     }, 500);
-                }, 500);
+                }, 300);
+            } else {
+                if (loadingText) {
+                    loadingText.textContent = `正在進入廷造星球 ${Math.floor(progress)}%`;
+                }
             }
-        }, Math.random() * 50 + 50); // 50-100ms之間的隨機間隔
+        }, 200); // 每200ms更新一次
     }
 
     showNavbar() {
@@ -497,6 +507,9 @@ class EnhancedWebsite {
     }
 
     setupInteractions() {
+        // 設置增強互動功能
+        this.setupInteractiveFeatures();
+        
         // 設置鍵盤快捷鍵
         this.setupKeyboardShortcuts();
         
@@ -505,6 +518,170 @@ class EnhancedWebsite {
         
         // 設置觸控支持
         this.setupTouchSupport();
+        
+        // 設置手勢支持
+        this.setupGestureSupport();
+    }
+
+    setupInteractiveFeatures() {
+        this.setupRippleEffect();
+        this.setupParallaxScrolling();
+        this.setupAchievementSystem();
+        this.setupTooltips();
+        this.setupScrollEnhancements();
+    }
+
+    setupRippleEffect() {
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.click-ripple')) {
+                const ripple = e.target.closest('.click-ripple');
+                const rect = ripple.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                const rippleElement = document.createElement('span');
+                rippleElement.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                    z-index: 1000;
+                `;
+                
+                ripple.appendChild(rippleElement);
+                
+                setTimeout(() => {
+                    rippleElement.remove();
+                }, 600);
+            }
+        });
+    }
+
+    setupParallaxScrolling() {
+        const parallaxElements = document.querySelectorAll('.parallax-element');
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            
+            parallaxElements.forEach(element => {
+                element.style.transform = `translate3d(0, ${rate}px, 0)`;
+            });
+        });
+    }
+
+    setupAchievementSystem() {
+        const achievements = [
+            { id: 'first-visit', title: '歡迎探索！', desc: '首次造訪廷造星球', trigger: 'load' },
+            { id: 'scroll-master', title: '滾動達人！', desc: '您已探索了大部分內容', trigger: 'scroll' },
+            { id: 'tool-explorer', title: '工具探索者！', desc: '查看了所有工具卡片', trigger: 'hover' }
+        ];
+
+        // 首次訪問成就
+        if (!localStorage.getItem('achievement-first-visit')) {
+            setTimeout(() => {
+                this.showAchievement(achievements[0]);
+                localStorage.setItem('achievement-first-visit', 'true');
+            }, 3000);
+        }
+
+        // 滾動成就
+        let scrollAchievementShown = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollAchievementShown && window.scrollY > document.body.scrollHeight * 0.7) {
+                this.showAchievement(achievements[1]);
+                scrollAchievementShown = true;
+                localStorage.setItem('achievement-scroll-master', 'true');
+            }
+        });
+
+        // 工具卡片懸停成就
+        let hoveredCards = new Set();
+        document.querySelectorAll('.tool-card').forEach((card, index) => {
+            card.addEventListener('mouseenter', () => {
+                hoveredCards.add(index);
+                if (hoveredCards.size >= 3 && !localStorage.getItem('achievement-tool-explorer')) {
+                    this.showAchievement(achievements[2]);
+                    localStorage.setItem('achievement-tool-explorer', 'true');
+                }
+            });
+        });
+    }
+
+    showAchievement(achievement) {
+        const badge = document.getElementById('achievementBadge');
+        const title = document.getElementById('achievementTitle');
+        const desc = document.getElementById('achievementDesc');
+        
+        if (badge && title && desc) {
+            title.textContent = achievement.title;
+            desc.textContent = achievement.desc;
+            badge.classList.add('show');
+            
+            setTimeout(() => {
+                badge.classList.remove('show');
+            }, 4000);
+        }
+    }
+
+    setupTooltips() {
+        // 工具提示已在CSS中實現，這裡添加額外的互動
+        document.querySelectorAll('.tooltip-custom').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                element.style.transform = 'scale(1.05)';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.transform = 'scale(1)';
+            });
+        });
+    }
+
+    setupScrollEnhancements() {
+        // 平滑滾動增強
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    }
+
+    // 手勢支持（移動端）
+    setupGestureSupport() {
+        let startY = 0;
+        let currentY = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            currentY = e.touches[0].clientY;
+            const diff = startY - currentY;
+            
+            // 向上滑動顯示導航
+            if (diff > 50) {
+                document.getElementById('mainNav').style.transform = 'translateY(0)';
+            }
+            // 向下滑動隱藏導航
+            else if (diff < -50) {
+                document.getElementById('mainNav').style.transform = 'translateY(-100%)';
+            }
+        });
     }
 
     setupKeyboardShortcuts() {
@@ -667,40 +844,45 @@ class EnhancedWebsite {
     setupMobileOptimizations() {
         // 移動設備優化
         const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+        if (viewport && window.innerWidth <= 768) {
+            // 移動端特殊處理
+            document.body.classList.add('mobile-device');
+            
+            // 優化觸摸滾動
+            document.body.style.webkitOverflowScrolling = 'touch';
         }
         
-        // 禁用某些動畫以提升性能
-        document.body.classList.add('mobile-optimized');
+        // 響應式字體大小調整
+        this.adjustFontSizes();
+        
+        window.addEventListener('resize', () => {
+            this.adjustFontSizes();
+        });
     }
 
-    // 錯誤處理
-    handleError(error) {
-        console.error('網站錯誤:', error);
-        this.showNotification('發生錯誤，請重新載入頁面', 'error');
+    adjustFontSizes() {
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const baseFontSize = Math.max(14, Math.min(18, vw / 80));
+        document.documentElement.style.fontSize = baseFontSize + 'px';
     }
 }
 
-// 初始化網站
+// 初始化增強網站功能
 document.addEventListener('DOMContentLoaded', () => {
-    try {
-        window.enhancedWebsite = new EnhancedWebsite();
-        
-        // 監聽窗口大小變化
-        window.addEventListener('resize', () => {
-            window.enhancedWebsite.handleResize();
-        });
-        
-        // 監聽錯誤
-        window.addEventListener('error', (e) => {
-            window.enhancedWebsite.handleError(e.error);
-        });
-        
-    } catch (error) {
-        console.error('初始化失敗:', error);
-    }
+    new EnhancedWebsite();
 });
 
-// 導出給全局使用
-window.EnhancedWebsite = EnhancedWebsite;
+// 確保在頁面完全載入後也執行一次
+window.addEventListener('load', () => {
+    // 如果載入動畫還在顯示，強制隱藏
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay && loadingOverlay.style.display !== 'none') {
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+                document.body.classList.add('loaded');
+            }, 500);
+        }, 2000); // 最多顯示2秒
+    }
+});

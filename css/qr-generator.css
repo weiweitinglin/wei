@@ -1,0 +1,364 @@
+/* QR 生成器專用樣式 */
+
+/* 工具頁面英雄區域 */
+.tool-hero {
+    min-height: 70vh;
+    background: var(--dark-gradient);
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-hero .hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.tool-hero .hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.tool-hero .hero-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: var(--neon-cyan);
+}
+
+/* QR 生成器區域 */
+.qr-generator-section {
+    background: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+.qr-generator-section .tool-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: var(--transition-smooth);
+}
+
+.qr-generator-section .tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), var(--hover-glow);
+}
+
+.qr-generator-section .card-header {
+    background: linear-gradient(135deg, var(--primary-gradient));
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    border-bottom: none;
+}
+
+.qr-generator-section .tool-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.qr-generator-section .card-body {
+    padding: 2.5rem;
+}
+
+/* 表單樣式 */
+.qr-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.qr-form .form-label {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.qr-form .form-label i {
+    color: var(--neon-cyan);
+}
+
+.qr-form .form-control {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+}
+
+.qr-form .form-control:focus {
+    background: var(--card-bg);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 3px rgba(66, 245, 230, 0.1);
+    color: var(--text-color);
+}
+
+.qr-form .input-group-text {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-right: none;
+    color: var(--neon-cyan);
+    border-radius: 12px 0 0 12px;
+}
+
+.qr-form .input-group .form-control {
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+}
+
+.qr-form .input-group:focus-within .input-group-text {
+    border-color: var(--neon-cyan);
+}
+
+/* 自定義複選框 */
+.custom-checkbox {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.custom-checkbox .form-check-input {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid var(--card-border);
+    border-radius: 6px;
+    background: var(--card-bg);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.custom-checkbox .form-check-input:checked {
+    background: var(--primary-gradient);
+    border-color: var(--neon-cyan);
+}
+
+.custom-checkbox .form-check-label {
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 1.5rem;
+}
+
+/* 檔案輸入樣式 */
+.file-input {
+    position: relative;
+    cursor: pointer;
+}
+
+.file-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 生成按鈕 */
+.btn-enhanced {
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    min-width: 200px;
+}
+
+.btn-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.btn-enhanced:active {
+    transform: translateY(0);
+}
+
+.btn-enhanced .btn-loading {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 結果卡片 */
+.result-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* QR Code 結果顯示 (整合在表單內) */
+.qr-display-container {
+    max-width: 250px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.qr-code-display {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 0.5rem;
+    margin: 0 auto;
+    display: block;
+    animation: qrFadeIn 0.6s ease-out;
+}
+
+@keyframes qrFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.action-buttons {
+    animation: buttonsSlideUp 0.6s ease-out 0.2s both;
+}
+
+@keyframes buttonsSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 調整表單容器以容納結果 */
+.qr-form {
+    transition: all 0.3s ease;
+}
+
+/* 結果區域分隔線 */
+#qrResultSection hr {
+    border-color: var(--neon-cyan);
+    opacity: 0.3;
+    margin: 1.5rem 0;
+}
+
+/* 成功訊息樣式 */
+#qrResultSection h5 {
+    color: var(--neon-cyan);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.result-actions {
+    animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .tool-hero {
+        min-height: 60vh;
+        padding-top: 80px;
+    }
+    
+    .qr-generator-section .card-header,
+    .qr-generator-section .card-body {
+        padding: 1.5rem;
+    }
+    
+    .qr-generator-section .tool-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .btn-enhanced {
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .result-actions .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* 明亮主題適配 */
+[data-theme="light"] .qr-generator-section .tool-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .qr-generator-section .card-header {
+    background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+}
+
+[data-theme="light"] .qr-form .form-control {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #2d3748;
+}
+
+[data-theme="light"] .qr-form .form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+[data-theme="light"] .qr-form .input-group-text {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #4299e1;
+}
+
+[data-theme="light"] .custom-checkbox .form-check-input {
+    border-color: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .custom-checkbox .form-check-input:checked {
+    background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+    border-color: #4299e1;
+}
