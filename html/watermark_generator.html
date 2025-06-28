@@ -244,49 +244,6 @@
     
     <!-- Particles JS 初始化和 Toast 系統 -->
     <script>
-        // 調試工具：顯示載入狀態
-        window.showDebugInfo = function() {
-            const debugDiv = document.createElement('div');
-            debugDiv.id = 'debug-info';
-            debugDiv.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                background: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 10px;
-                border-radius: 5px;
-                font-family: monospace;
-                font-size: 12px;
-                z-index: 9999;
-                max-width: 300px;
-                max-height: 200px;
-                overflow-y: auto;
-            `;
-            
-            const particlesContainer = document.getElementById('particles-js');
-            const hasCanvas = particlesContainer ? particlesContainer.querySelector('canvas') : false;
-            const hasFallback = particlesContainer ? particlesContainer.classList.contains('fallback-animation') : false;
-            
-            debugDiv.innerHTML = `
-                <strong>🔧 Particles.js 調試信息</strong><br>
-                ✓ particles.js 載入: ${typeof particlesJS !== 'undefined' ? '成功' : '失敗'}<br>
-                ✓ particles 容器: ${particlesContainer ? '存在' : '不存在'}<br>
-                ✓ canvas 元素: ${hasCanvas ? '存在' : '不存在'}<br>
-                ✓ 備用動畫: ${hasFallback ? '已啟動' : '未啟動'}<br>
-                ✓ 當前時間: ${new Date().toLocaleTimeString()}<br>
-                <button onclick="document.body.removeChild(this.parentElement)" style="margin-top: 5px; padding: 2px 5px;">關閉</button>
-            `;
-            
-            // 移除舊的調試信息
-            const oldDebug = document.getElementById('debug-info');
-            if (oldDebug) {
-                document.body.removeChild(oldDebug);
-            }
-            
-            document.body.appendChild(debugDiv);
-        };
-
         // 多重 CDN 備援載入系統
         function loadParticlesJS() {
             return new Promise((resolve, reject) => {
@@ -669,7 +626,6 @@
             // 強制初始化 Particles.js（多重保險）
             const initParticles = () => {
                 console.log('🎯 強制初始化 Particles.js');
-                window.showDebugInfo(); // 顯示調試信息
                 
                 if (typeof particlesJS !== 'undefined') {
                     window.initParticlesSystem();
@@ -677,9 +633,6 @@
                     console.log('⚠️ Particles.js 尚未載入，使用備用動畫');
                     window.initFallbackAnimation();
                 }
-                
-                // 3秒後再次顯示調試信息
-                setTimeout(window.showDebugInfo, 3000);
             };
             
             // 立即嘗試初始化

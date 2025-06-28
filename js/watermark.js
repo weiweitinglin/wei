@@ -527,9 +527,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'result-item';
                 
+                // 創建圖片標題
+                const imageTitle = document.createElement('div');
+                imageTitle.className = 'image-title';
+                imageTitle.textContent = filename;
+                
+                // 創建圖片容器
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+                
                 const resultImg = document.createElement('img');
                 resultImg.src = dataUrl;
                 resultImg.alt = filename;
+                
+                // 將圖片放入容器
+                imageContainer.appendChild(resultImg);
                 
                 const actions = document.createElement('div');
                 actions.className = 'item-actions';
@@ -542,7 +554,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 actions.appendChild(downloadButton);
-                resultItem.appendChild(resultImg);
+                
+                // 按順序添加元素到結果項目
+                resultItem.appendChild(imageTitle);
+                resultItem.appendChild(imageContainer);
                 resultItem.appendChild(actions);
                 
                 resultGallery.appendChild(resultItem);

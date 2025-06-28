@@ -1984,3 +1984,65 @@ canvas {
     visibility: visible;
     transform: translateX(-50%) translateY(-5px);
 }
+
+/* 結果圖片完整顯示優化 */
+.watermark-generator .result-item img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 300px; /* 限制最大高度 */
+    object-fit: contain; /* 確保整張圖片都能看到，不會被裁切 */
+    object-position: center;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+    background: rgba(255, 255, 255, 0.05); /* 添加淺色背景 */
+    border: 1px solid var(--galaxy-border);
+}
+
+.watermark-generator .result-item:hover img {
+    transform: scale(1.02); /* 減少hover縮放效果，避免影響觀看 */
+}
+
+/* 結果項目容器優化 */
+.watermark-generator .result-item {
+    background: var(--galaxy-gradient-card);
+    border-radius: 16px;
+    padding: 15px;
+    border: 1px solid var(--galaxy-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: visible; /* 改為visible避免圖片被裁切 */
+    min-height: auto; /* 讓容器高度自適應 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 圖片容器 */
+.watermark-generator .result-item .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 下載按鈕容器 */
+.watermark-generator .result-item .item-actions {
+    margin-top: auto;
+    text-align: center;
+}
+
+/* 圖片標題/檔名 */
+.watermark-generator .result-item .image-title {
+    text-align: center;
+    color: var(--galaxy-text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    word-break: break-all;
+    opacity: 0.9;
+}
