@@ -337,36 +337,67 @@ class QRCodeGenerator {
     }
   }
   
+  // 現代化Toast通知系統
   showAlert(message, type = 'info') {
+    // 檢查是否已存在 Toast，如果有則移除
+    const existingToast = document.querySelector('.cosmic-toast');
+    if (existingToast) {
+      document.body.removeChild(existingToast);
+    }
+    
+    // 根據頁面主題調整訊息
+    const themeMessages = {
+      'QR碼生成器已就緒 (完整版)': '🛰️ 星際通訊系統已就緒 (完整版)',
+      'QR碼生成器已就緒 (簡化版)': '🛰️ 星際通訊系統已就緒 (簡化版)', 
+      'QR碼生成器載入中...': '🚀 星際通訊系統載入中...',
+      '請輸入通訊坐標(URL)！': '⚠️ 請輸入通訊座標(URL)！',
+      '已生成 QR 碼 (簡化版本)': '✨ 星際碼已生成 (簡化版本)',
+      'QR 碼已生成 (備用模式)': '✨ 星際碼已生成 (備用模式)',
+      '星際碼生成成功！': '🎉 星際碼生成成功！',
+      '生成星際碼時發生錯誤，請重試': '❌ 生成星際碼時發生錯誤，請重試',
+      'QR碼已下載！': '📥 星際碼已下載！',
+      '沒有可下載的QR碼': '⚠️ 沒有可下載的星際碼'
+    };
+    
+    const finalMessage = themeMessages[message] || message;
+    
+    // 建立新的 Toast 元素
+    const toast = document.createElement('div');
+    toast.className = `cosmic-toast cosmic-toast-${type}`;
+    
+    // 設置 Toast 內容
     const iconMap = {
-      info: 'fas fa-info-circle',
-      success: 'fas fa-check-circle',
-      warning: 'fas fa-exclamation-triangle',
-      error: 'fas fa-times-circle'
+      'info': 'info-circle',
+      'success': 'check-circle',
+      'warning': 'exclamation-triangle',
+      'error': 'exclamation-circle'
     };
     
-    const colorMap = {
-      info: 'alert-info',
-      success: 'alert-success',
-      warning: 'alert-warning',
-      error: 'alert-danger'
-    };
+    const icon = iconMap[type] || 'info-circle';
     
-    const alertElement = document.createElement('div');
-    alertElement.className = `alert ${colorMap[type]} alert-dismissible fade show position-fixed`;
-    alertElement.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertElement.innerHTML = `
-      <i class="${iconMap[type]} me-2"></i>${message}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    toast.innerHTML = `
+      <div class="cosmic-toast-content">
+        <i class="fas fa-${icon} me-2"></i>
+        <span>${finalMessage}</span>
+      </div>
     `;
     
-    document.body.appendChild(alertElement);
+    // 將 Toast 添加到頁面
+    document.body.appendChild(toast);
     
-    // 3秒後自動移除
+    // 顯示 Toast
     setTimeout(() => {
-      if (alertElement.parentNode) {
-        alertElement.remove();
-      }
+      toast.classList.add('show');
+    }, 10);
+    
+    // 自動隱藏 Toast
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast);
+        }
+      }, 300);
     }, 3000);
   }
   
@@ -386,8 +417,117 @@ class QRCodeGenerator {
     }
   }
   
-  // 重新生成
-  generateNew() {
+  // 自定義確認對話框
+  showCustomConfirm(options) {
+    return new Promise((resolve) => {
+      // 創建對話框元素
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-confirm-overlay';
+      
+      overlay.innerHTML = `
+        <div class="custom-confirm-modal">
+          <div class="custom-confirm-header">
+            <div class="custom-confirm-icon">
+              <i class="${options.icon || 'fas fa-question-circle'}"></i>
+            </div>
+            <h5 class="custom-confirm-title">${options.title || '確認操作'}</h5>
+          </div>
+          <div class="custom-confirm-message">
+            ${options.message || '確定要執行此操作嗎？'}
+          </div>
+          ${options.details ? `
+            <div class="custom-confirm-details">
+              <h6>這將清除：</h6>
+              <ul>
+                ${options.details.map(item => `<li>${item}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          <div class="custom-confirm-actions">
+            <button class="custom-confirm-btn custom-confirm-btn-cancel">
+              ${options.cancelText || '取消'}
+            </button>
+            <button class="custom-confirm-btn custom-confirm-btn-confirm">
+              ${options.confirmText || '確定'}
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // 添加到頁面
+      document.body.appendChild(overlay);
+      
+      // 顯示對話框
+      setTimeout(() => {
+        overlay.classList.add('show');
+      }, 10);
+      
+      // 綁定事件
+      const cancelBtn = overlay.querySelector('.custom-confirm-btn-cancel');
+      const confirmBtn = overlay.querySelector('.custom-confirm-btn-confirm');
+      
+      function cleanup() {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+          if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+          }
+        }, 300);
+      }
+      
+      cancelBtn.onclick = () => {
+        cleanup();
+        resolve(false);
+      };
+      
+      confirmBtn.onclick = () => {
+        cleanup();
+        resolve(true);
+      };
+      
+      // 點擊背景關閉
+      overlay.onclick = (e) => {
+        if (e.target === overlay) {
+          cleanup();
+          resolve(false);
+        }
+      };
+      
+      // ESC 鍵關閉
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          cleanup();
+          resolve(false);
+          document.removeEventListener('keydown', handleKeydown);
+        }
+      };
+      document.addEventListener('keydown', handleKeydown);
+    });
+  }
+
+  // 重新生成（添加確認對話框）
+  async generateNew() {
+    // 檢查是否有現有數據需要確認清除
+    if (this.currentQRData || document.getElementById('urlInput')?.value.trim()) {
+      const confirmed = await this.showCustomConfirm({
+        title: '重置星際碼生成器',
+        message: '確定要重新開始生成新的星際碼嗎？',
+        icon: 'fas fa-redo',
+        details: [
+          '目前生成的星際碼',
+          '所有輸入的通訊座標',
+          '上傳的識別標誌'
+        ],
+        confirmText: '確定重置',
+        cancelText: '取消'
+      });
+      
+      if (!confirmed) {
+        return;
+      }
+    }
+    
+    // 執行重置
     const urlInput = document.getElementById('urlInput');
     const includeLogo = document.getElementById('includeLogo');
     const logoFile = document.getElementById('logoFile');
@@ -404,6 +544,9 @@ class QRCodeGenerator {
     
     this.logoImageData = null;
     this.currentQRData = null;
+    
+    // 顯示重置成功訊息
+    this.showAlert('🔄 星際碼生成器已重置', 'info');
   }
 }
 
@@ -467,7 +610,7 @@ function initializePageFeatures() {
     });
   }
   
-  // 平滑滾動
+  // 平滑滾动
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
@@ -532,5 +675,51 @@ function initializePageFeatures() {
         });
       }
     }, 500);
+  }
+}
+
+// 回首頁確認對話框
+async function goToHomePage() {
+  let confirmed;
+  
+  if (qrGenerator) {
+    // 檢查是否有現有數據需要確認
+    const hasData = qrGenerator.currentQRData || document.getElementById('urlInput')?.value.trim();
+    
+    if (hasData) {
+      confirmed = await qrGenerator.showCustomConfirm({
+        title: '星際傳送確認',
+        message: '準備返回到星球主控中心嗎？',
+        icon: 'fas fa-rocket',
+        details: [
+          '目前生成的星際碼',
+          '所有輸入的通訊座標',
+          '上傳的識別標誌'
+        ],
+        confirmText: '確定',
+        cancelText: '取消'
+      });
+    } else {
+      confirmed = await qrGenerator.showCustomConfirm({
+        title: '星際傳送確認',
+        message: '準備返回到星球主控中心嗎？',
+        icon: 'fas fa-rocket',
+        confirmText: '確定',
+        cancelText: '取消'
+      });
+    }
+  } else {
+    // 如果QR generator還未初始化，使用原生confirm
+    confirmed = confirm('🚀 準備返回星球主頁嗎？');
+  }
+  
+  if (confirmed) {
+    // 添加傳送效果
+    if (qrGenerator) {
+      qrGenerator.showAlert('🚀 正在傳送至星球主控中心...', 'info');
+    }
+    setTimeout(() => {
+      window.location.href = '../index.html';
+    }, 800);
   }
 }

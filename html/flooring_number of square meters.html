@@ -14,7 +14,7 @@
     <!-- Custom CSS -->
     <link href="../css/styles.css" rel="stylesheet">
     <link href="../css/enhanced-styles.css" rel="stylesheet">
-    <link href="../css/flooring-galaxy-fixed.css" rel="stylesheet">
+    <link href="../css/galaxy-theme.css" rel="stylesheet">
     <link href="../css/fix-sizes.css" rel="stylesheet">
 </head>
 
@@ -757,10 +757,114 @@
                 }, 500);
             };
             
-            window.goToHomePage = function() {
-                // 確認對話框
-                if (confirm('🚀 準備返回星球主頁嗎？')) {
-                    window.location.href = '../index.html';
+            // 自定義確認對話框
+            function showCustomConfirm(options) {
+                return new Promise((resolve) => {
+                    // 創建對話框元素
+                    const overlay = document.createElement('div');
+                    overlay.className = 'custom-confirm-overlay';
+                    
+                    overlay.innerHTML = `
+                        <div class="custom-confirm-modal">
+                            <div class="custom-confirm-header">
+                                <div class="custom-confirm-icon">
+                                    <i class="${options.icon || 'fas fa-rocket'}"></i>
+                                </div>
+                                <h5 class="custom-confirm-title">${options.title || '確認操作'}</h5>
+                            </div>
+                            <div class="custom-confirm-message">
+                                ${options.message || '確定要執行此操作嗎？'}
+                            </div>
+                            ${options.details ? `
+                                <div class="custom-confirm-details">
+                                    <h6>這將清除：</h6>
+                                    <ul>
+                                        ${options.details.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            <div class="custom-confirm-actions">
+                                <button class="custom-confirm-btn custom-confirm-btn-cancel">
+                                    ${options.cancelText || '取消'}
+                                </button>
+                                <button class="custom-confirm-btn custom-confirm-btn-confirm">
+                                    ${options.confirmText || '確定'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 添加到頁面
+                    document.body.appendChild(overlay);
+                    
+                    // 顯示對話框
+                    setTimeout(() => {
+                        overlay.classList.add('show');
+                    }, 10);
+                    
+                    // 綁定事件
+                    const cancelBtn = overlay.querySelector('.custom-confirm-btn-cancel');
+                    const confirmBtn = overlay.querySelector('.custom-confirm-btn-confirm');
+                    
+                    function cleanup() {
+                        overlay.classList.remove('show');
+                        setTimeout(() => {
+                            if (document.body.contains(overlay)) {
+                                document.body.removeChild(overlay);
+                            }
+                        }, 300);
+                    }
+                    
+                    cancelBtn.onclick = () => {
+                        cleanup();
+                        resolve(false);
+                    };
+                    
+                    confirmBtn.onclick = () => {
+                        cleanup();
+                        resolve(true);
+                    };
+                    
+                    // 點擊背景關閉
+                    overlay.onclick = (e) => {
+                        if (e.target === overlay) {
+                            cleanup();
+                            resolve(false);
+                        }
+                    };
+                    
+                    // ESC 鍵關閉
+                    const handleKeydown = (e) => {
+                        if (e.key === 'Escape') {
+                            cleanup();
+                            resolve(false);
+                            document.removeEventListener('keydown', handleKeydown);
+                        }
+                    };
+                    document.addEventListener('keydown', handleKeydown);
+                });
+            }
+            
+            window.goToHomePage = async function() {
+                // 使用自定義確認對話框
+                const confirmed = await showCustomConfirm({
+                    title: '星際傳送確認',
+                    message: '準備返回到星球主控中心嗎？',
+                    icon: 'fas fa-rocket',
+                    details: [
+                        '目前的坪數計算資料',
+                        '所有輸入數值與結果'
+                    ],
+                    confirmText: '確定',
+                    cancelText: '取消'
+                });
+                
+                if (confirmed) {
+                    // 添加傳送效果
+                    showToast('🚀 正在傳送至星球主控中心...', 'info');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 800);
                 }
             };
             

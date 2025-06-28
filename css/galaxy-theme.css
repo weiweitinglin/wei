@@ -1,4 +1,16 @@
-/* 銀河坪數計算器 - 現代化樣式 */
+/* 
+ * Galaxy Theme - 銀河主題統一樣式系統
+ * 
+ * 這個CSS文件包含了整個網站的銀河主題樣式，包括：
+ * - 現代化確認對話框 (custom-confirm-overlay)
+ * - Toast通知系統 (cosmic-toast)
+ * - 計算器面板樣式 (calculator-panel)
+ * - 表單與按鈕現代化
+ * - 結果顯示區域
+ * - 響應式設計
+ * 
+ * 適用於所有工具頁面：地板計算器、坪數計算器、QR生成器、加班計算器等
+ */
 
 /* 導航欄層級調整 */
 #mainNav {
@@ -693,6 +705,185 @@ canvas {
     animation: fadeInUp 0.6s ease-out;
 }
 
+/* 通用工具頁面樣式 */
+.tool-page {
+    background: var(--galaxy-dark);
+    color: var(--galaxy-text-primary);
+    min-height: 100vh;
+}
+
+.tool-container {
+    margin-top: 120px;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 10;
+}
+
+.tool-card {
+    background: var(--galaxy-gradient-card);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--galaxy-border);
+    box-shadow: var(--galaxy-shadow);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tool-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, 
+        #42f5e6 0%, 
+        #4285f4 25%, 
+        #6366f1 50%, 
+        #8b5cf6 75%, 
+        #42f5e6 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 40px rgba(66, 245, 230, 0.6);
+    animation: galaxyTitleFlow 3s ease-in-out infinite alternate;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.tool-subtitle {
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, 
+        rgba(163, 178, 204, 1) 0%, 
+        rgba(66, 245, 230, 0.8) 50%, 
+        rgba(163, 178, 204, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.tool-description {
+    font-size: 1rem;
+    background: linear-gradient(135deg, 
+        rgba(163, 178, 204, 0.9) 0%, 
+        rgba(255, 255, 255, 0.7) 50%, 
+        rgba(163, 178, 204, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* 統一按鈕樣式 */
+.btn-galaxy {
+    background: var(--galaxy-gradient-button);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(66, 245, 230, 0.3);
+    min-width: 140px;
+}
+
+.btn-galaxy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-galaxy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 245, 230, 0.4);
+    color: white;
+}
+
+.btn-galaxy:hover::before {
+    left: 100%;
+}
+
+.btn-galaxy:active {
+    transform: translateY(0);
+}
+
+/* 統一輸入框樣式 */
+.form-control-galaxy {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--galaxy-border);
+    border-radius: 12px;
+    color: var(--galaxy-text-primary);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.form-control-galaxy:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--galaxy-accent);
+    box-shadow: 0 0 0 0.2rem rgba(66, 245, 230, 0.25), 
+                inset 0 0 20px rgba(66, 245, 230, 0.1);
+    color: var(--galaxy-text-primary);
+    outline: none;
+}
+
+.form-control-galaxy::placeholder {
+    color: var(--galaxy-text-secondary);
+    opacity: 0.7;
+}
+
+/* 統一標籤樣式 */
+.form-label-galaxy {
+    color: var(--galaxy-text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.form-label-galaxy i {
+    color: var(--galaxy-accent);
+    margin-right: 0.5rem;
+}
+
+/* 通用載入動畫 */
+.galaxy-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--galaxy-accent);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* 響應式設計優化 */
 @media (max-width: 768px) {
     .calculator-container {
@@ -855,4 +1046,337 @@ canvas {
 @keyframes twinkleFallback {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 1; }
+}
+
+/* 地板拼接計算器專用樣式 */
+.result-display-area {
+    margin-top: 2rem;
+}
+
+.result-content {
+    background: rgba(15, 21, 39, 0.8);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid rgba(66, 245, 230, 0.1);
+    color: var(--galaxy-text-primary);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.result-category {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--galaxy-gradient-card);
+    border-radius: 16px;
+    border: 1px solid var(--galaxy-border);
+    backdrop-filter: blur(10px);
+}
+
+.result-category:last-child {
+    margin-bottom: 0;
+}
+
+.result-category-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--galaxy-accent);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(66, 245, 230, 0.2);
+    text-align: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-label {
+    font-weight: 500;
+    color: var(--galaxy-text-secondary);
+}
+
+.result-value {
+    font-weight: 700;
+    color: var(--galaxy-accent);
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(66, 245, 230, 0.3);
+}
+
+/* 自定義確認對話框樣式 */
+.custom-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.custom-confirm-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-confirm-modal {
+    background: linear-gradient(145deg, 
+        rgba(26, 31, 53, 0.95) 0%, 
+        rgba(15, 21, 39, 0.95) 100%);
+    border: 1px solid rgba(66, 245, 230, 0.3);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    position: relative;
+    transform: scale(0.8) translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.custom-confirm-overlay.show .custom-confirm-modal {
+    transform: scale(1) translateY(0);
+}
+
+.custom-confirm-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--galaxy-accent), 
+        transparent);
+    opacity: 0.6;
+}
+
+.custom-confirm-modal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(66, 245, 230, 0.5), 
+        transparent);
+    opacity: 0.6;
+}
+
+/* 確認對話框背景粒子效果 */
+.custom-confirm-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 20% 30%, rgba(66, 245, 230, 0.3), transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(66, 133, 244, 0.2), transparent),
+        radial-gradient(1px 1px at 90% 40%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 70% 80%, rgba(139, 92, 246, 0.2), transparent);
+    background-repeat: repeat;
+    background-size: 100px 100px;
+    animation: confirmBackgroundFloat 8s linear infinite;
+    opacity: 0.4;
+    z-index: -1;
+}
+
+@keyframes confirmBackgroundFloat {
+    0% { 
+        transform: translateY(0) translateX(0); 
+    }
+    100% { 
+        transform: translateY(-50px) translateX(-25px); 
+    }
+}
+
+.custom-confirm-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.custom-confirm-icon {
+    font-size: 3rem;
+    color: var(--galaxy-accent);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(66, 245, 230, 0.5);
+    animation: confirmIconPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes confirmIconPulse {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 20px rgba(66, 245, 230, 0.5);
+    }
+    100% {
+        transform: scale(1.05);
+        text-shadow: 0 0 30px rgba(66, 245, 230, 0.7);
+    }
+}
+
+.custom-confirm-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--galaxy-text-primary);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, 
+        #ffffff 0%, 
+        #42f5e6 50%, 
+        #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.custom-confirm-message {
+    color: var(--galaxy-text-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.custom-confirm-details {
+    background: rgba(66, 245, 230, 0.1);
+    border: 1px solid rgba(66, 245, 230, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.custom-confirm-details h6 {
+    color: var(--galaxy-accent);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.custom-confirm-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-confirm-details li {
+    color: var(--galaxy-text-secondary);
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    position: relative;
+    padding-left: 1.2rem;
+}
+
+.custom-confirm-details li::before {
+    content: '•';
+    color: var(--galaxy-accent);
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+}
+
+.custom-confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.custom-confirm-btn {
+    flex: 1;
+    max-width: 120px;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-confirm-btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--galaxy-text-primary);
+    backdrop-filter: blur(10px);
+}
+
+.custom-confirm-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.custom-confirm-btn-confirm {
+    background: linear-gradient(135deg, #42f5e6 0%, #4285f4 100%);
+    color: white;
+    border: 1px solid rgba(66, 245, 230, 0.3);
+    box-shadow: 0 4px 15px rgba(66, 245, 230, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-confirm-btn-confirm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.custom-confirm-btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 245, 230, 0.4);
+}
+
+.custom-confirm-btn-confirm:hover::before {
+    left: 100%;
+}
+
+.custom-confirm-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .custom-confirm-modal {
+        margin: 1rem;
+        padding: 2rem;
+    }
+    
+    .custom-confirm-actions {
+        flex-direction: column;
+    }
+    
+    .custom-confirm-btn {
+        max-width: none;
+    }
 }

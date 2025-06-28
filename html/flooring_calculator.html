@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-tw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>木地板拼接計算器</title>
-    <!-- 頁面圖標 -->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- 引入 Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>銀河地板拼接計算器 - 廷造星球</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 自定義樣式表 -->
+    <!-- Custom CSS -->
     <link href="../css/styles.css" rel="stylesheet">
     <link href="../css/enhanced-styles.css" rel="stylesheet">
-    <link href="../css/flooring-galaxy-fixed.css" rel="stylesheet">
-    <!-- FontAwesome 圖示庫 -->
-    <script src="js/all.js" crossorigin="anonymous"></script>
+    <link href="../css/galaxy-theme.css" rel="stylesheet">
+    <link href="../css/fix-sizes.css" rel="stylesheet">
 </head>
-<body>
-    <!-- 宇宙背景效果 -->
+
+<body id="page-top" class="overtime-calculator">
+    <!-- 星座連線背景 -->
+    <div id="particles-js"></div>
+    
+    <!-- 宇宙背景 -->
     <div class="cosmic-background">
         <div class="stars"></div>
         <div class="stars2"></div>
@@ -27,100 +33,466 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container px-4 px-lg-5">
             <!-- 導航品牌 -->
-            <a class="navbar-brand" href="#page-top">
-                <div class="brand-icon">
-                    <div class="planet"></div>
+            <a class="navbar-brand" href="../index.html">
+                <span class="brand-icon">
                     <div class="planet-ring"></div>
-                </div>
-                地板拼接計算器
+                    <div class="planet"></div>
+                </span>
+                TING造星球
             </a>
             <!-- 漢堡選單按鈕 -->
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
             <!-- 導航選項 -->
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#calculator">計算小工具</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/index.html">回首頁</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../index.html#about">星球簡介</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../index.html#projects">地表資源</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wei/html/overtime_calculator.html">銀河工時計量器</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
+                    <!-- 下拉選單 -->
+                    <li class="nav-item dropdown mobile-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" 
+                           aria-haspopup="true">
+                            小工具衛星
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
+                            <li><a class="dropdown-item active" href="/wei/html/flooring_calculator.html">地板拼接計算器</a></li>
+                            <li><a class="dropdown-item" href="/wei/html/flooring_number of square meters.html">坪數計算器</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- 頁面標頭區域 -->
-    <header class="masthead">
-        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-            <div class="d-flex justify-content-center">
-                <div class="text-center tool-title">
-                    <!-- 標題文字 -->
-                    <h1 class="mx-auto my-0 text-uppercase">地板拼接計算器</h1>
+    <!-- 主要內容區域 -->
+    <div class="container calculator-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- 標題區域 -->
+                <div class="text-center mb-5">
+                    <h1 class="cosmic-title">
+                        <i class="fas fa-hammer me-2"></i>銀河地板拼接計算器
+                    </h1>
+                    <p class="cosmic-subtitle">精密拼接演算系統</p>
+                    <p class="cosmic-description">運用星際科技計算最佳地板拼接方案</p>
+                    
+                    <!-- 快速導航按鈕 -->
+                    <div class="quick-nav-buttons mt-4">
+                        <button type="button" class="btn btn-galaxy-primary me-3" onclick="scrollToCalculator()">
+                            <i class="fas fa-rocket me-2"></i>開始計算
+                        </button>
+                        <button type="button" class="btn btn-galaxy-secondary" onclick="goToHomePage()">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </header>         
 
-    <!-- 計算工具區域 -->
-    <section id="calculator" class="calc-section">
-        <div class="container">
-            <div class="calc-container">
-                <div class="section-icon">
-                    <i class="fas fa-calculator"></i>
-                </div>
-                <h2 class="text-center text-uppercase">計算工具</h2>
-                <p class="text-center" style="color: var(--text-muted);">輸入相關數據，快速獲得結果。</p>
-            <!-- 表單 -->
-            <form id="flooringForm" class="row g-3 justify-content-center">
-                <div class="col-md-6">
-                    <!-- 房間寬度輸入欄 -->
-                    <label for="roomWidth" class="form-label">房間寬度（公分）:</label>
-                    <input type="number" class="form-control" id="roomWidth" required>
-                </div>
-                <div class="col-md-6">
-                    <!-- 地板寬度輸入欄 -->
-                    <label for="floorWidth" class="form-label">地板寬度（公分）:</label>
-                    <input type="number" class="form-control" id="floorWidth" required>
-                </div>
-                <div class="col-md-12 text-center">
-                    <!-- 提交按鈕 -->
-                    <button type="button" class="btn btn-primary mt-3 " onclick="calculateFlooring()">計算</button>
-                </div>
-            </form>
-                <!-- 計算結果顯示區 -->
-                <div class="mt-4">
-                    <div class="result-section">
-                        <div class="result-header">
-                            <i class="fas fa-chart-bar me-2"></i>
-                            計算結果
+                <!-- 計算器主體 -->
+                <div class="calculator-panel" id="calculatorSection">
+                    <div class="section-header mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-cogs me-2"></i>量子拼接分析儀
+                        </h2>
+                        <p class="section-subtitle">精確計算地板拼接的最佳方案</p>
+                    </div>
+                    
+                    <!-- 輸入表單 -->
+                    <form id="flooringForm" class="row g-3 mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="roomWidth" class="form-label">
+                                <i class="fas fa-arrows-alt-h me-2"></i>房間寬度（公分）
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="roomWidth" placeholder="請輸入房間寬度" required>
+                                <span class="input-group-text">cm</span>
+                            </div>
                         </div>
-                        <div class="result-content">
-                            <pre id="result" style="color: var(--text-light); background: none; border: none; white-space: pre-wrap;">結果將顯示在此處。</pre>
+                        <div class="col-md-6 mb-3">
+                            <label for="floorWidth" class="form-label">
+                                <i class="fas fa-ruler-horizontal me-2"></i>地板寬度（公分）
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="floorWidth" placeholder="請輸入地板寬度" required>
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- 計算按鈕 -->
+                    <div class="text-center mb-4">
+                        <button type="button" class="btn btn-cosmic calculate-btn" onclick="calculateFlooring()">
+                            <i class="fas fa-rocket me-2"></i>啟動拼接分析
+                        </button>
+                    </div>
+
+                    <!-- 結果顯示區域 -->
+                    <div class="result-display-area" id="resultSection" style="display: none;">
+                        <div class="visual-box">
+                            <h3 class="visual-title">
+                                <i class="fas fa-chart-bar me-2"></i>拼接分析結果
+                            </h3>
+                            <div class="canvas-wrapper">
+                                <div id="result" class="result-content"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- 關於我們區域 -->
-    <section id="about" class="py-5 text-center" style="background: linear-gradient(to bottom, rgba(10, 14, 23, 0.8), rgba(26, 31, 53, 0.8)); color: var(--text-light);">
-        <div class="container">
-            <h2 class="text-uppercase" style="color: var(--text-light);">關於我們</h2>
-            <p style="color: var(--text-muted);">威製作小工具</p>
-        </div>
-    </section>
+    </div>
 
     <!-- 頁尾 -->
-    <footer class="footer text-center">
-        <div class="container">
-            <p class="small mb-0" style="color: var(--text-muted);">&copy; 威製作小工具. 版權所有.</p>
+    <footer class="footer bg-black small text-center text-white-50" style="padding: 2rem 0 3rem 0;">
+        <div class="container px-4 px-lg-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <p class="mb-2">
+                        <span class="brand-icon-small me-2">
+                            <div class="planet-ring-small"></div>
+                            <div class="planet-small"></div>
+                        </span>
+                        TING造星球
+                    </p>
+                    <p class="mb-0 opacity-75">© 2025 銀河拼接系統 | 探索地板拼接的完美方案</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- 引入 Bootstrap JS -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- JavaScript 計算邏輯 -->
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- 更強化的 Particles JS 載入 -->
     <script>
+        // 多重 CDN 備援載入系統
+        function loadParticlesJS() {
+            return new Promise((resolve, reject) => {
+                // 首先檢查是否已載入
+                if (typeof particlesJS !== 'undefined') {
+                    resolve();
+                    return;
+                }
+                
+                const cdnList = [
+                    'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js',
+                    'https://unpkg.com/particles.js@2.0.0/particles.min.js'
+                ];
+                
+                let currentCdn = 0;
+                
+                function tryLoadCdn() {
+                    if (currentCdn >= cdnList.length) {
+                        reject(new Error('All CDN sources failed'));
+                        return;
+                    }
+                    
+                    const script = document.createElement('script');
+                    script.src = cdnList[currentCdn];
+                    
+                    script.onload = function() {
+                        resolve();
+                    };
+                    
+                    script.onerror = function() {
+                        currentCdn++;
+                        tryLoadCdn();
+                    };
+                    
+                    document.head.appendChild(script);
+                }
+                
+                tryLoadCdn();
+            });
+        }
+        
+        // 頁面載入完成後立即執行
+        window.addEventListener('load', function() {
+            loadParticlesJS().then(() => {
+                setTimeout(() => {
+                    if (window.initParticlesSystem) {
+                        window.initParticlesSystem();
+                    }
+                }, 100);
+            }).catch((error) => {
+                console.error('Failed to load particles.js:', error);
+            });
+        });
+    </script>
+    <!-- 自定義 JS -->
+    <script>
+        // Particles.js 初始化
+        window.initParticlesSystem = function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS("particles-js", {
+                    particles: {
+                        number: { 
+                            value: window.innerWidth > 768 ? 80 : 40, 
+                            density: { enable: true, value_area: 800 } 
+                        },
+                        color: { value: "#ffffff" },
+                        shape: { 
+                            type: "circle",
+                            stroke: { width: 0, color: "#000000" }
+                        },
+                        opacity: { 
+                            value: 0.5, 
+                            random: true,
+                            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                        },
+                        size: { 
+                            value: 3, 
+                            random: true,
+                            anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                        },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: "#ffffff",
+                            opacity: 0.4,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 2,
+                            direction: "none",
+                            random: true,
+                            straight: false,
+                            out_mode: "out",
+                            bounce: false,
+                            attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                        }
+                    },
+                    interactivity: {
+                        detect_on: "canvas",
+                        events: {
+                            onhover: { enable: true, mode: "repulse" },
+                            onclick: { enable: true, mode: "push" },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 400, line_linked: { opacity: 1 } },
+                            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                            repulse: { distance: 200, duration: 0.4 },
+                            push: { particles_nb: 4 },
+                            remove: { particles_nb: 2 }
+                        }
+                    },
+                    retina_detect: true
+                });
+                console.log('🎉 Particles.js 初始化成功！');
+                
+                // 確保 particles 容器樣式正確
+                const particlesContainer = document.getElementById('particles-js');
+                if (particlesContainer) {
+                    particlesContainer.style.cssText = `
+                        position: fixed !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        z-index: 1 !important;
+                        pointer-events: none !important;
+                        background: transparent !important;
+                    `;
+                }
+            }
+        }
+        
+        // 立即檢查並初始化
+        if (typeof particlesJS !== 'undefined') {
+            setTimeout(window.initParticlesSystem, 50);
+        }
+        
+        // DOM 載入完成後執行
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof particlesJS !== 'undefined') {
+                    window.initParticlesSystem();
+                }
+            }, 300);
+        });
+        
+        // 快速導航功能
+        window.scrollToCalculator = function() {
+            const calculatorSection = document.getElementById('calculatorSection');
+            calculatorSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // 聚焦到第一個輸入框
+            setTimeout(() => {
+                const roomWidthInput = document.getElementById('roomWidth');
+                roomWidthInput.focus();
+                // 添加輕微的發光效果提示
+                roomWidthInput.style.boxShadow = '0 0 20px rgba(66, 245, 230, 0.6)';
+                setTimeout(() => {
+                    roomWidthInput.style.boxShadow = '';
+                }, 2000);
+            }, 500);
+        };
+        
+        // 自定義確認對話框
+        function showCustomConfirm(options) {
+            return new Promise((resolve) => {
+                // 創建對話框元素
+                const overlay = document.createElement('div');
+                overlay.className = 'custom-confirm-overlay';
+                
+                overlay.innerHTML = `
+                    <div class="custom-confirm-modal">
+                        <div class="custom-confirm-header">
+                            <div class="custom-confirm-icon">
+                                <i class="${options.icon || 'fas fa-rocket'}"></i>
+                            </div>
+                            <h5 class="custom-confirm-title">${options.title || '確認操作'}</h5>
+                        </div>
+                        <div class="custom-confirm-message">
+                            ${options.message || '確定要執行此操作嗎？'}
+                        </div>
+                        ${options.details ? `
+                            <div class="custom-confirm-details">
+                                <h6>這將清除：</h6>
+                                <ul>
+                                    ${options.details.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        <div class="custom-confirm-actions">
+                            <button class="custom-confirm-btn custom-confirm-btn-cancel">
+                                ${options.cancelText || '取消'}
+                            </button>
+                            <button class="custom-confirm-btn custom-confirm-btn-confirm">
+                                ${options.confirmText || '確定'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // 添加到頁面
+                document.body.appendChild(overlay);
+                
+                // 顯示對話框
+                setTimeout(() => {
+                    overlay.classList.add('show');
+                }, 10);
+                
+                // 綁定事件
+                const cancelBtn = overlay.querySelector('.custom-confirm-btn-cancel');
+                const confirmBtn = overlay.querySelector('.custom-confirm-btn-confirm');
+                
+                function cleanup() {
+                    overlay.classList.remove('show');
+                    setTimeout(() => {
+                        if (document.body.contains(overlay)) {
+                            document.body.removeChild(overlay);
+                        }
+                    }, 300);
+                }
+                
+                cancelBtn.onclick = () => {
+                    cleanup();
+                    resolve(false);
+                };
+                
+                confirmBtn.onclick = () => {
+                    cleanup();
+                    resolve(true);
+                };
+                
+                // 點擊背景關閉
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) {
+                        cleanup();
+                        resolve(false);
+                    }
+                };
+                
+                // ESC 鍵關閉
+                const handleKeydown = (e) => {
+                    if (e.key === 'Escape') {
+                        cleanup();
+                        resolve(false);
+                        document.removeEventListener('keydown', handleKeydown);
+                    }
+                };
+                document.addEventListener('keydown', handleKeydown);
+            });
+        }
+        
+        window.goToHomePage = async function() {
+            // 使用自定義確認對話框
+            const confirmed = await showCustomConfirm({
+                title: '星際傳送確認',
+                message: '準備返回到星球主控中心嗎？',
+                icon: 'fas fa-rocket',
+                details: [
+                    '目前的拼接計算資料',
+                    '所有輸入數值與結果'
+                ],
+                confirmText: '確定',
+                cancelText: '取消'
+            });
+            
+            if (confirmed) {
+                // 添加傳送效果
+                showToast('🚀 正在傳送至星球主控中心...', 'info');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 800);
+            }
+        };
+        
+        // Toast 提示訊息
+        function showToast(message, type = 'info') {
+            // 檢查是否已存在 Toast，如果有則移除
+            const existingToast = document.querySelector('.cosmic-toast');
+            if (existingToast) {
+                document.body.removeChild(existingToast);
+            }
+            
+            // 建立新的 Toast 元素
+            const toast = document.createElement('div');
+            toast.className = `cosmic-toast cosmic-toast-${type}`;
+            
+            // 設置 Toast 內容
+            const icon = type === 'success' ? 'check-circle' : 
+                         type === 'error' ? 'exclamation-circle' : 
+                         type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+                         
+            toast.innerHTML = `
+                <div class="cosmic-toast-content">
+                    <i class="fas fa-${icon} me-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // 將 Toast 添加到頁面
+            document.body.appendChild(toast);
+            
+            // 顯示 Toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 自動隱藏 Toast
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 增強版計算函數
         function calculateFlooring() {
             // 取得用戶輸入的房間寬度和地板寬度
             const roomWidth = parseFloat(document.getElementById("roomWidth").value);
@@ -128,9 +500,23 @@
 
             // 驗證輸入數據是否有效
             if (isNaN(roomWidth) || isNaN(floorWidth) || roomWidth <= 0 || floorWidth <= 0) {
-                document.getElementById("result").innerHTML = '<div class="alert-message">請輸入有效的數值！</div>';
+                showToast('請輸入有效的數值！', 'error');
                 return;
             }
+
+            // 顯示結果區域
+            const resultSection = document.getElementById('resultSection');
+            resultSection.style.display = 'block';
+            
+            // 結果區域淡入效果
+            resultSection.style.opacity = '0';
+            resultSection.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                resultSection.style.transition = 'all 0.5s ease';
+                resultSection.style.opacity = '1';
+                resultSection.style.transform = 'translateY(0)';
+            }, 100);
 
             // 計算結果
             let results = [];
@@ -138,31 +524,64 @@
             // 不調整的情況
             const withoutAdjustment = (roomWidth % floorWidth).toFixed(2);
             const totalPiecesNoAdjust = Math.floor(roomWidth / floorWidth);
-            results.push('<div class="result-item"><span class="result-label">不調整的情況:</span></div>');
+            results.push('<div class="result-category">');
+            results.push('<div class="result-category-title"><i class="fas fa-ruler me-2"></i>標準拼接方案</div>');
             results.push(`<div class="result-item"><span class="result-label">總地板片數:</span> <span class="result-value">${totalPiecesNoAdjust + 1}</span></div>`);
             results.push(`<div class="result-item"><span class="result-label">最後一片地板寬度:</span> <span class="result-value">${withoutAdjustment} 公分</span></div>`);
-            results.push('<br>');
+            results.push('</div>');
 
             // 減去 5 公分的情況
             const adjustedFirstPiece5 = floorWidth - 5;
             const totalPiecesAdjusted5 = Math.floor((roomWidth - adjustedFirstPiece5) / floorWidth) + 1;
             const lastPieceAdjusted5 = ((roomWidth - adjustedFirstPiece5) % floorWidth).toFixed(2);
-            results.push('<div class="result-item"><span class="result-label">減去 5 公分的情況:</span></div>');
+            results.push('<div class="result-category">');
+            results.push('<div class="result-category-title"><i class="fas fa-cut me-2"></i>優化方案 (-5cm)</div>');
             results.push(`<div class="result-item"><span class="result-label">總地板片數:</span> <span class="result-value">${totalPiecesAdjusted5}</span></div>`);
             results.push(`<div class="result-item"><span class="result-label">最後一片地板寬度:</span> <span class="result-value">${lastPieceAdjusted5} 公分</span></div>`);
-            results.push('<br>');
+            results.push('</div>');
 
             // 減去 10 公分的情況
             const adjustedFirstPiece10 = floorWidth - 10;
             const totalPiecesAdjusted10 = Math.floor((roomWidth - adjustedFirstPiece10) / floorWidth) + 1;
             const lastPieceAdjusted10 = ((roomWidth - adjustedFirstPiece10) % floorWidth).toFixed(2);
-            results.push('<div class="result-item"><span class="result-label">減去 10 公分的情況:</span></div>');
+            results.push('<div class="result-category">');
+            results.push('<div class="result-category-title"><i class="fas fa-scissors me-2"></i>進階方案 (-10cm)</div>');
             results.push(`<div class="result-item"><span class="result-label">總地板片數:</span> <span class="result-value">${totalPiecesAdjusted10}</span></div>`);
             results.push(`<div class="result-item"><span class="result-label">最後一片地板寬度:</span> <span class="result-value">${lastPieceAdjusted10} 公分</span></div>`);
+            results.push('</div>');
 
             // 顯示結果
             document.getElementById("result").innerHTML = results.join("");
+            
+            // 顯示成功訊息
+            showToast('拼接分析完成！', 'success');
+            
+            // 添加脈衝動畫效果
+            setTimeout(() => {
+                resultSection.classList.add('pulse-animation');
+                setTimeout(() => {
+                    resultSection.classList.remove('pulse-animation');
+                }, 600);
+            }, 200);
         }
+        
+        // 為輸入框添加鍵盤事件監聽
+        document.addEventListener('DOMContentLoaded', function() {
+            const roomWidthInput = document.getElementById('roomWidth');
+            const floorWidthInput = document.getElementById('floorWidth');
+            
+            roomWidthInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    floorWidthInput.focus();
+                }
+            });
+            
+            floorWidthInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateFlooring();
+                }
+            });
+        });
     </script>
 </body>
 </html>
