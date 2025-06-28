@@ -67,6 +67,17 @@ body {
   }
 }
 
+/* Particles.js 背景 */
+#particles-js {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  background: transparent;
+}
+
 /* 導航欄樣式 */
 .navbar {
   background: linear-gradient(to right, rgba(5, 5, 20, 0.8), rgba(17, 24, 63, 0.8), rgba(31, 18, 77, 0.8));
@@ -181,20 +192,70 @@ body {
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.btn-outline-light {
-  border: 1px solid rgba(111, 155, 255, 0.5);
-  color: var(--text-light);
-  transition: all 0.3s;
-  font-size: 0.9rem;
-  padding: 0.4rem 1rem;
-  background: rgba(30, 40, 70, 0.3);
+.header-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
 }
 
-.btn-outline-light:hover {
-  background: rgba(111, 155, 255, 0.2);
-  border-color: rgba(111, 155, 255, 0.8);
+.btn-space {
+  background: linear-gradient(135deg, #3481ff, #57a0ff);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 129, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-space::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-space:hover::before {
+  left: 100%;
+}
+
+.btn-space:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(52, 129, 255, 0.4);
+  background: linear-gradient(135deg, #57a0ff, #78b5ff);
+}
+
+.btn-space-outline {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(87, 160, 255, 0.6);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.btn-space-outline:hover {
+  background: rgba(87, 160, 255, 0.2);
+  border-color: rgba(87, 160, 255, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(87, 160, 255, 0.3);
+  color: white;
 }
 
 /* 計算區域 */
@@ -405,6 +466,18 @@ canvas {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     padding: 0.5rem;
   }
+  
+  .header-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-space,
+  .btn-space-outline {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    width: 200px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -419,5 +492,16 @@ canvas {
   
   h2 {
     font-size: 1.5rem;
+  }
+  
+  .header-buttons {
+    margin-top: 1rem;
+  }
+  
+  .btn-space,
+  .btn-space-outline {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    width: 180px;
   }
 }

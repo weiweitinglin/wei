@@ -20,9 +20,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Custom CSS -->
     <link href="../css/styles.css" rel="stylesheet" />
-    <link href="../css/enhanced-styles.css" rel="stylesheet" />
-    <link href="../css/galaxy-theme.css" rel="stylesheet" />
-    <link href="../css/fix-sizes.css" rel="stylesheet" />
     <link href="../css/overtime-calculator.css" rel="stylesheet" />
     <style id="fix-header-white-edges">
         /* 這些樣式會覆蓋所有其他樣式 */
@@ -50,46 +47,13 @@
 
     <!-- 添加 html2canvas 支援 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 </head>
 <body id="page-top" class="overtime-calculator">
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container px-4 px-lg-5">
-            <!-- 替換原有的 navbar-brand -->
-            <a class="navbar-brand" href="../index.html">
-                <span class="brand-icon">
-                    <div class="planet-ring"></div>
-                    <div class="planet"></div>
-                </span>
-                TING造星球
-            </a>
-            <!-- 確保漢堡選單按鈕屬性完整 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="../index.html#about">星球簡介</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../index.html#projects">地表資源</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/overtime_calculator.html">銀河工時計量器</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wei/html/QR code.html">星碼工廠</a></li>
-                    <!-- 修改下拉選單部分 -->
-                    <li class="nav-item dropdown mobile-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false" 
-                           aria-haspopup="true">
-                            小工具衛星
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
-                            <li><a class="dropdown-item" href="/wei/html/flooring_calculator.html">地板拼接計算器</a></li>
-                            <li><a class="dropdown-item" href="/wei/html/flooring_number of square meters.html">坪數計算器</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    <!-- Particles.js 星座連線背景 -->
+    <div id="particles-js"></div>
+    
     <!-- Main Content -->
     <main class="calculator-container">
         <div class="cosmic-background">
@@ -98,16 +62,37 @@
             <div class="stars3"></div>
         </div>
 
+        <!-- 頁面標頭區域 -->
+        <header class="masthead">
+            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+                <div class="d-flex justify-content-center">
+                    <div class="text-center tool-title">
+                        <!-- 標題文字（圖標和文字在同一行） -->
+                        <h1 class="mx-auto my-0 text-uppercase">
+                            <i class="fas fa-clock me-3"></i>銀河工時計量器
+                        </h1>
+                        <div class="title-underline"></div>
+                        <p class="cosmic-subtitle">精密工時演算系統</p>
+                        <p class="cosmic-description">運用星際科技計算最佳勞動報酬方案</p>
+                        <!-- 操作按鈕組 -->
+                        <div class="header-buttons mt-4">
+                            <button type="button" class="btn btn-space me-3" onclick="scrollToCalculator()">
+                                <i class="fas fa-calculator me-2"></i>開始計算
+                            </button>
+                            <button type="button" class="btn btn-space-outline" onclick="showHomeConfirmation()">
+                                <i class="fas fa-home me-2"></i>返回首頁
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="calculator-panel">
-                        <div class="calculator-header text-center mb-4">
-                            <h1 class="cosmic-title">銀河工時計量器</h1>
-                            <p class="cosmic-subtitle">探索您的勞動價值，計算合理報酬</p>
-                        </div>
-
-                        <div class="salary-input-section mb-4">
+                        <div class="salary-input-section mb-4" id="calculator">
                             <div class="salary-card">
                                 <div class="salary-header">
                                     <h2><i class="fas fa-money-bill-wave me-2"></i>薪資設定</h2>
@@ -308,6 +293,25 @@
         </div>
     </div>
 
+    <!-- 返回首頁確認對話框 -->
+    <div id="homeConfirmDialog" class="confirm-overlay" style="display: none;">
+        <div class="confirm-dialog">
+            <div class="confirm-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h3>星際傳送確認</h3>
+            <p>準備返回星球主控中心嗎？</p>
+            <div class="confirm-buttons">
+                <button class="btn-confirm-cancel" onclick="hideHomeConfirmation()">
+                    取消
+                </button>
+                <button class="btn-confirm-ok" onclick="confirmGoHome()">
+                    確定返回
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -322,6 +326,83 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh-tw.js"></script>
     <script src="../js/overtime-calculator.js"></script>
+    
+    <!-- Particles.js 初始化 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 100, density: { enable: true, value_area: 800 } },
+                        color: { value: '#57a0ff' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.3, random: false },
+                        size: { value: 2, random: true },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: '#57a0ff',
+                            opacity: 0.2,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 1,
+                            direction: 'none',
+                            random: false,
+                            straight: false,
+                            out_mode: 'out',
+                            bounce: false
+                        }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: {
+                            onhover: { enable: true, mode: 'repulse' },
+                            onclick: { enable: true, mode: 'push' },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 140, line_linked: { opacity: 1 } },
+                            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                            repulse: { distance: 200, duration: 0.4 },
+                            push: { particles_nb: 4 },
+                            remove: { particles_nb: 2 }
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
+        });
+
+        // 滾動到計算器區域
+        function scrollToCalculator() {
+            document.getElementById('calculator').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // 顯示返回首頁確認對話框
+        function showHomeConfirmation() {
+            document.getElementById('homeConfirmDialog').style.display = 'flex';
+        }
+
+        // 隱藏返回首頁確認對話框
+        function hideHomeConfirmation() {
+            document.getElementById('homeConfirmDialog').style.display = 'none';
+        }
+
+        // 確認返回首頁
+        function confirmGoHome() {
+            window.location.href = '../index.html';
+        }
+
+        // 返回首頁 (保留舊函數以防其他地方調用)
+        function goHome() {
+            showHomeConfirmation();
+        }
+    </script>
 </body>
 </html>
 

@@ -16,6 +16,224 @@
     <link href="../css/enhanced-styles.css" rel="stylesheet">
     <link href="../css/galaxy-theme.css" rel="stylesheet">
     <link href="../css/fix-sizes.css" rel="stylesheet">
+    
+    <!-- 確認對話框樣式 -->
+    <style>
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .confirm-dialog {
+            background: linear-gradient(145deg, #1a1f3a, #2d3561);
+            border: 2px solid #4a5568;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            text-align: center;
+            color: white;
+        }
+
+        .confirm-icon {
+            font-size: 3rem;
+            color: #4fd1c7;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .confirm-dialog h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .confirm-dialog p {
+            color: #a0aec0;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .confirm-details {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .confirm-details p {
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        .confirm-details ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .confirm-details li {
+            color: #cbd5e0;
+            margin-bottom: 5px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn-confirm-cancel,
+        .btn-confirm-ok {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .btn-confirm-cancel {
+            background: linear-gradient(145deg, #4a5568, #2d3748);
+            color: #e2e8f0;
+        }
+
+        .btn-confirm-cancel:hover {
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+            transform: translateY(-2px);
+        }
+
+        .btn-confirm-ok {
+            background: linear-gradient(145deg, #4fd1c7, #38b2ac);
+            color: white;
+        }
+
+        .btn-confirm-ok:hover {
+            background: linear-gradient(145deg, #38b2ac, #319795);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 計算結果樣式 */
+        .result-category {
+            background: linear-gradient(145deg, #2d3561, #1a1f3a);
+            border: 1px solid #4a5568;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .result-category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .result-category-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4fd1c7;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(79, 209, 199, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        .result-category-title i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #4fd1c7;
+            font-size: 1.1rem;
+        }
+
+        .pulse-animation {
+            animation: resultPulse 0.6s ease-in-out;
+        }
+
+        @keyframes resultPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* 響應式設計優化 */
+        @media (max-width: 768px) {
+            .result-category {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+
+            .result-category-title {
+                font-size: 1rem;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .result-value {
+                font-size: 1.2rem;
+                margin-left: auto;
+            }
+        }
+    </style>
 </head>
 
 <body id="page-top" class="overtime-calculator">
@@ -426,27 +644,57 @@
             });
         }
         
-        window.goToHomePage = async function() {
-            // 使用自定義確認對話框
-            const confirmed = await showCustomConfirm({
-                title: '星際傳送確認',
-                message: '準備返回到星球主控中心嗎？',
-                icon: 'fas fa-rocket',
-                details: [
-                    '目前的拼接計算資料',
-                    '所有輸入數值與結果'
-                ],
-                confirmText: '確定',
-                cancelText: '取消'
-            });
-            
-            if (confirmed) {
-                // 添加傳送效果
-                showToast('🚀 正在傳送至星球主控中心...', 'info');
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 800);
+        window.goToHomePage = function() {
+            showHomeConfirmation();
+        };
+
+        // 顯示返回首頁確認對話框
+        window.showHomeConfirmation = function() {
+            const confirmDialog = document.createElement('div');
+            confirmDialog.innerHTML = `
+                <div id="homeConfirmDialog" class="confirm-overlay" style="display: flex;">
+                    <div class="confirm-dialog">
+                        <div class="confirm-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>星際傳送確認</h3>
+                        <p>準備返回星球主控中心嗎？</p>
+                        <div class="confirm-details">
+                            <p>將會清除：</p>
+                            <ul>
+                                <li>目前的地板計算進度</li>
+                                <li>所有輸入的尺寸數據</li>
+                            </ul>
+                        </div>
+                        <div class="confirm-buttons">
+                            <button class="btn-confirm-cancel" onclick="hideHomeConfirmation()">
+                                取消
+                            </button>
+                            <button class="btn-confirm-ok" onclick="confirmGoHome()">
+                                確定返回
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmDialog);
+        };
+
+        // 隱藏返回首頁確認對話框
+        window.hideHomeConfirmation = function() {
+            const dialog = document.getElementById('homeConfirmDialog');
+            if (dialog) {
+                dialog.parentElement.remove();
             }
+        };
+
+        // 確認返回首頁
+        window.confirmGoHome = function() {
+            hideHomeConfirmation();
+            showToast('🚀 正在傳送至星球主控中心...', 'info');
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 800);
         };
         
         // Toast 提示訊息
