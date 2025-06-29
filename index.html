@@ -33,8 +33,29 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- 確保載入動畫正確顯示的初始樣式 -->
+    <style>
+        /* 防止頁面在載入動畫顯示期間滾動 */
+        body.loading {
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* 確保載入動畫在最前面 */
+        .loading-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460) !important;
+        }
+    </style>
 </head>
-<body id="page-top" class="overflow-x-hidden">
+<body id="page-top" class="overflow-x-hidden loading">
     <!-- 增強載入動畫 -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
@@ -452,7 +473,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <div class="stat-number" data-count="5">0</div>
+                        <div class="stat-number" data-count="2">0</div>
                         <div class="stat-label">使用者</div>
                     </div>
                 </div>
@@ -461,7 +482,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-download"></i>
                         </div>
-                        <div class="stat-number" data-count="1">0</div>
+                        <div class="stat-number" data-count="0">0</div>
                         <div class="stat-label">下載次數</div>
                     </div>
                 </div>
@@ -524,10 +545,25 @@
     
     <!-- 增強的初始化腳本 -->
     <script>
-        // 簡化的初始化腳本，保留載入動畫和基本功能
-        
-        // 手機版下拉選單修復（保留原有功能）
+        // 緊急修復：確保載入動畫不會阻止點擊
         document.addEventListener('DOMContentLoaded', function() {
+            // 立即檢查載入動畫
+            setTimeout(() => {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    console.log('緊急修復：隱藏載入動畫');
+                    loadingOverlay.style.pointerEvents = 'none';
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                        loadingOverlay.remove();
+                        document.body.classList.remove('loading'); // 移除 loading class
+                        document.body.classList.add('loaded');
+                    }, 1000);
+                }
+            }, 2000); // 2秒後強制隱藏
+            
+            // 手機版下拉選單修復（保留原有功能）
             const isMobile = window.innerWidth <= 768;
             
             if (isMobile) {

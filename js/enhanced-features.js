@@ -122,10 +122,14 @@ class EnhancedWebsite {
                 
                 // 隱藏載入動畫
                 setTimeout(() => {
-                    loader.style.opacity = '0';
+                    console.log('initLoader: 開始隱藏載入動畫');
+                    loader.classList.add('hidden');
                     setTimeout(() => {
                         loader.style.display = 'none';
+                        loader.remove(); // 完全移除元素
+                        document.body.classList.remove('loading'); // 移除 loading class
                         document.body.classList.add('loaded');
+                        console.log('initLoader: 載入動畫已隱藏');
                         this.showNavbar();
                     }, 500);
                 }, 300);
@@ -874,15 +878,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 確保在頁面完全載入後也執行一次
 window.addEventListener('load', () => {
+    console.log('頁面載入完成，開始隱藏載入動畫');
+    
     // 如果載入動畫還在顯示，強制隱藏
     const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay && loadingOverlay.style.display !== 'none') {
+    if (loadingOverlay) {
+        console.log('找到載入動畫元素，準備隱藏');
+        
         setTimeout(() => {
-            loadingOverlay.style.opacity = '0';
+            // 添加隱藏類別
+            loadingOverlay.classList.add('hidden');
+            
+            setTimeout(() => {
+                // 完全移除元素
+                loadingOverlay.style.display = 'none';
+                loadingOverlay.remove(); // 直接移除元素
+                document.body.classList.remove('loading'); // 移除 loading class
+                document.body.classList.add('loaded');
+                console.log('載入動畫已隱藏，頁面可以正常互動');
+            }, 500);
+        }, 1500); // 減少顯示時間到1.5秒
+    } else {
+        console.log('未找到載入動畫元素');
+        document.body.classList.remove('loading'); // 移除 loading class
+        document.body.classList.add('loaded');
+    }
+});
+
+// 備用隱藏機制 - DOMContentLoaded 事件
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM 載入完成');
+    
+    // 設定最大載入時間
+    setTimeout(() => {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay && !document.body.classList.contains('loaded')) {
+            console.log('備用隱藏機制觸發');
+            loadingOverlay.classList.add('hidden');
             setTimeout(() => {
                 loadingOverlay.style.display = 'none';
+                loadingOverlay.remove();
+                document.body.classList.remove('loading'); // 移除 loading class
                 document.body.classList.add('loaded');
             }, 500);
-        }, 2000); // 最多顯示2秒
-    }
+        }
+    }, 3000); // 最多3秒後強制隱藏
 });

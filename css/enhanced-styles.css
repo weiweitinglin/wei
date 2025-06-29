@@ -834,6 +834,19 @@ body {
     z-index: 10000;
     opacity: 1;
     transition: opacity 0.5s ease-out;
+    pointer-events: all; /* 確保在顯示時阻止點擊 */
+}
+
+/* 載入完成後隱藏 */
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* 隱藏後不阻止點擊 */
+    visibility: hidden;
+}
+
+/* 頁面載入完成狀態 */
+body.loaded .loading-overlay {
+    display: none !important;
 }
 
 .loading-content {
