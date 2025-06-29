@@ -123,6 +123,13 @@ function initializeCalendar() {
         dateClick: handleDateClick,
         dayCellDidMount: dayCellRender,
         
+        // 明確設置日期顯示格式，避免中文本地化導致的重複問題
+        dayCellContent: function(arg) {
+            return {
+                html: `<div class="fc-daygrid-day-number" style="font-size: 14px; font-weight: bold;">${arg.date.getDate()}</div>`
+            };
+        },
+        
         // 簡化所有樣式相關選項，避免使用不支援的屬性
         eventDisplay: 'block',
         eventBackgroundColor: 'transparent',
@@ -130,7 +137,11 @@ function initializeCalendar() {
         views: {
             dayGridMonth: {
                 dayMaxEventRows: true,
-                dayHeaderFormat: { weekday: 'short' }
+                dayHeaderFormat: { weekday: 'short' },
+                // 確保日期格式正確
+                dayCellContent: function(arg) {
+                    return arg.date.getDate().toString();
+                }
             }
         }
     });
@@ -1280,21 +1291,60 @@ function dayCellRender(info) {
     const existingEvents = cell.querySelectorAll('.fc-event');
     existingEvents.forEach(event => event.remove());
     
-   // 修復日期數字重複問題
-    const dayNumber = cell.querySelector('.fc-daygrid-day-number');
-    if (dayNumber) {
-        // 清除所有文字內容，只保留正確的日期
-        dayNumber.innerHTML = '';
-        dayNumber.textContent = date.getDate();
-        
-        // 確保樣式正確
-        dayNumber.style.fontSize = '14px';
-        dayNumber.style.fontWeight = 'bold';
-        dayNumber.style.color = 'inherit';
-    }
+   // 修復日期數字重複問題 - 簡化處理，避免與 FullCalendar 內建處理衝突
+    setTimeout(() => {
+        const dayNumber = cell.querySelector('.fc-daygrid-day-number');
+        if (dayNumber) {
+            // 只有在發現重複內容時才處理
+            const currentText = dayNumber.textContent;
+            const correctDate = date.getDate().toString();
+            
+            // 檢查是否有重複（如 "28日28" 或其他異常格式）
+            if (currentText !== correctDate && (currentText.includes('日') || currentText.length > 2)) {
+                console.log(`修復重複日期顯示: "${currentText}" -> "${correctDate}"`);
+                dayNumber.innerHTML = '';
+                dayNumber.textContent = correctDate;
+                
+                // 確保樣式正確
+                dayNumber.style.fontSize = '14px';
+                dayNumber.style.fontWeight = 'bold';
+                dayNumber.style.color = 'inherit';
+            }
+        }
+    }, 10);
 
+    // 處理日期類型
+    if (holidays.includes(dateStr)) {
+        // 國定假日
+        cell.classList.add('fc-day-holiday');
+        
+        // 顯示假日名稱
+        const holidayName = getHolidayName(dateStr);
+        if (holidayName) {
+            const holidayEl = document.createElement('div');
+            holidayEl.className = 'holiday-name';
+            holidayEl.textContent = holidayName;
+            cell.appendChild(holidayEl);
+        }
+    } else if (date.getDay() === 0 || date.getDay() === 6) {
+        // 週末
+        cell.classList.add('fc-day-restday');
+    } else {
+        // 工作日
+        cell.classList.add('fc-day-workday');
+    }
     
-    // 添加一個專門修復日期顯示的函數
+    // 檢查是否有加班記錄，如果有就重新渲染徽章
+    const record = overtimeRecords.find(r => r.date === dateStr);
+    if (record) {
+        // 延遲一點時間確保DOM穩定後再渲染徽章
+        setTimeout(() => {
+            renderOvertimeEventOnDate(dateStr, record);
+        }, 50);
+    }
+}
+    
+// 添加一個專門修復日期顯示的函數
 function fixDateNumberDisplay() {
     console.log('修復日期數字顯示');
     
@@ -1320,88 +1370,15 @@ function handleMonthChange() {
         // 1. 修復日期數字顯示
         fixDateNumberDisplay();
         
-        // 2. 清除重複徽章
-        clearDuplicateBadges();
+        // 2. 重新渲染加班徽章
+        forceRefreshAllOvertimeBadges();
         
-        // 3. 重新渲染加班徽章
-        renderCurrentMonthBadges();
-        
-        // 4. 修復其他樣式
+        // 3. 修復其他樣式
         eliminateWeekdayBorders();
         createOvertimeLegend();
         
         console.log('月份切換處理完成');
     }, 100);
-}
-    
-    // 處理日期類型
-    if (holidays.includes(dateStr)) {
-        // 國定假日
-        cell.classList.add('fc-day-holiday');
-        
-        // 顯示假日名稱
-        const holidayName = getHolidayName(dateStr);
-        if (holidayName) {
-            const holidayEl = document.createElement('div');
-            holidayEl.className = 'holiday-name';
-            holidayEl.textContent = holidayName;
-            cell.appendChild(holidayEl);
-        }
-    } else if (date.getDay() === 0 || date.getDay() === 6) {
-        // 週末
-        cell.classList.add('fc-day-restday');
-    } else {
-        // 工作日
-        cell.classList.add('fc-day-workday');
-    }
-    
-    // 修改這部分 - 如果已有加班紀錄，顯示事件點
-    const record = overtimeRecords.find(r => r.date === dateStr);
-    if (record) {
-        // 創建新的事件點
-        const eventEl = document.createElement('div');
-        eventEl.classList.add('fc-event');
-        
-        // 顯示時間
-        const timeDisplay = record.minutes > 0 ? 
-            `${record.hours}h${record.minutes}m` : 
-            `${record.hours}h`;
-            
-        eventEl.innerHTML = `<i class="fas fa-clock me-1"></i>${timeDisplay}`;
-        eventEl.title = `上班: ${record.startTime || '未設定'}\n下班: ${record.endTime || '未設定'}`;
-        
-        // 確保有一個容器來放置事件點
-        let eventsContainer = cell.querySelector('.fc-daygrid-day-events');
-        
-        if (!eventsContainer) {
-            // 如果沒有找到容器，創建一個
-            eventsContainer = document.createElement('div');
-            eventsContainer.className = 'fc-daygrid-day-events';
-            
-            // 添加到日期單元格的內容區域
-            const content = cell.querySelector('.fc-daygrid-day-frame');
-            if (content) {
-                content.appendChild(eventsContainer);
-            } else {
-                cell.appendChild(eventsContainer);
-            }
-        }
-        
-        // 添加到容器
-        eventsContainer.appendChild(eventEl);
-        
-        // 直接設置樣式確保可見
-        eventEl.style.position = 'relative';
-        eventEl.style.display = 'block';
-        eventEl.style.margin = '2px auto';
-        eventEl.style.padding = '3px 8px';
-        eventEl.style.backgroundColor = 'rgba(111, 155, 255, 0.8)';
-        eventEl.style.color = '#fff';
-        eventEl.style.borderRadius = '6px';
-        eventEl.style.textAlign = 'center';
-        eventEl.style.width = '80%';
-        eventEl.style.zIndex = '5';
-    }
 }
 
 
@@ -2529,7 +2506,32 @@ setTimeout(eliminateWeekdayBorders, 500);
 
 // 在月份切換時執行
 calendar.on('datesSet', function() {
-    setTimeout(eliminateWeekdayBorders, 200);
+    console.log('月曆切換事件觸發');
+    
+    // 增加延遲，確保月曆完全渲染完成
+    setTimeout(() => {
+        console.log('開始處理月曆切換後的渲染');
+        
+        // 1. 修復樣式
+        eliminateWeekdayBorders();
+        enhanceCalendarButtons();
+        
+        // 2. 等待更長時間確保DOM完全穩定
+        setTimeout(() => {
+            console.log('重新渲染所有加班徽章');
+            
+            // 強制重新渲染所有加班徽章
+            overtimeRecords.forEach(record => {
+                renderOvertimeEventOnDate(record.date, record);
+            });
+            
+            // 創建圖例
+            createOvertimeLegend();
+            
+            console.log('月曆切換處理完成');
+        }, 300);
+        
+    }, 500);
 });
 
 // 徹底解決星期白邊問題 - 專注於白邊不改動其他功能
@@ -2735,14 +2737,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 在日曆初始化後延遲執行
     setTimeout(enhanceCalendarButtons, 500);
 });
-
-// 如果已有 datesSet 事件監聽器，請在其中添加對 enhanceCalendarButtons 的呼叫
-// 或者添加這個監聽器
-if (calendar) {
-    calendar.on('datesSet', function() {
-        setTimeout(enhanceCalendarButtons, 100);
-    });
-}
 
 // 修復 getDayType 函數 - 正確處理字串陣列格式
 function getDayType(dateStr) {
