@@ -11,18 +11,53 @@ let calendarRenderingLock = false;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('初始化加班計算器');
     
-    // 定義假日資料 - 使用字串陣列格式
+    // 定義假日資料 - 根據中華民國114年政府行政機關辦公日曆表
     holidays = [
-        '2025-01-01', // 元旦
-        '2025-02-08', // 農曆除夕
-        '2025-02-09', // 農曆初一
-        '2025-02-10', // 農曆初二
-        '2025-02-28', // 和平紀念日
-        '2025-04-05', // 清明節
-        '2025-05-01', // 勞動節
-        '2025-06-07', // 端午節
-        '2025-09-13', // 中秋節
-        '2025-10-10', // 國慶日
+        // 一月
+        '2025-01-01', // 元旦(三)
+        
+        // 二月 - 春節連假 (2/8-2/16，共9天)
+        '2025-02-08', // 除夕(六)
+        '2025-02-09', // 初一(日)
+        '2025-02-10', // 初二(一)
+        '2025-02-11', // 初三(二)
+        '2025-02-12', // 初四(三)
+        '2025-02-13', // 初五(四)
+        '2025-02-14', // 初六(五)
+        
+        // 二月 - 228和平紀念日 (2/28-3/3，共4天)
+        '2025-02-28', // 和平紀念日(五)
+        '2025-03-01', // 228連假(六)
+        '2025-03-02', // 228連假(日)
+        '2025-03-03', // 228連假補假(一)
+        
+        // 四月 - 兒童節清明節 (4/3-4/6，共4天)
+        '2025-04-03', // 兒童節前一日(四)
+        '2025-04-04', // 兒童節/清明節(五)
+        '2025-04-05', // 清明節補假(六)
+        '2025-04-06', // 清明節補假(日)
+        
+        // 五月 - 勞動節
+        '2025-05-01', // 勞動節(四)
+        
+        // 六月 - 端午節 (5/31-6/2，共3天)
+        '2025-05-31', // 端午節前(六)
+        '2025-06-01', // 端午節前(日)  
+        '2025-06-02', // 端午節(一)
+        
+        // 九月 - 教師節
+        '2025-09-28', // 教師節(日)
+        '2025-09-29', // 教師節補假(一)
+        
+        // 十月 - 國慶日 (10/10-10/13，共4天)
+        '2025-10-06', // 中秋節(一)
+        '2025-10-10', // 國慶日(五)
+        '2025-10-24', // 台灣光復節補假(五)
+        '2025-10-25', // 台灣光復節(六)
+
+         // 十二月 - 行憲紀念日
+        '2025-12-25', // 行憲紀念日(四)
+        
     ];
     
     // 確保現有記錄有分鐘欄位
@@ -1057,9 +1092,9 @@ function calculateOvertimeHours() {
                       (endMinutes - startMinutes) : 
                       (endMinutes + 24 * 60 - startMinutes);
     
-    // 減去午休時間 (平日且工作超過5小時才減休息時間)
+    // 減去午休時間 (所有類型的工作日，只要工作超過5小時都要減休息時間)
     let breakMinutes = 0;
-    if (dayType === 'workday' && totalMinutes > 5 * 60) {
+    if (totalMinutes > 5 * 60) {
         breakMinutes = 60; // 1小時休息時間
     }
     
@@ -1077,8 +1112,8 @@ function calculateOvertimeHours() {
         overtimeMinutes = actualWorkMinutes > standardWorkMinutes ? 
                          (actualWorkMinutes - standardWorkMinutes) : 0;
     } else if (dayType === 'restday' || dayType === 'holiday') {
-        // 休息日和國定假日：全部算加班
-        overtimeMinutes = actualWorkMinutes;
+        // 休息日和國定假日：全部算加班，但已扣除休息時間
+        overtimeMinutes = actualWorkMinutes > 0 ? actualWorkMinutes : 0;
     }
     
     // 轉換回小時和分鐘
@@ -1096,18 +1131,32 @@ function calculateOvertimeHours() {
     const overtimeDetails = document.getElementById('overtimeDetails');
     if (overtimeDetails) {
         if (overtimeMinutes > 0) {
-            let detailText = `總工作時間 ${formatMinutesToTime(actualWorkMinutes)}`;
+            let detailText = `總工作時間 ${formatMinutesToTime(totalMinutes)}`;
             if (breakMinutes > 0) {
-                detailText += `（含休息 ${formatMinutesToTime(breakMinutes)}）`;
+                detailText += `，扣除休息 ${formatMinutesToTime(breakMinutes)}`;
+                detailText += ` = 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
             }
             
             if (dayType === 'workday') {
                 detailText += `，超出標準工時 ${formatMinutesToTime(overtimeMinutes)}`;
+            } else {
+                detailText += `，${dayType === 'holiday' ? '國定假日' : '休息日'}全部算加班`;
             }
             
             overtimeDetails.textContent = detailText;
         } else {
-            overtimeDetails.textContent = '未達加班標準';
+            let detailText = '未達加班標準';
+            if (totalMinutes > 0) {
+                detailText = `總工作時間 ${formatMinutesToTime(totalMinutes)}`;
+                if (breakMinutes > 0) {
+                    detailText += `，扣除休息 ${formatMinutesToTime(breakMinutes)}`;
+                    detailText += ` = 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
+                }
+                if (dayType === 'workday') {
+                    detailText += `，未超出標準工時`;
+                }
+            }
+            overtimeDetails.textContent = detailText;
         }
     }
 }
@@ -2358,12 +2407,32 @@ function getHolidayName(dateStr) {
         '2025-02-08': '除夕',
         '2025-02-09': '春節',
         '2025-02-10': '初二',
+        '2025-02-11': '初三',
+        '2025-02-12': '初四',
+        '2025-02-13': '初五',
+        '2025-02-14': '初六',
         '2025-02-28': '和平紀念日',
-        '2025-04-05': '清明節',
+        '2025-03-01': '228連假',
+        '2025-03-02': '228連假',
+        '2025-03-03': '228補假',
+        '2025-04-03': '兒童節前',
+        '2025-04-04': '兒童節',
+        '2025-04-05': '清明連假',
+        '2025-04-06': '清明連假',
         '2025-05-01': '勞動節',
-        '2025-06-07': '端午節',
-        '2025-09-13': '中秋節',
-        '2025-10-10': '國慶日'
+        '2025-05-31': '端午連假',
+        '2025-06-01': '端午連假',
+        '2025-06-02': '端午節',
+        '2025-09-28': '教師節',
+        '2025-09-29': '教師節補假',
+        '2025-10-06': '中秋節',
+        '2025-10-10': '國慶日',
+        '2025-10-11': '國慶連假',
+        '2025-10-12': '國慶連假',
+        '2025-10-24': '台灣光復節補假',
+        '2025-10-25': '台灣光復節',
+        '2025-12-25': '行憲紀念日'
+
     };
     
     return holidayNames[dateStr] || '';
