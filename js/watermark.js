@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewImage = document.getElementById('previewImage');
     const resultGallery = document.getElementById('resultGallery');
     
+    // 結果操作按鈕
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const downloadSelectedBtn = document.getElementById('downloadSelectedBtn');
+    const clearResultsBtn = document.getElementById('clearResultsBtn');
+    
     // 進度指示器和成功動畫元素
     const processingOverlay = document.getElementById('processingOverlay');
     const successAnimation = document.getElementById('successAnimation');
@@ -80,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // 顯示上傳進度
-            showProcessing('正在上傳浮水印...', '正在處理您上傳的浮水印圖片');
+            // 更新狀態顯示
+            updateWatermarkStatus('上傳中...', 'info');
             
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -98,17 +103,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (watermarkWidth) watermarkWidth.value = watermarkImage.width;
                     if (watermarkHeight) watermarkHeight.value = watermarkImage.height;
                     
-                    hideProcessing();
-                    showToast('浮水印圖片上傳成功！', 'success');
+                    // 更新預覽區域
+                    updateWatermarkPreview(img.src, file.name, file.size);
+                    updateWatermarkStatus('已上傳', 'success');
+                    
+                    // 檢查是否可以啟用預覽
+                    checkPreviewAvailability();
+                    
+                    showToast(`浮水印 "${file.name}" 上傳成功`, 'success');
                     updateButtonStates();
                 };
-                img.src = e.target.result;
                 
-                // 顯示預覽
-                if (watermarkPreview) {
-                    watermarkPreview.innerHTML = `<img src="${e.target.result}" alt="浮水印預覽" style="max-width: 100%; height: auto; border-radius: 8px;">`;
-                }
+                img.onerror = function() {
+                    showToast('浮水印圖片載入失敗', 'error');
+                    updateWatermarkStatus('載入失敗', 'error');
+                };
+                
+                img.src = e.target.result;
             };
+            
+            reader.onerror = function() {
+                showToast('文件讀取失敗', 'error');
+                updateWatermarkStatus('讀取失敗', 'error');
+            };
+            
             reader.readAsDataURL(file);
         });
     }
@@ -118,25 +136,20 @@ document.addEventListener('DOMContentLoaded', function() {
         imagesInput.addEventListener('change', function(e) {
             if (this.files.length === 0) return;
             
-            // 顯示上傳進度
-            showProcessing(`正在上傳 ${this.files.length} 張圖片...`, '正在處理您上傳的圖片，請稍候');
+            // 更新狀態
+            updateImagesStatus('上傳中...', 0);
             
-            if (imagesPreview) {
-                imagesPreview.innerHTML = ''; // 清空預覽區域
-            }
             imagesToProcess = [];
             
             // 處理上傳的每一張圖片
-            const totalFiles = this.files.length;
+            const totalFiles = Math.min(this.files.length, 10); // 限制最多10張
             let loadedFiles = 0;
             
-            Array.from(this.files).forEach(file => {
+            Array.from(this.files).slice(0, 10).forEach((file, index) => {
                 if (!file.type.match('image.*')) {
                     loadedFiles++;
                     if (loadedFiles === totalFiles) {
-                        hideProcessing();
-                        showToast(`成功載入 ${imagesToProcess.length} 張圖片！`, 'success');
-                        updateButtonStates();
+                        finishUploading();
                     }
                     return;
                 }
@@ -156,24 +169,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         loadedFiles++;
                         if (loadedFiles === totalFiles) {
-                            hideProcessing();
-                            showToast(`成功載入 ${imagesToProcess.length} 張圖片！`, 'success');
-                            updateButtonStates();
+                            finishUploading();
                         }
                     };
                     img.src = e.target.result;
-                    
-                    // 添加到預覽畫廊
-                    if (imagesPreview) {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.alt = file.name;
-                        imgElement.style.cssText = 'max-width: 100px; height: auto; margin: 5px; border-radius: 8px; border: 2px solid rgba(66, 245, 230, 0.3);';
-                        imagesPreview.appendChild(imgElement);
-                    }
                 };
                 reader.readAsDataURL(file);
             });
+            
+            function finishUploading() {
+                updateImagesPreview(imagesToProcess.map(img => img.file));
+                checkPreviewAvailability();
+                showToast(`成功載入 ${imagesToProcess.length} 張圖片！`, 'success');
+                updateButtonStates();
+            }
         });
     }
     
@@ -296,6 +305,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 document.head.appendChild(script);
             }
+        });
+    }
+    
+    // 全選按鈕事件
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            addEnhancedButtonEffect(this);
+            selectAllResults();
+        });
+    }
+    
+    // 下載選中按鈕事件
+    if (downloadSelectedBtn) {
+        downloadSelectedBtn.addEventListener('click', function() {
+            addEnhancedButtonEffect(this);
+            downloadSelectedResults();
+        });
+    }
+    
+    // 清空結果按鈕事件
+    if (clearResultsBtn) {
+        clearResultsBtn.addEventListener('click', function() {
+            addEnhancedButtonEffect(this);
+            clearResults();
         });
     }
     
@@ -587,6 +620,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                     
+                    // 初始化結果選擇功能
+                    setTimeout(() => {
+                        initializeResultSelection();
+                    }, 200);
+                    
                     showToast(`成功處理 ${totalImages} 張圖片！`, 'success');
                     
                     // 平滑滾動到結果區域
@@ -710,4 +748,436 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
+
+    // 美化預覽功能的輔助函數
+    window.updateWatermarkStatus = function(text, type = 'info') {
+        const statusElement = document.getElementById('watermarkStatus');
+        if (statusElement) {
+            const statusText = statusElement.querySelector('.status-text');
+            if (statusText) {
+                statusText.textContent = text;
+                statusText.className = `status-text status-${type}`;
+            }
+        }
+    };
+
+    window.updateImagesStatus = function(text, count = 0) {
+        const statusElement = document.getElementById('imagesStatus');
+        const countBadge = document.getElementById('imageCount');
+        
+        if (statusElement) {
+            const statusText = statusElement.querySelector('.status-text');
+            if (statusText) {
+                statusText.textContent = text;
+            }
+        }
+        
+        if (countBadge) {
+            if (count > 0) {
+                countBadge.textContent = count;
+                countBadge.style.display = 'inline-block';
+            } else {
+                countBadge.style.display = 'none';
+            }
+        }
+    };
+
+    window.updateWatermarkPreview = function(imageSrc, fileName, fileSize) {
+        const previewArea = document.getElementById('watermarkPreview');
+        if (previewArea) {
+            const formattedSize = formatFileSize(fileSize);
+            previewArea.innerHTML = `
+                <div class="image-preview-item">
+                    <div class="preview-image-container">
+                        <img src="${imageSrc}" alt="浮水印預覽" class="preview-image">
+                        <div class="preview-overlay">
+                            <div class="preview-info">
+                                <div class="file-name">${fileName}</div>
+                                <div class="file-size">${formattedSize}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    };
+
+    window.updateImagesPreview = function(files) {
+        const previewGallery = document.getElementById('imagesPreview');
+        if (previewGallery && files.length > 0) {
+            previewGallery.innerHTML = '';
+            
+            Array.from(files).slice(0, 10).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'gallery-preview-item';
+                    previewItem.innerHTML = `
+                        <div class="gallery-image-container">
+                            <img src="${e.target.result}" alt="圖片 ${index + 1}" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-actions">
+                                    <button class="action-btn remove-btn" onclick="removeImage(${index})" title="移除">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="gallery-info">
+                                    <div class="file-name">${file.name}</div>
+                                    <div class="file-size">${formatFileSize(file.size)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    previewGallery.appendChild(previewItem);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            updateImagesStatus('已上傳', files.length);
+        }
+    };
+
+    window.checkPreviewAvailability = function() {
+        const previewBtn = document.getElementById('previewBtn');
+        if (previewBtn) {
+            const canPreview = watermarkImage && imagesToProcess.length > 0;
+            previewBtn.disabled = !canPreview;
+            
+            if (canPreview) {
+                previewBtn.classList.add('ready');
+                previewBtn.innerHTML = '<i class="fas fa-eye me-2"></i>預覽效果 ✨';
+            } else {
+                previewBtn.classList.remove('ready');
+                previewBtn.innerHTML = '<i class="fas fa-eye me-2"></i>預覽效果';
+            }
+        }
+    };
+
+    window.formatFileSize = function(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    window.removeImage = function(index) {
+        // 從 imagesToProcess 陣列中移除指定索引的圖片
+        imagesToProcess.splice(index, 1);
+        
+        // 重新更新預覽
+        updateImagesStatus(imagesToProcess.length > 0 ? '已上傳' : '尚未上傳', imagesToProcess.length);
+        
+        // 重新渲染預覽
+        if (imagesToProcess.length > 0) {
+            updateImagesPreview(imagesToProcess);
+        } else {
+            const previewGallery = document.getElementById('imagesPreview');
+            if (previewGallery) {
+                previewGallery.innerHTML = `
+                    <div class="gallery-placeholder">
+                        <div class="upload-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <p class="upload-text">點擊上方按鈕選擇圖片（可多選）</p>
+                        <p class="upload-hint">支援 JPG、PNG 格式，最多 10 張</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 重新檢查預覽可用性
+        checkPreviewAvailability();
+        
+        showToast(`已移除圖片`, 'info');
+    };
+
+    // 添加預覽圖片和畫廊的 CSS 樣式
+    if (!document.getElementById('previewStyles')) {
+        const style = document.createElement('style');
+        style.id = 'previewStyles';
+        style.textContent = `
+            .image-preview-item, .gallery-preview-item {
+                position: relative;
+                border-radius: 8px;
+                overflow: hidden;
+                background: rgba(255, 255, 255, 0.05);
+                transition: all 0.3s ease;
+            }
+            
+            .image-preview-item:hover, .gallery-preview-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(66, 245, 230, 0.2);
+            }
+            
+            .preview-image-container, .gallery-image-container {
+                position: relative;
+                width: 100%;
+                height: 150px;
+                overflow: hidden;
+            }
+            
+            .preview-image, .gallery-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            
+            .image-preview-item:hover .preview-image,
+            .gallery-preview-item:hover .gallery-image {
+                transform: scale(1.1);
+            }
+            
+            .preview-overlay, .gallery-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 10px;
+            }
+            
+            .image-preview-item:hover .preview-overlay,
+            .gallery-preview-item:hover .gallery-overlay {
+                opacity: 1;
+            }
+            
+            .gallery-actions {
+                display: flex;
+                justify-content: flex-end;
+            }
+            
+            .action-btn {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: #fff;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .remove-btn:hover {
+                background: #ef4444;
+                transform: scale(1.1);
+            }
+            
+            .preview-info, .gallery-info {
+                color: #fff;
+            }
+            
+            .file-name {
+                font-size: 0.8rem;
+                font-weight: 500;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .file-size {
+                font-size: 0.7rem;
+                color: #a3b2cc;
+            }
+            
+            .gallery-preview-item {
+                margin-bottom: 15px;
+            }
+            
+            .status-success { color: #10b981 !important; }
+            .status-error { color: #ef4444 !important; }
+            .status-info { color: #42f5e6 !important; }
+            
+            .btn-cosmic.ready {
+                background: linear-gradient(135deg, #10b981, #059669);
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+            
+            @keyframes glow {
+                from { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+                to { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 全選功能
+    function selectAllResults() {
+        const resultItems = document.querySelectorAll('.result-item');
+        const allSelected = Array.from(resultItems).every(item => item.classList.contains('selected'));
+        
+        resultItems.forEach(item => {
+            if (allSelected) {
+                item.classList.remove('selected');
+            } else {
+                item.classList.add('selected');
+            }
+        });
+        
+        updateSelectionUI();
+        showToast(allSelected ? '已取消全選' : '已全選所有圖片', 'info');
+    }
+    
+    // 下載選中圖片功能
+    function downloadSelectedResults() {
+        const selectedItems = document.querySelectorAll('.result-item.selected');
+        
+        if (selectedItems.length === 0) {
+            showToast('請先選擇要下載的圖片', 'warning');
+            return;
+        }
+        
+        showToast(`正在準備下載 ${selectedItems.length} 張選中的圖片...`, 'info');
+        
+        selectedItems.forEach((item, index) => {
+            const img = item.querySelector('img');
+            const filename = item.querySelector('.image-title').textContent;
+            
+            if (img && img.src) {
+                setTimeout(() => {
+                    downloadImage(img.src, filename);
+                    
+                    if (index === selectedItems.length - 1) {
+                        showToast(`成功下載 ${selectedItems.length} 張圖片！`, 'success');
+                    }
+                }, index * 200);
+            }
+        });
+    }
+    
+    // 清空結果功能
+    function clearResults() {
+        if (processedImages.length === 0) {
+            showToast('沒有結果可以清空', 'info');
+            return;
+        }
+        
+        // 顯示確認對話框
+        showClearConfirmation();
+    }
+    
+    // 顯示清空確認對話框
+    function showClearConfirmation() {
+        const confirmDialog = document.createElement('div');
+        confirmDialog.innerHTML = `
+            <div id="clearConfirmDialog" class="confirm-overlay" style="display: flex;">
+                <div class="confirm-dialog">
+                    <div class="confirm-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h3>確認清空結果</h3>
+                    <p>確定要清空所有處理結果嗎？此操作無法復原。</p>
+                    <div class="confirm-details">
+                        <p>將會清空：</p>
+                        <ul>
+                            <li>${processedImages.length} 張已處理的圖片</li>
+                            <li>所有選擇狀態</li>
+                            <li>處理歷史記錄</li>
+                        </ul>
+                    </div>
+                    <div class="confirm-buttons">
+                        <button class="btn-confirm-cancel" onclick="closeClearConfirmation()">
+                            <i class="fas fa-times me-2"></i>取消
+                        </button>
+                        <button class="btn-confirm-ok" onclick="confirmClearResults()">
+                            <i class="fas fa-check me-2"></i>確認清空
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(confirmDialog);
+    }
+    
+    // 關閉清空確認對話框
+    window.closeClearConfirmation = function() {
+        const dialog = document.getElementById('clearConfirmDialog');
+        if (dialog) {
+            dialog.remove();
+        }
+    };
+    
+    // 確認清空結果
+    window.confirmClearResults = function() {
+        processedImages = [];
+        
+        if (resultGallery) {
+            resultGallery.innerHTML = `
+                <div class="empty-results">
+                    <div class="empty-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h4>尚無處理結果</h4>
+                    <p>處理圖片後，結果將顯示在這裡</p>
+                </div>
+            `;
+        }
+        
+        // 隱藏結果區域
+        const resultSection = document.getElementById('resultSection');
+        if (resultSection) {
+            resultSection.style.display = 'none';
+        }
+        
+        // 重置計數器
+        const processedCount = document.getElementById('processedCount');
+        if (processedCount) {
+            processedCount.textContent = '0';
+        }
+        
+        closeClearConfirmation();
+        showToast('結果已清空', 'success');
+        
+        // 重置按鈕狀態
+        if (downloadBtn) downloadBtn.disabled = true;
+        updateSelectionUI();
+    };
+    
+    // 更新選擇狀態UI
+    function updateSelectionUI() {
+        const selectedItems = document.querySelectorAll('.result-item.selected');
+        const allItems = document.querySelectorAll('.result-item');
+        
+        if (selectAllBtn) {
+            selectAllBtn.innerHTML = selectedItems.length === allItems.length && allItems.length > 0 
+                ? '<i class="fas fa-check-square me-2"></i>取消全選'
+                : '<i class="fas fa-check-square me-2"></i>全選';
+        }
+        
+        if (downloadSelectedBtn) {
+            downloadSelectedBtn.disabled = selectedItems.length === 0;
+        }
+    }
+    
+    // 初始化結果項目的選擇功能
+    function initializeResultSelection() {
+        const resultItems = document.querySelectorAll('.result-item');
+        
+        resultItems.forEach(item => {
+            // 添加點擊選擇功能
+            item.addEventListener('click', function(e) {
+                // 如果點擊的是下載按鈕，不觸發選擇
+                if (e.target.closest('.download-btn')) {
+                    return;
+                }
+                
+                this.classList.toggle('selected');
+                updateSelectionUI();
+            });
+        });
+        
+        updateSelectionUI();
+    }
+
 });  // 結束 DOMContentLoaded
