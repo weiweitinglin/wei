@@ -145,15 +145,194 @@
             50% { transform: scale(1.1); }
         }
 
+        /* 輸入模式選擇樣式 */
+        .input-mode-selector .btn-group {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .input-mode-selector .btn-check:checked + .btn {
+            background: linear-gradient(145deg, #4fd1c7, #38b2ac);
+            border-color: #4fd1c7;
+            color: white;
+        }
+
+        .input-mode-selector .btn-outline-primary {
+            border-color: #4a5568;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-mode-selector .btn-outline-primary:hover {
+            background: rgba(79, 209, 199, 0.2);
+            border-color: #4fd1c7;
+            color: #4fd1c7;
+        }
+
+        /* 多筆輸入容器樣式 */
+        .room-widths-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .room-width-item {
+            animation: slideInLeft 0.3s ease;
+        }
+
+        .room-width-item .input-group-text {
+            background: linear-gradient(145deg, #4a5568, #2d3748);
+            border-color: #4a5568;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .room-width-item .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4a5568;
+            color: white;
+        }
+
+        .room-width-item .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4fd1c7;
+            box-shadow: 0 0 0 0.2rem rgba(79, 209, 199, 0.25);
+            color: white;
+        }
+
+        .room-width-item .btn-outline-danger {
+            border-color: #e53e3e;
+            color: #e53e3e;
+        }
+
+        .room-width-item .btn-outline-danger:hover {
+            background: #e53e3e;
+            border-color: #e53e3e;
+            color: white;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+
+        /* 廠牌型號選擇器樣式 */
+        .brand-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .brand-selector .form-label {
+            color: #4fd1c7;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .brand-selector .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4a5568;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .brand-selector .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4fd1c7;
+            box-shadow: 0 0 0 0.2rem rgba(79, 209, 199, 0.25);
+            color: white;
+        }
+
+        .brand-selector .form-select option {
+            background: #2d3561;
+            color: white;
+        }
+
+        .brand-selector .form-select:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 清除按鈕樣式 */
+        .btn-outline-secondary {
+            border-color: #4a5568;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline-secondary:hover {
+            background: rgba(229, 62, 62, 0.2);
+            border-color: #e53e3e;
+            color: #e53e3e;
+        }
+
+        /* 多筆結果顯示樣式 */
+        .multiple-results-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .single-room-result {
+            background: linear-gradient(145deg, #2d3561, #1a1f3a);
+            border: 2px solid #4a5568;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .single-room-result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            border-color: #4fd1c7;
+        }
+
+        .room-result-header {
+            background: linear-gradient(145deg, #4fd1c7, #38b2ac);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
         /* 計算結果樣式 */
         .result-category {
             background: linear-gradient(145deg, #2d3561, #1a1f3a);
             border: 1px solid #4a5568;
             border-radius: 12px;
-            padding: 20px;
+            padding: 30px 40px;
             margin-bottom: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
+            min-width: 400px;
         }
 
         .result-category:hover {
@@ -162,26 +341,26 @@
         }
 
         .result-category-title {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: #4fd1c7;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid rgba(79, 209, 199, 0.3);
             display: flex;
             align-items: center;
         }
 
         .result-category-title i {
-            margin-right: 8px;
-            font-size: 1.2rem;
+            margin-right: 12px;
+            font-size: 1.4rem;
         }
 
         .result-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 15px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
@@ -193,12 +372,13 @@
         .result-label {
             font-weight: 500;
             color: #e2e8f0;
+            font-size: 1.1rem;
         }
 
         .result-value {
             font-weight: 600;
             color: #4fd1c7;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
         }
 
         .pulse-animation {
@@ -214,23 +394,62 @@
         /* 響應式設計優化 */
         @media (max-width: 768px) {
             .result-category {
-                padding: 15px;
+                padding: 20px;
                 margin-bottom: 12px;
+                min-width: unset;
+                width: 100%;
             }
 
             .result-category-title {
-                font-size: 1rem;
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+
+            .result-category-title i {
+                margin-right: 8px;
+                font-size: 1.2rem;
             }
 
             .result-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 4px;
+                gap: 8px;
+                padding: 12px 0;
+            }
+
+            .result-label {
+                font-size: 1rem;
             }
 
             .result-value {
                 font-size: 1.2rem;
                 margin-left: auto;
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .result-category {
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .result-category-title {
+                font-size: 1rem;
+                margin-bottom: 12px;
+            }
+
+            .result-item {
+                padding: 10px 0;
+            }
+
+            .result-label {
+                font-size: 0.9rem;
+            }
+
+            .result-value {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -289,7 +508,7 @@
     <!-- 主要內容區域 -->
     <div class="container calculator-container">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-10 col-xl-11">
                 <!-- 標題區域 -->
                 <div class="text-center mb-5">
                     <h1 class="cosmic-title">
@@ -318,24 +537,133 @@
                         <p class="section-subtitle">精確計算地板拼接的最佳方案</p>
                     </div>
                     
+                    <!-- 輸入模式選擇 -->
+                    <div class="input-mode-selector mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-clipboard-list me-2"></i>輸入模式選擇
+                        </label>
+                        <div class="btn-group w-100" role="group" aria-label="輸入模式選擇">
+                            <input type="radio" class="btn-check" name="inputMode" id="singleMode" value="single" checked>
+                            <label class="btn btn-outline-primary" for="singleMode">
+                                <i class="fas fa-home me-2"></i>單筆輸入
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="inputMode" id="multipleMode" value="multiple">
+                            <label class="btn btn-outline-primary" for="multipleMode">
+                                <i class="fas fa-building me-2"></i>多筆輸入
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- 輸入表單 -->
                     <form id="flooringForm" class="row g-3 mb-4">
-                        <div class="col-md-6 mb-3">
-                            <label for="roomWidth" class="form-label">
-                                <i class="fas fa-arrows-alt-h me-2"></i>房間寬度（公分）
-                            </label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="roomWidth" placeholder="請輸入房間寬度" required>
-                                <span class="input-group-text">cm</span>
+                        <!-- 單筆輸入區域 -->
+                        <div id="singleInputArea">
+                            <div class="col-12 mb-3">
+                                <label for="roomWidth" class="form-label">
+                                    <i class="fas fa-arrows-alt-h me-2"></i>房間寬度（公分）
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="roomWidth" placeholder="請輸入房間寬度" required>
+                                    <span class="input-group-text">cm</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 廠牌型號選擇 -->
+                            <div class="brand-selector mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-industry me-2"></i>廠牌型號選擇（可選）
+                                </label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <select class="form-select" id="brandSelect" onchange="updateModelOptions()">
+                                            <option value="">選擇廠牌</option>
+                                            <option value="酷石">酷石</option>
+                                            <option value="Krono">Krono</option>
+                                            <option value="日本山井">日本山井</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-select" id="modelSelect" onchange="autoFillFloorWidth()" disabled>
+                                            <option value="">選擇型號</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <label for="floorWidth" class="form-label">
+                                    <i class="fas fa-ruler-horizontal me-2"></i>地板寬度（公分）
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="floorWidth" placeholder="請輸入地板寬度或選擇廠牌型號" required>
+                                    <span class="input-group-text">cm</span>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearFloorWidth()" title="清除">
+                                        <i class="fas fa-eraser"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="floorWidth" class="form-label">
-                                <i class="fas fa-ruler-horizontal me-2"></i>地板寬度（公分）
-                            </label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="floorWidth" placeholder="請輸入地板寬度" required>
-                                <span class="input-group-text">cm</span>
+
+                        <!-- 多筆輸入區域 -->
+                        <div id="multipleInputArea" style="display: none;">
+                            <!-- 廠牌型號選擇（多筆模式） -->
+                            <div class="brand-selector mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-industry me-2"></i>廠牌型號選擇（可選）
+                                </label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <select class="form-select" id="brandSelectMultiple" onchange="updateModelOptionsMultiple()">
+                                            <option value="">選擇廠牌</option>
+                                            <option value="酷石">酷石</option>
+                                            <option value="Krono">Krono</option>
+                                            <option value="日本山井">日本山井</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-select" id="modelSelectMultiple" onchange="autoFillFloorWidthMultiple()" disabled>
+                                            <option value="">選擇型號</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <label for="floorWidthMultiple" class="form-label">
+                                    <i class="fas fa-ruler-horizontal me-2"></i>地板寬度（公分）
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="floorWidthMultiple" placeholder="請輸入地板寬度或選擇廠牌型號">
+                                    <span class="input-group-text">cm</span>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearFloorWidthMultiple()" title="清除">
+                                        <i class="fas fa-eraser"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label mb-0">
+                                        <i class="fas fa-arrows-alt-h me-2"></i>房間寬度清單（公分）
+                                    </label>
+                                    <button type="button" class="btn btn-sm btn-galaxy-primary" onclick="addRoomWidthInput()">
+                                        <i class="fas fa-plus me-1"></i>新增房間
+                                    </button>
+                                </div>
+                                
+                                <div id="roomWidthsList" class="room-widths-container">
+                                    <div class="room-width-item mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">房間 1</span>
+                                            <input type="number" class="form-control room-width-input" placeholder="請輸入房間寬度">
+                                            <span class="input-group-text">cm</span>
+                                            <button type="button" class="btn btn-outline-danger" onclick="removeRoomWidthInput(this)" disabled>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -740,19 +1068,296 @@
             }, 3000);
         }
 
+        // 地板廠牌型號數據庫
+        const floorBrandData = {
+            "酷石": {
+                "16系列": 23,
+                "36系列": 22.8,
+                "86系列": 22.8,
+                "96系列": 23,
+                "EU系列": 18,
+                "水磨石系列": 30.5,
+                "石紋系列": 30.5,
+            },
+            "Krono": {
+                "超耐磨系列": 19.5,
+            },
+            "日本山井": {
+                "假期系列": 22.8,
+                "Q系列": 22.8,
+                "富士山系列": 19.5,
+            }
+        };
+
+        // 更新型號選項（單筆模式）
+        window.updateModelOptions = function() {
+            const brandSelect = document.getElementById('brandSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const selectedBrand = brandSelect.value;
+            
+            // 清空型號選項
+            modelSelect.innerHTML = '<option value="">選擇型號</option>';
+            
+            if (selectedBrand && floorBrandData[selectedBrand]) {
+                // 啟用型號選擇器
+                modelSelect.disabled = false;
+                
+                // 添加該廠牌的所有型號
+                for (const model in floorBrandData[selectedBrand]) {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                }
+                
+                showToast(`已載入 ${selectedBrand} 的型號選項`, 'info');
+            } else {
+                // 禁用型號選擇器
+                modelSelect.disabled = true;
+            }
+        };
+
+        // 更新型號選項（多筆模式）
+        window.updateModelOptionsMultiple = function() {
+            const brandSelect = document.getElementById('brandSelectMultiple');
+            const modelSelect = document.getElementById('modelSelectMultiple');
+            const selectedBrand = brandSelect.value;
+            
+            // 清空型號選項
+            modelSelect.innerHTML = '<option value="">選擇型號</option>';
+            
+            if (selectedBrand && floorBrandData[selectedBrand]) {
+                // 啟用型號選擇器
+                modelSelect.disabled = false;
+                
+                // 添加該廠牌的所有型號
+                for (const model in floorBrandData[selectedBrand]) {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                }
+                
+                showToast(`已載入 ${selectedBrand} 的型號選項`, 'info');
+            } else {
+                // 禁用型號選擇器
+                modelSelect.disabled = true;
+            }
+        };
+
+        // 自動填入地板寬度（單筆模式）
+        window.autoFillFloorWidth = function() {
+            const brandSelect = document.getElementById('brandSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const floorWidthInput = document.getElementById('floorWidth');
+            
+            const selectedBrand = brandSelect.value;
+            const selectedModel = modelSelect.value;
+            
+            if (selectedBrand && selectedModel && floorBrandData[selectedBrand] && floorBrandData[selectedBrand][selectedModel]) {
+                const width = floorBrandData[selectedBrand][selectedModel];
+                floorWidthInput.value = width;
+                
+                // 添加視覺效果
+                floorWidthInput.style.background = 'rgba(79, 209, 199, 0.2)';
+                floorWidthInput.style.borderColor = '#4fd1c7';
+                
+                setTimeout(() => {
+                    floorWidthInput.style.background = '';
+                    floorWidthInput.style.borderColor = '';
+                }, 2000);
+                
+                showToast(`已自動填入 ${selectedBrand} ${selectedModel} 地板寬度：${width}cm`, 'success');
+            }
+        };
+
+        // 自動填入地板寬度（多筆模式）
+        window.autoFillFloorWidthMultiple = function() {
+            const brandSelect = document.getElementById('brandSelectMultiple');
+            const modelSelect = document.getElementById('modelSelectMultiple');
+            const floorWidthInput = document.getElementById('floorWidthMultiple');
+            
+            const selectedBrand = brandSelect.value;
+            const selectedModel = modelSelect.value;
+            
+            if (selectedBrand && selectedModel && floorBrandData[selectedBrand] && floorBrandData[selectedBrand][selectedModel]) {
+                const width = floorBrandData[selectedBrand][selectedModel];
+                floorWidthInput.value = width;
+                
+                // 添加視覺效果
+                floorWidthInput.style.background = 'rgba(79, 209, 199, 0.2)';
+                floorWidthInput.style.borderColor = '#4fd1c7';
+                
+                setTimeout(() => {
+                    floorWidthInput.style.background = '';
+                    floorWidthInput.style.borderColor = '';
+                }, 2000);
+                
+                showToast(`已自動填入 ${selectedBrand} ${selectedModel} 地板寬度：${width}cm`, 'success');
+            }
+        };
+
+        // 清除地板寬度（單筆模式）
+        window.clearFloorWidth = function() {
+            const floorWidthInput = document.getElementById('floorWidth');
+            const brandSelect = document.getElementById('brandSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            
+            floorWidthInput.value = '';
+            brandSelect.value = '';
+            modelSelect.innerHTML = '<option value="">選擇型號</option>';
+            modelSelect.disabled = true;
+            
+            showToast('已清除地板寬度設定', 'info');
+        };
+
+        // 清除地板寬度（多筆模式）
+        window.clearFloorWidthMultiple = function() {
+            const floorWidthInput = document.getElementById('floorWidthMultiple');
+            const brandSelect = document.getElementById('brandSelectMultiple');
+            const modelSelect = document.getElementById('modelSelectMultiple');
+            
+            floorWidthInput.value = '';
+            brandSelect.value = '';
+            modelSelect.innerHTML = '<option value="">選擇型號</option>';
+            modelSelect.disabled = true;
+            
+            showToast('已清除地板寬度設定', 'info');
+        };
+
+        // 輸入模式切換功能
+        let roomWidthCounter = 1;
+
+        function initializeInputModeToggle() {
+            const singleModeRadio = document.getElementById('singleMode');
+            const multipleModeRadio = document.getElementById('multipleMode');
+            const singleInputArea = document.getElementById('singleInputArea');
+            const multipleInputArea = document.getElementById('multipleInputArea');
+
+            function toggleInputMode() {
+                if (singleModeRadio.checked) {
+                    singleInputArea.style.display = 'block';
+                    multipleInputArea.style.display = 'none';
+                } else {
+                    singleInputArea.style.display = 'none';
+                    multipleInputArea.style.display = 'block';
+                }
+            }
+
+            singleModeRadio.addEventListener('change', toggleInputMode);
+            multipleModeRadio.addEventListener('change', toggleInputMode);
+        }
+
+        // 重置廠牌選擇（安全版本）
+        function resetBrandSelections() {
+            // 重置單筆模式
+            const brandSelect = document.getElementById('brandSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const floorWidthInput = document.getElementById('floorWidth');
+            
+            if (brandSelect && modelSelect && floorWidthInput) {
+                brandSelect.value = '';
+                modelSelect.innerHTML = '<option value="">選擇型號</option>';
+                modelSelect.disabled = true;
+            }
+            
+            // 重置多筆模式
+            const brandSelectMultiple = document.getElementById('brandSelectMultiple');
+            const modelSelectMultiple = document.getElementById('modelSelectMultiple');
+            const floorWidthMultipleInput = document.getElementById('floorWidthMultiple');
+            
+            if (brandSelectMultiple && modelSelectMultiple && floorWidthMultipleInput) {
+                brandSelectMultiple.value = '';
+                modelSelectMultiple.innerHTML = '<option value="">選擇型號</option>';
+                modelSelectMultiple.disabled = true;
+            }
+        }
+
+        // 新增房間寬度輸入框
+        window.addRoomWidthInput = function() {
+            roomWidthCounter++;
+            const roomWidthsList = document.getElementById('roomWidthsList');
+            
+            const newRoomDiv = document.createElement('div');
+            newRoomDiv.className = 'room-width-item mb-2';
+            newRoomDiv.innerHTML = `
+                <div class="input-group">
+                    <span class="input-group-text">房間 ${roomWidthCounter}</span>
+                    <input type="number" class="form-control room-width-input" placeholder="請輸入房間寬度">
+                    <span class="input-group-text">cm</span>
+                    <button type="button" class="btn btn-outline-danger" onclick="removeRoomWidthInput(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            roomWidthsList.appendChild(newRoomDiv);
+            
+            // 更新刪除按鈕狀態
+            updateRemoveButtons();
+            
+            // 聚焦到新增的輸入框
+            const newInput = newRoomDiv.querySelector('.room-width-input');
+            newInput.focus();
+            
+            showToast(`新增房間 ${roomWidthCounter}`, 'success');
+        };
+
+        // 移除房間寬度輸入框
+        window.removeRoomWidthInput = function(button) {
+            const roomItem = button.closest('.room-width-item');
+            const roomWidthsList = document.getElementById('roomWidthsList');
+            
+            if (roomWidthsList.children.length > 1) {
+                roomItem.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    roomItem.remove();
+                    updateRoomNumbers();
+                    updateRemoveButtons();
+                }, 300);
+                showToast('房間已移除', 'info');
+            }
+        };
+
+        // 更新房間編號
+        function updateRoomNumbers() {
+            const roomItems = document.querySelectorAll('.room-width-item');
+            roomItems.forEach((item, index) => {
+                const label = item.querySelector('.input-group-text');
+                label.textContent = `房間 ${index + 1}`;
+            });
+            roomWidthCounter = roomItems.length;
+        }
+
+        // 更新刪除按鈕狀態
+        function updateRemoveButtons() {
+            const removeButtons = document.querySelectorAll('.room-width-item .btn-outline-danger');
+            removeButtons.forEach((button, index) => {
+                button.disabled = removeButtons.length === 1;
+            });
+        }
+
         // 增強版計算函數
         function calculateFlooring() {
-            // 取得用戶輸入的房間寬度和地板寬度
+            const inputMode = document.querySelector('input[name="inputMode"]:checked').value;
+            
+            if (inputMode === 'single') {
+                calculateSingleFlooring();
+            } else {
+                calculateMultipleFlooring();
+            }
+        }
+
+        // 單筆計算
+        function calculateSingleFlooring() {
             const roomWidth = parseFloat(document.getElementById("roomWidth").value);
             const floorWidth = parseFloat(document.getElementById("floorWidth").value);
 
-            // 驗證輸入數據是否有效
             if (isNaN(roomWidth) || isNaN(floorWidth) || roomWidth <= 0 || floorWidth <= 0) {
                 showToast('請輸入有效的數值！', 'error');
                 return;
             }
 
-            // 顯示結果區域
             const resultSection = document.getElementById('resultSection');
             resultSection.style.display = 'block';
             
@@ -766,7 +1371,84 @@
                 resultSection.style.transform = 'translateY(0)';
             }, 100);
 
-            // 計算結果
+            const results = generateFlooringCalculation(roomWidth, floorWidth);
+            document.getElementById("result").innerHTML = results.join("");
+            
+            showToast('拼接分析完成！', 'success');
+            
+            setTimeout(() => {
+                resultSection.classList.add('pulse-animation');
+                setTimeout(() => {
+                    resultSection.classList.remove('pulse-animation');
+                }, 600);
+            }, 200);
+        }
+
+        // 多筆計算
+        function calculateMultipleFlooring() {
+            const floorWidth = parseFloat(document.getElementById("floorWidthMultiple").value);
+            const roomWidthInputs = document.querySelectorAll('.room-width-input');
+            
+            if (isNaN(floorWidth) || floorWidth <= 0) {
+                showToast('請輸入有效的地板寬度！', 'error');
+                return;
+            }
+
+            const roomWidths = [];
+            let hasValidInput = false;
+
+            roomWidthInputs.forEach((input, index) => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value) && value > 0) {
+                    roomWidths.push({ index: index + 1, width: value });
+                    hasValidInput = true;
+                }
+            });
+
+            if (!hasValidInput) {
+                showToast('請至少輸入一個有效的房間寬度！', 'error');
+                return;
+            }
+
+            const resultSection = document.getElementById('resultSection');
+            resultSection.style.display = 'block';
+            
+            // 結果區域淡入效果
+            resultSection.style.opacity = '0';
+            resultSection.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                resultSection.style.transition = 'all 0.5s ease';
+                resultSection.style.opacity = '1';
+                resultSection.style.transform = 'translateY(0)';
+            }, 100);
+
+            let allResults = ['<div class="multiple-results-container">'];
+            
+            roomWidths.forEach(room => {
+                allResults.push(`<div class="single-room-result">`);
+                allResults.push(`<div class="room-result-header">房間 ${room.index} (寬度: ${room.width}cm)</div>`);
+                const roomResults = generateFlooringCalculation(room.width, floorWidth);
+                allResults = allResults.concat(roomResults);
+                allResults.push(`</div>`);
+            });
+            
+            allResults.push('</div>');
+
+            document.getElementById("result").innerHTML = allResults.join("");
+            
+            showToast(`完成 ${roomWidths.length} 個房間的拼接分析！`, 'success');
+            
+            setTimeout(() => {
+                resultSection.classList.add('pulse-animation');
+                setTimeout(() => {
+                    resultSection.classList.remove('pulse-animation');
+                }, 600);
+            }, 200);
+        }
+
+        // 生成地板計算結果
+        function generateFlooringCalculation(roomWidth, floorWidth) {
             let results = [];
             
             // 不調整的情況
@@ -798,23 +1480,15 @@
             results.push(`<div class="result-item"><span class="result-label">最後一片地板寬度:</span> <span class="result-value">${lastPieceAdjusted10} 公分</span></div>`);
             results.push('</div>');
 
-            // 顯示結果
-            document.getElementById("result").innerHTML = results.join("");
-            
-            // 顯示成功訊息
-            showToast('拼接分析完成！', 'success');
-            
-            // 添加脈衝動畫效果
-            setTimeout(() => {
-                resultSection.classList.add('pulse-animation');
-                setTimeout(() => {
-                    resultSection.classList.remove('pulse-animation');
-                }, 600);
-            }, 200);
+            return results;
         }
         
         // 為輸入框添加鍵盤事件監聽
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化輸入模式切換功能
+            initializeInputModeToggle();
+            
+            // 單筆輸入鍵盤事件
             const roomWidthInput = document.getElementById('roomWidth');
             const floorWidthInput = document.getElementById('floorWidth');
             
@@ -827,6 +1501,35 @@
             floorWidthInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     calculateFlooring();
+                }
+            });
+
+            // 多筆輸入鍵盤事件
+            const floorWidthMultipleInput = document.getElementById('floorWidthMultiple');
+            
+            floorWidthMultipleInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const firstRoomInput = document.querySelector('.room-width-input');
+                    if (firstRoomInput) {
+                        firstRoomInput.focus();
+                    }
+                }
+            });
+
+            // 為房間寬度輸入框添加Enter鍵功能
+            document.addEventListener('keypress', function(e) {
+                if (e.target.classList.contains('room-width-input') && e.key === 'Enter') {
+                    const currentItem = e.target.closest('.room-width-item');
+                    const nextItem = currentItem.nextElementSibling;
+                    
+                    if (nextItem && nextItem.classList.contains('room-width-item')) {
+                        // 移動到下一個輸入框
+                        const nextInput = nextItem.querySelector('.room-width-input');
+                        nextInput.focus();
+                    } else {
+                        // 如果沒有下一個，執行計算
+                        calculateFlooring();
+                    }
                 }
             });
         });
