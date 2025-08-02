@@ -172,6 +172,7 @@
                                                     <th>日期</th>
                                                     <th>類型</th>
                                                     <th>加班時數</th>
+                                                    <th>休息</th>
                                                     <th>倍率</th>
                                                     <th>金額</th>
                                                     <th>操作</th>
@@ -270,7 +271,13 @@
                                 <input type="time" class="form-control" id="endTime" value="18:00">
                             </div>
                         </div>
-                        <div class="form-text">標準工時：8小時工作 + 1小時休息（所有日期類型皆會自動扣除休息時間）</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="noLunchBreak">
+                            <label class="form-check-label" for="noLunchBreak">
+                                <i class="fas fa-utensils me-1"></i>中午沒有休息（不扣除1小時休息時間）
+                            </label>
+                        </div>
+                        <div class="form-text" id="workTimeDescription">標準工時：8小時工作 + 1小時休息（所有日期類型皆會自動扣除休息時間）</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">計算結果</label>

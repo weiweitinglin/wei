@@ -560,7 +560,7 @@ function exportToCSV() {
         }
         
         const data = prepareExportDataWithSummary();
-        const headers = ['日期', '星期', '日期類型', '開始時間', '結束時間', '加班時數', '費率說明', '加班費'];
+        const headers = ['日期', '星期', '日期類型', '開始時間', '結束時間', '加班時數', '休息狀態', '費率說明', '加班費'];
         
         let csvContent = '\uFEFF' + headers.join(',') + '\n';
         
@@ -890,6 +890,7 @@ function prepareExportData() {
             '開始時間': record.startTime || '',
             '結束時間': record.endTime || '',
             '加班時數': record.hours + (record.minutes ? '小時' + record.minutes + '分' : '小時'),
+            '休息狀態': record.noLunchBreak ? '中午沒有休息' : '有休息時間',
             '費率說明': rates,
             '加班費': amount
         };
@@ -1048,14 +1049,23 @@ function handleDateClick(info) {
     // 設置默認值或已保存的值
     const startTimeInput = document.getElementById('startTime');
     const endTimeInput = document.getElementById('endTime');
+    const noLunchBreakCheckbox = document.getElementById('noLunchBreak');
     
     if (startTimeInput && endTimeInput) {
         if (existingRecord && existingRecord.startTime && existingRecord.endTime) {
             startTimeInput.value = existingRecord.startTime;
             endTimeInput.value = existingRecord.endTime;
+            // 載入已保存的中午沒有休息狀態
+            if (noLunchBreakCheckbox) {
+                noLunchBreakCheckbox.checked = existingRecord.noLunchBreak || false;
+            }
         } else {
             startTimeInput.value = '08:00';
             endTimeInput.value = '17:00';
+            // 重置中午沒有休息選項
+            if (noLunchBreakCheckbox) {
+                noLunchBreakCheckbox.checked = false;
+            }
         }
         
         // 計算加班時間
@@ -1068,6 +1078,12 @@ function handleDateClick(info) {
         const dayTypeInput = document.getElementById('dayType');
         if (dayTypeInput) {
             dayTypeInput.addEventListener('change', calculateOvertimeHours);
+        }
+        
+        // 添加中午沒有休息選項的監聽
+        const noLunchBreakInput = document.getElementById('noLunchBreak');
+        if (noLunchBreakInput) {
+            noLunchBreakInput.addEventListener('change', calculateOvertimeHours);
         }
     }
     
@@ -1086,12 +1102,14 @@ function calculateOvertimeHours() {
     const startTimeInput = document.getElementById('startTime');
     const endTimeInput = document.getElementById('endTime');
     const dayTypeSelect = document.getElementById('dayType');
+    const noLunchBreakCheckbox = document.getElementById('noLunchBreak');
     
     if (!startTimeInput || !endTimeInput || !dayTypeSelect) return;
     
     const startTime = startTimeInput.value;
     const endTime = endTimeInput.value;
     const dayType = dayTypeSelect.value;
+    const noLunchBreak = noLunchBreakCheckbox ? noLunchBreakCheckbox.checked : false;
     
     if (!startTime || !endTime) return;
     
@@ -1104,9 +1122,9 @@ function calculateOvertimeHours() {
                       (endMinutes - startMinutes) : 
                       (endMinutes + 24 * 60 - startMinutes);
     
-    // 減去午休時間 (所有類型的工作日，只要工作超過5小時都要減休息時間)
+    // 減去午休時間 (如果有勾選中午沒有休息，就不扣除休息時間)
     let breakMinutes = 0;
-    if (totalMinutes > 5 * 60) {
+    if (!noLunchBreak && totalMinutes > 5 * 60) {
         breakMinutes = 60; // 1小時休息時間
     }
     
@@ -1139,6 +1157,16 @@ function calculateOvertimeHours() {
             `${overtimeHours}.${Math.round(overtimeMinutesRemainder / 60 * 100)}` : '0';
     }
     
+    // 更新工作時間說明
+    const workTimeDescription = document.getElementById('workTimeDescription');
+    if (workTimeDescription) {
+        if (noLunchBreak) {
+            workTimeDescription.textContent = '已選擇中午沒有休息：不扣除休息時間，直接計算工作時數';
+        } else {
+            workTimeDescription.textContent = '標準工時：8小時工作 + 1小時休息（所有日期類型皆會自動扣除休息時間）';
+        }
+    }
+    
     // 顯示詳細說明
     const overtimeDetails = document.getElementById('overtimeDetails');
     if (overtimeDetails) {
@@ -1147,6 +1175,8 @@ function calculateOvertimeHours() {
             if (breakMinutes > 0) {
                 detailText += `，扣除休息 ${formatMinutesToTime(breakMinutes)}`;
                 detailText += ` = 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
+            } else if (noLunchBreak) {
+                detailText += `（中午沒有休息）= 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
             }
             
             if (dayType === 'workday') {
@@ -1163,6 +1193,8 @@ function calculateOvertimeHours() {
                 if (breakMinutes > 0) {
                     detailText += `，扣除休息 ${formatMinutesToTime(breakMinutes)}`;
                     detailText += ` = 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
+                } else if (noLunchBreak) {
+                    detailText += `（中午沒有休息）= 實際工作 ${formatMinutesToTime(actualWorkMinutes)}`;
                 }
                 if (dayType === 'workday') {
                     detailText += `，未超出標準工時`;
@@ -1181,6 +1213,7 @@ function saveOvertimeRecord() {
     const endTimeInput = document.getElementById('endTime');
     const dayTypeSelect = document.getElementById('dayType');
     const calculatedOvertime = document.getElementById('calculatedOvertime');
+    const noLunchBreakCheckbox = document.getElementById('noLunchBreak');
     
     if (!startTimeInput || !endTimeInput || !dayTypeSelect || !calculatedOvertime || !selectedDate) {
         alert('無法保存加班記錄，表單數據不完整');
@@ -1190,6 +1223,7 @@ function saveOvertimeRecord() {
     const startTime = startTimeInput.value;
     const endTime = endTimeInput.value;
     const dayType = dayTypeSelect.value;
+    const noLunchBreak = noLunchBreakCheckbox ? noLunchBreakCheckbox.checked : false;
     
     // 獲取計算結果
     const overtimeValue = parseFloat(calculatedOvertime.value) || 0;
@@ -1217,6 +1251,7 @@ function saveOvertimeRecord() {
         overtimeRecords[existingRecordIndex].dayType = dayType;
         overtimeRecords[existingRecordIndex].startTime = startTime;
         overtimeRecords[existingRecordIndex].endTime = endTime;
+        overtimeRecords[existingRecordIndex].noLunchBreak = noLunchBreak;
     } else {
         // 新增紀錄
         overtimeRecords.push({
@@ -1227,7 +1262,8 @@ function saveOvertimeRecord() {
             minutes: overtimeMinutes,
             totalHours: totalHours,
             startTime: startTime,
-            endTime: endTime
+            endTime: endTime,
+            noLunchBreak: noLunchBreak
         });
     }
     
@@ -1552,7 +1588,7 @@ function renderOvertimeRecords() {
     
     if (overtimeRecords.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="6" class="text-center">尚無加班記錄</td>`;
+        tr.innerHTML = `<td colspan="7" class="text-center">尚無加班記錄</td>`;
         tbody.appendChild(tr);
         return;
     }
@@ -1589,10 +1625,16 @@ function renderOvertimeRecords() {
         const workTimeDisplay = record.startTime && record.endTime ? 
             `${record.startTime}～${record.endTime}` : '未設定';
         
+        // 休息狀態顯示
+        const breakStatus = record.noLunchBreak ? 
+            '<span class="badge bg-warning text-dark"><i class="fas fa-utensils-slash me-1"></i>無休息</span>' : 
+            '<span class="badge bg-success"><i class="fas fa-utensils me-1"></i>有休息</span>';
+        
         tr.innerHTML = `
             <td>${displayDate}</td>
             <td>${dayTypeText}</td>
             <td title="工作時間: ${workTimeDisplay}">${timeDisplay}</td>
+            <td>${breakStatus}</td>
             <td>${rates}</td>
             <td data-bs-toggle="tooltip" title="四捨五入計算">${amount.toLocaleString()} 元</td>
             <td>
