@@ -142,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
             imagesToProcess = [];
             
             // 處理上傳的每一張圖片
-            const totalFiles = Math.min(this.files.length, 10); // 限制最多10張
+            const totalFiles = Math.min(this.files.length, 50); // 限制最多50張
             let loadedFiles = 0;
             
-            Array.from(this.files).slice(0, 10).forEach((file, index) => {
+            Array.from(this.files).slice(0, 50).forEach((file, index) => {
                 if (!file.type.match('image.*')) {
                     loadedFiles++;
                     if (loadedFiles === totalFiles) {
